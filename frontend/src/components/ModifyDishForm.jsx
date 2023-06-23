@@ -107,8 +107,13 @@ const ModifyDishForm = () => {
           >
             <Input.TextArea />
           </Form.Item>
-          <Form.Item>
-            <Space size={15}>
+          <Form.Item
+            wrapperCol={{
+              offset: 5,
+              span: 16,
+            }}
+          >
+            <Space size={20}>
               <Button
                 type="primary"
                 shape="round"
