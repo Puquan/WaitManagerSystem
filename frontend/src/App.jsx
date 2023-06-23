@@ -1,10 +1,12 @@
-import React from "react";
-import { Button } from "antd";
+import AddDishForm from "./components/AddDishForm";
+import ModifyDishForm from "./components/ModifyDishForm";
 
-const App = () => (
-  <div className="App">
-    <Button type="primary">Button</Button>
-  </div>
-);
+function App() {
+  return (
+    <>
+      <ModifyDishForm />
+    </>
+  );
+}
 
 export default App;
