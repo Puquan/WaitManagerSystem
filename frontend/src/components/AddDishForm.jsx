@@ -33,9 +33,9 @@ const uploadProps = {
 
 const AddDishForm = () => {
   return (
-    <Card title="Add New Dish" name="addDishForm" bordered={false}>
+    <Card title="Add New Dish" name="addDishCard" bordered={false}>
       <Form
-        name="basic"
+        name="addDishForm"
         labelCol={{
           span: 8,
         }}
