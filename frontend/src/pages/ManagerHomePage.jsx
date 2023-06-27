@@ -1,34 +1,11 @@
-import {
-  AppstoreOutlined,
-  BarChartOutlined,
-  CloudOutlined,
-  ShopOutlined,
-  TeamOutlined,
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-} from "@ant-design/icons";
-import { Layout, Menu, theme, Button, Typography, Modal } from "antd";
-import React from "react";
-import { useState } from "react";
+import { Layout, theme, Button, Typography, Modal, Anchor } from "antd";
+import React, { useEffect, useState } from "react";
 import AddDishForm from "../components/AddDishForm";
-import ModifyDishForm from "../components/ModifyDishForm";
 import AddCatForm from "../components/AddCatForm";
+import "../App.css";
 const { Header, Content, Footer, Sider } = Layout;
-const items = [
-  UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
-  BarChartOutlined,
-  CloudOutlined,
-  AppstoreOutlined,
-  TeamOutlined,
-  ShopOutlined,
-].map((icon, index) => ({
-  key: String(index + 1),
-  icon: React.createElement(icon),
-  label: `nav ${index + 1}`,
-}));
+const items = ["Drink", "Fries", "Burger", "Dessert", "Pizza"];
+
 const ManagerHomePage = () => {
   const {
     token: { colorBgContainer },
@@ -57,8 +34,9 @@ const ManagerHomePage = () => {
   };
 
   return (
-    <Layout hasSider>
+    <Layout>
       <Sider
+        theme="dark"
         style={{
           overflow: "auto",
           height: "100vh",
@@ -68,12 +46,14 @@ const ManagerHomePage = () => {
           bottom: 0,
         }}
       >
-        <div className="demo-logo-vertical" />
-        <Menu
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={["4"]}
-          items={items}
+        <Anchor
+          items={items.map((item, index) => {
+            return {
+              key: (index + 1).toString(),
+              href: `#grid${item}`,
+              title: item,
+            };
+          })}
         />
       </Sider>
       <Layout
@@ -111,8 +91,6 @@ const ManagerHomePage = () => {
             onCancel={handleCancelAddDish}
             footer={null}
             keyboard
-            width={`45vh`}
-            height={`10vh`}
           >
             <AddDishForm />
           </Modal>
@@ -121,19 +99,22 @@ const ManagerHomePage = () => {
             onCancel={handleCancelAddCat}
             footer={null}
             keyboard
-            width={`45vh`}
-            height={`10vh`}
           >
             <AddCatForm />
           </Modal>
+          {items.map((name, index) => (
+            <div
+              key={index}
+              id={`grid${name}`}
+              style={{
+                height: "100vh",
+                background: `rgba(99,${index + 120},${index + 10},0.1)`,
+              }}
+            >
+              <h2>{name}</h2>
+            </div>
+          ))}
         </Content>
-        <Footer
-          style={{
-            textAlign: "center",
-          }}
-        >
-          Ant Design ©2023 Created by Ant UED
-        </Footer>
       </Layout>
     </Layout>
   );

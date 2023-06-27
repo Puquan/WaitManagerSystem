@@ -1,12 +1,6 @@
 import * as React from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { Button, Form, Input, InputNumber, Upload, Card } from "antd";
-const normFile = (e) => {
-  if (Array.isArray(e)) {
-    return e;
-  }
-  return e?.fileList;
-};
 
 const onFinish = (values) => {
   console.log("Success:", values);
@@ -17,9 +11,9 @@ const onFinishFailed = (errorInfo) => {
 
 const AddCatForm = () => {
   return (
-    <Card title="Add New Category" name="addCatForm" bordered={false}>
+    <Card title="Add New Category" name="addCatCard" bordered={false}>
       <Form
-        name="basic"
+        name="addCatForm"
         labelCol={{
           span: 8,
         }}
