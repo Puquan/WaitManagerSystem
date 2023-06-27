@@ -1,0 +1,15 @@
+Week 1
+Group formed and Named. Choose the topic for the project. Discuess the novel funtions for the project. 
+
+Week 2
+Decide to use React and javascript for front end development. Use Java and Springboot for back end development. Choose MySQL for database. Begin to write the proposal. Write the 
+"System Architecture" part of the proposal.
+
+Week 3
+Complete the proposal. Decide to finish Manager system first because it is the most important part of the project. I was assigned to write the front end code.
+
+Week 4
+Break down the ManagerSystem into small tasks. I was assigned to write the UI code for "Add a new Dish component", "Add Category component", "Modify the Dish component".
+
+Week 5
+Fix the bugs in the code. Integrate the function of front end and back end.
