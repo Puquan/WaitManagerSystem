@@ -5,6 +5,7 @@ import AddCatForm from "../components/AddCatForm";
 import "../App.css";
 const { Header, Content, Footer, Sider } = Layout;
 const items = ["Drink", "Fries", "Burger", "Dessert", "Pizza"];
+import DishGrid from "../components/DishGrid";
 
 const ManagerHomePage = () => {
   const {
@@ -112,6 +113,7 @@ const ManagerHomePage = () => {
               }}
             >
               <h2>{name}</h2>
+              <DishGrid />
             </div>
           ))}
         </Content>
