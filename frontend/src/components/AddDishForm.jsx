@@ -15,111 +15,135 @@ const onFinishFailed = (errorInfo) => {
   console.log("Failed:", errorInfo);
 };
 
+const beforeUpload = (file) => {
+  const allowedTypes = ["image/jpeg", "image/png"]; // 允许的图片类型
+  const isAllowed = allowedTypes.includes(file.type);
+  if (!isAllowed) {
+    console.log("Only JPG/PNG files are allowed!");
+  }
+  return isAllowed;
+};
+
+const uploadProps = {
+  beforeUpload,
+  maxCount: 1,
+  listType: "picture-card",
+  accept: "image/jpeg, image/png",
+};
+
 const AddDishForm = () => {
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-      }}
-    >
-      <Card title="Add New Dish" name="addForm">
-        <Form
-          name="basic"
-          labelCol={{
-            span: 8,
-          }}
-          wrapperCol={{
-            span: 20,
-          }}
-          initialValues={{
-            remember: true,
-          }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
+    <Card title="Add New Dish" name="addDishForm" bordered={false}>
+      <Form
+        name="basic"
+        labelCol={{
+          span: 8,
+        }}
+        wrapperCol={{
+          span: 20,
+        }}
+        initialValues={{
+          remember: true,
+        }}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+      >
+        <Form.Item
+          label="Dish Image"
+          valuePropName="fileList"
+          getValueFromEvent={normFile}
         >
-          <Form.Item
-            label="Dish Image"
-            valuePropName="fileList"
-            getValueFromEvent={normFile}
+          <Upload
+            {...uploadProps}
+            action="/upload.do"
+            listType="picture-card"
+            beforeUpload={beforeUpload}
           >
-            <Upload action="/upload.do" listType="picture-card">
-              <div>
-                <PlusOutlined />
-                <div
-                  style={{
-                    marginTop: 8,
-                    alignItems: "center",
-                  }}
-                >
-                  Upload
-                </div>
+            <div>
+              <PlusOutlined />
+              <div
+                style={{
+                  marginTop: 8,
+                  alignItems: "center",
+                }}
+              >
+                Upload
               </div>
-            </Upload>
-          </Form.Item>
-          <Form.Item
-            label="Dish Name"
-            name="dishName"
-            rules={[
-              {
-                required: true,
-                message: "Please input the name of the dish!",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Price"
-            name="price"
-            rules={[
-              {
-                required: true,
-                message: "Please input the price of the dish!",
-              },
-            ]}
-          >
-            <InputNumber />
-          </Form.Item>
-          <Form.Item
-            label="Description"
-            name="description"
-            rules={[
-              {
-                required: true,
-                message: "Please input the description of the dish!",
-              },
-            ]}
-          >
-            <Input.TextArea />
-          </Form.Item>
-          <Form.Item
-            label="Ingredients"
-            name="ingredients"
-            rules={[
-              {
-                required: true,
-                message: "Please input the ingredient of the dish!",
-              },
-            ]}
-          >
-            <Input.TextArea />
-          </Form.Item>
-          <Form.Item
-            wrapperCol={{
-              offset: 8,
-              span: 16,
-            }}
-          >
-            <Button type="primary" htmlType="submit">
-              Submit
-            </Button>
-          </Form.Item>
-        </Form>
-      </Card>
-    </div>
+            </div>
+          </Upload>
+        </Form.Item>
+        <Form.Item
+          label="Dish Name"
+          name="dishName"
+          rules={[
+            {
+              required: true,
+              message: "Please input the name of the dish!",
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Category"
+          name="dishCategory"
+          rules={[
+            {
+              required: true,
+              message: "Please input the name of the Category!",
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Price"
+          name="price"
+          rules={[
+            {
+              required: true,
+              message: "Please input the price of the dish!",
+            },
+          ]}
+        >
+          <InputNumber />
+        </Form.Item>
+        <Form.Item
+          label="Description"
+          name="description"
+          rules={[
+            {
+              required: true,
+              message: "Please input the description of the dish!",
+            },
+          ]}
+        >
+          <Input.TextArea />
+        </Form.Item>
+        <Form.Item
+          label="Ingredients"
+          name="ingredients"
+          rules={[
+            {
+              required: true,
+              message: "Please input the ingredient of the dish!",
+            },
+          ]}
+        >
+          <Input.TextArea />
+        </Form.Item>
+        <Form.Item
+          wrapperCol={{
+            offset: 8,
+            span: 16,
+          }}
+        >
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
+        </Form.Item>
+      </Form>
+    </Card>
   );
 };
 
