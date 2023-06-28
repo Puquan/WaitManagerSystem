@@ -1,6 +1,8 @@
 import * as React from "react";
+import { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import { Button, Form, Input, InputNumber, Upload, Card } from "antd";
+import { Button, Form, Input, InputNumber, Upload, Card, message } from "antd";
+
 const normFile = (e) => {
   if (Array.isArray(e)) {
     return e;
@@ -8,30 +10,70 @@ const normFile = (e) => {
   return e?.fileList;
 };
 
-const onFinish = (values) => {
-  console.log("Success:", values);
-};
-const onFinishFailed = (errorInfo) => {
-  console.log("Failed:", errorInfo);
-};
+const AddDishForm = ({onClose}) => {
+  const [file, setFile] = useState(null); // State variable to track the uploaded image file
+  const onFinish = async (values) => {
+    console.log("Success:", values);
+    const formData = new FormData();
+    formData.append('name', values.dishName);
+    formData.append('description', values.description);
+    formData.append('ingredient', values.ingredients);
+    formData.append('price', values.price);
+    formData.append('categoryId', values.dishCategory);
+  
+    if (file) {
+      formData.append('picture', file);
+    } else {
+    message.error(`Please add dish image.`);
+    formData.append('picture', null); 
+    return;
+    }
+    sendFormData(formData);
+  };
 
-const beforeUpload = (file) => {
-  const allowedTypes = ["image/jpeg", "image/png"]; // 允许的图片类型
-  const isAllowed = allowedTypes.includes(file.type);
-  if (!isAllowed) {
-    console.log("Only JPG/PNG files are allowed!");
-  }
-  return isAllowed;
-};
+  const sendFormData = (data) => {
+    fetch("http://localhost:8080/waitsys/manager/item/add", {
+      mode: 'no-cors',
+      method: "POST",
+      body: data
+    })
+      .then((response) => {
+        console.log(response);
+        if (response.status === 0) { // cant catch error due to no-cors
+          message.success("Dish added successfully!"); 
+          console.log("Dish added successfully!");
+          onClose();
+        } else {
+          throw new Error("Error adding dish");
+        }
+      })
+      .catch((error) => {
+        console.log("Error:", error);
+      });
+  };
 
-const uploadProps = {
-  beforeUpload,
-  maxCount: 1,
-  listType: "picture-card",
-  accept: "image/jpeg, image/png",
-};
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+  };
 
-const AddDishForm = () => {
+  const beforeUpload = (file) => {
+    const allowedTypes = ["image/jpeg", "image/png"];
+    const isAllowed = allowedTypes.includes(file.type);
+    if (!isAllowed) {
+      console.log("Only JPG/PNG files are allowed!");
+    } else {
+      setFile(file); // Update the image file state variable
+    }
+    return false; // Returning false prevents immediate upload
+  };
+
+  const uploadProps = {
+    beforeUpload,
+    maxCount: 1,
+    listType: "picture-card",
+    accept: "image/jpeg, image/png",
+  };
+
   return (
     <Card title="Add New Dish" name="addDishCard" bordered={false}>
       <Form
@@ -94,7 +136,7 @@ const AddDishForm = () => {
             },
           ]}
         >
-          <Input />
+          <InputNumber /> 
         </Form.Item>
         <Form.Item
           label="Price"
