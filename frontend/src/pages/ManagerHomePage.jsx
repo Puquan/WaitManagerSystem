@@ -13,6 +13,37 @@ const ManagerHomePage = () => {
   } = theme.useToken();
   const [addDishOpen, addDishSetOpen] = useState(false);
   const [addCatOpen, addCatSetOpen] = useState(false);
+  const [Category, setCategory] = useState([]);
+
+  React.useEffect(() => {
+    fetchCategory();
+  }, []);
+
+  const fetchCategory = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8080/waitsys/manager/list_all_categories",
+        {
+          method: "GET",
+          headers: {
+            "Content-type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      console.log(data);
+
+      // 处理数据，将其设置到组件的状态中
+      const processedData = data.map((item) => ({
+        categoryId: item.categoryId,
+        name: item.name,
+        orderNum: item.orderNum,
+      }));
+      setCategory(processedData);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   const showAddDish = () => {
     console.log("Add Dish");
@@ -34,6 +65,12 @@ const ManagerHomePage = () => {
     addCatSetOpen(false);
   };
 
+  const handleTest = () => {
+    console.log("Test");
+    fetchCategory();
+    //loadData();
+  };
+
   return (
     <Layout>
       <Sider
@@ -48,11 +85,11 @@ const ManagerHomePage = () => {
         }}
       >
         <Anchor
-          items={items.map((item, index) => {
+          items={Category.map((item, index) => {
             return {
-              key: (index + 1).toString(),
-              href: `#grid${item}`,
-              title: item,
+              key: item.categoryId.toString(),
+              href: `#grid${item.name}`,
+              title: item.name,
             };
           })}
         />
@@ -87,6 +124,7 @@ const ManagerHomePage = () => {
         >
           <Button onClick={showAddDish}>Add New Dish</Button>
           <Button onClick={showAddCat}>Add New Category</Button>
+          <Button onClick={handleTest}>Test</Button>
           <Modal
             open={addDishOpen}
             onCancel={handleCancelAddDish}
@@ -103,17 +141,17 @@ const ManagerHomePage = () => {
           >
             <AddCatForm />
           </Modal>
-          {items.map((name, index) => (
+          {Category.map((item, index) => (
             <div
-              key={index}
-              id={`grid${name}`}
+              key={item.categoryId}
+              id={`grid${item.name}`}
               style={{
                 height: "100vh",
                 background: `rgba(99,${index + 120},${index + 10},0.1)`,
               }}
             >
-              <h2>{name}</h2>
-              <DishGrid />
+              <h2>{item.name}</h2>
+              <DishGrid categoryId={item.categoryId} />
             </div>
           ))}
         </Content>
