@@ -1,9 +1,18 @@
 import { Card, List } from "antd";
 import * as React from "react";
 import DishCard from "./DishCard";
+import staticMethods from "antd/es/message";
 const { Meta } = Card;
 
+
+
 const GridList = (props) => {
+
+  function loadData (){
+    fetch('http://localhost:8080/waitsys/manager/item/showByCategory?categoryId=2&pageNo=1&pageSize=10',{mode:"no-cors", method:"GET"})
+    .then(data => {return data.json();})}
+    //.then(post => {console.log(data);})}
+  
   const [dishes, setDishes] = React.useState([
     { title: "DishA", price: "24", index: 1, id: 1 },
     { title: "DishB", price: "27", index: 2, id: 2 },
@@ -11,6 +20,7 @@ const GridList = (props) => {
     { title: "DishD", price: "67", index: 4, id: 4 },
     { title: "DishF", price: "67", index: 5, id: 5 },
   ]);
+
   const MoveRight = (id) => {
     setDishes((prevDishes) => {
       const index = prevDishes.findIndex((dish) => dish.id === id);
@@ -18,6 +28,7 @@ const GridList = (props) => {
         const newDishes = [...prevDishes];
         const dish = newDishes.splice(index, 1)[0];
         newDishes.splice(index + 1, 0, dish);
+        loadData();
         return newDishes;
       }
       return prevDishes;
