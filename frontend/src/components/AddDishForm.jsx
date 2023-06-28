@@ -1,7 +1,9 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import { Button, Form, Input, InputNumber, Upload, Card, message } from "antd";
+import { Button, Form, Input, InputNumber, Upload, Card, message, Select } from "antd";
+
+const { Option } = Select;
 
 const normFile = (e) => {
   if (Array.isArray(e)) {
@@ -12,8 +14,25 @@ const normFile = (e) => {
 
 const AddDishForm = ({onClose}) => {
   const [file, setFile] = useState(null); // State variable to track the uploaded image file
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = () => {
+
+    fetch("http://localhost:8080/waitsys/manager/list_all_categories")
+      .then((response) => response.json())
+      .then((data) => {
+        setCategories(data);
+      })
+      .catch((error) => {
+        console.log("Error fetching categories:", error);
+      });
+  };
+
+
   const onFinish = async (values) => {
-    console.log("Success:", values);
     const formData = new FormData();
     formData.append('name', values.dishName);
     formData.append('description', values.description);
@@ -24,8 +43,8 @@ const AddDishForm = ({onClose}) => {
     if (file) {
       formData.append('picture', file);
     } else {
-    message.error(`Please add dish image.`);
-    formData.append('picture', null); 
+    message.error("Please add dish image.");
+    console.log("Please add dish image.");
     return;
     }
     sendFormData(formData);
@@ -33,13 +52,12 @@ const AddDishForm = ({onClose}) => {
 
   const sendFormData = (data) => {
     fetch("http://localhost:8080/waitsys/manager/item/add", {
-      mode: 'no-cors',
       method: "POST",
       body: data
     })
       .then((response) => {
-        console.log(response);
-        if (response.status === 0) { // cant catch error due to no-cors
+        console.log(response);  
+        if (response.status === 200) { // cant catch error due to no-cors
           message.success("Dish added successfully!"); 
           console.log("Dish added successfully!");
           onClose();
@@ -127,16 +145,22 @@ const AddDishForm = ({onClose}) => {
           <Input />
         </Form.Item>
         <Form.Item
-          label="Category"
-          name="dishCategory"
-          rules={[
-            {
-              required: true,
-              message: "Please input the name of the Category!",
-            },
-          ]}
-        >
-          <InputNumber /> 
+        label="Category"
+        name="dishCategory"
+        rules={[
+          {
+            required: true,
+            message: "Please select the category!",
+          },
+        ]}
+      >
+        <Select>
+          {categories.map((category) => (
+            <Option key={category.name} value={category.id}>
+              {category.name}
+            </Option>
+          ))}
+        </Select>
         </Form.Item>
         <Form.Item
           label="Price"
