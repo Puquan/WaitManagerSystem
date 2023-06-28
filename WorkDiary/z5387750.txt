@@ -1,5 +1,10 @@
 week1:
+Group formed and Named. Choose topic for the project. Discuss the functionalities.
 week2:
+Choose the developement method, for example: java script for frontend, MySQL and java on backend
 week3:
+Write the propsal. Finish Jira. And I was assigned to do the frontend job using React and JS.
 week4:
+Learn JS and React. Write several pages.
 week5:
+Write move order functionalities and base pages.
