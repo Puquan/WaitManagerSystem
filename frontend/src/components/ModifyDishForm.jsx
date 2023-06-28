@@ -1,6 +1,8 @@
 import * as React from "react";
+import { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import { Button, Form, Input, InputNumber, Upload, Card, Space } from "antd";
+import { Button, Form, Input, InputNumber, Upload, Card, Space, message } from "antd";
+
 const normFile = (e) => {
   if (Array.isArray(e)) {
     return e;
@@ -8,14 +10,88 @@ const normFile = (e) => {
   return e?.fileList;
 };
 
-const onFinish = (values) => {
-  console.log("Success:", values);
-};
-const onFinishFailed = (errorInfo) => {
-  console.log("Failed:", errorInfo);
-};
+const ModifyDishForm = ({onClose, itemId}) => {
+  const [file, setFile] = useState(null); // State variable to track the uploaded image file
+  const onFinish = (values) => {
+    const formData = new FormData();
+    formData.append('itemId', itemId);
+    formData.append('name', values.dishName);
+    formData.append('description', values.description);
+    formData.append('ingredient', values.ingredients);
+    formData.append('price', values.price);
+    formData.append('categoryId', 1); //???
 
-const ModifyDishForm = () => {
+    if (file) {
+      formData.append('picture', file);
+    } else {
+    message.error(`Please add dish image.`);
+    formData.append('picture', null); 
+    return;
+    }
+    sendFormData(formData);
+  };
+
+  const sendFormData = (data) => {
+    fetch("http://localhost:8080/waitsys/manager/item/edit", { 
+      method: "POST",
+      body: data,
+    })
+      .then((response) => {
+        if (response.status === 200) { 
+          console.log("Modify success:", response);
+          message.success("Dish modified successfully!");
+          onClose();
+        } else {
+          throw new Error("Failed to modify dish.");
+        }
+      })
+      .catch((error) => {
+        console.error("Modify failed:", error);
+      });
+  };
+
+  const handleDelete = () => {
+    const formData = new FormData();
+    formData.append("itemId", itemId);
+    fetch(`http://localhost:8080/waitsys/manager/item/delete?itemId=${itemId}`, {
+      method: "GET",
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          console.log("Delete success:", response);
+          message.success("Dish deleted successfully!");
+          onClose();
+        } else {
+          throw new Error("Failed to delete dish.");
+        }
+      })
+      .catch((error) => {
+        console.error("Delete failed:", error);
+      });
+  };
+
+  const beforeUpload = (file) => {
+    const allowedTypes = ["image/jpeg", "image/png"];
+    const isAllowed = allowedTypes.includes(file.type);
+    if (!isAllowed) {
+      console.log("Only JPG/PNG files are allowed!");
+    } else {
+      setFile(file); // Update the image file state variable
+    }
+    return false; // Returning false prevents immediate upload
+  };
+
+  const uploadProps = {
+    beforeUpload,
+    maxCount: 1,
+    listType: "picture-card",
+    accept: "image/jpeg, image/png",
+  };
+
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+  };
+
   return (
     <Card title="Modify Dish" name="modifyDishForm" bordered={false}>
       <Form
@@ -37,7 +113,12 @@ const ModifyDishForm = () => {
           valuePropName="fileList"
           getValueFromEvent={normFile}
         >
-          <Upload action="/upload.do" listType="picture-card">
+          <Upload
+            {...uploadProps}
+            action="/upload.do"
+            listType="picture-card"
+            beforeUpload={beforeUpload}
+          >
             <div>
               <PlusOutlined />
               <div
@@ -114,7 +195,7 @@ const ModifyDishForm = () => {
             >
               Modify
             </Button>
-            <Button type="primary" danger>
+            <Button type="primary" danger onClick={handleDelete}>
               Delete
             </Button>
           </Space>
