@@ -45,7 +45,7 @@ const DishCard = ({ ItemId, title, price, MoveLeft, MoveRight, picture }) => {
         centered={true}
         maskClosable={true}
       >
-        <ModifyDishForm />
+        <ModifyDishForm itemId={ItemId} onClose={handleCancelUpdateDish} />
       </Modal>
       <Meta title={title} description={price} />
     </Card>

@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import AddDishForm from "../components/AddDishForm";
 import AddCatForm from "../components/AddCatForm";
 import "../App.css";
-const { Header, Content, Footer, Sider } = Layout;
-const items = ["Drink", "Fries", "Burger", "Dessert", "Pizza"];
+const { Header, Content, Sider } = Layout;
 import DishGrid from "../components/DishGrid";
+import { ReactSortable } from "react-sortablejs";
 
 const ManagerHomePage = () => {
   const {
@@ -14,10 +14,21 @@ const ManagerHomePage = () => {
   const [addDishOpen, addDishSetOpen] = useState(false);
   const [addCatOpen, addCatSetOpen] = useState(false);
   const [Category, setCategory] = useState([]);
+  const [moveCat, SetMoveCat] = useState(false);
 
   React.useEffect(() => {
     fetchCategory();
   }, []);
+
+  const showMoveCatSeq = () => {
+    console.log("Move category sequence");
+    SetMoveCat(true);
+  };
+
+  const handleCancelMoveCatSeq = () => {
+    console.log("Cancel Move category sequence");
+    SetMoveCat(false);
+  };
 
   const fetchCategory = async () => {
     try {
@@ -35,9 +46,8 @@ const ManagerHomePage = () => {
 
       // 处理数据，将其设置到组件的状态中
       const processedData = data.map((item) => ({
-        categoryId: item.categoryId,
+        categoryId: item.id,
         name: item.name,
-        orderNum: item.orderNum,
       }));
       setCategory(processedData);
     } catch (error) {
@@ -87,7 +97,7 @@ const ManagerHomePage = () => {
         <Anchor
           items={Category.map((item, index) => {
             return {
-              key: item.categoryId.toString(),
+              key: item.categoryId,
               href: `#grid${item.name}`,
               title: item.name,
             };
@@ -125,13 +135,26 @@ const ManagerHomePage = () => {
           <Button onClick={showAddDish}>Add New Dish</Button>
           <Button onClick={showAddCat}>Add New Category</Button>
           <Button onClick={handleTest}>Test</Button>
+          <Button onClick={showMoveCatSeq}>Move Category Sequence</Button>
+          <Modal
+            open={moveCat}
+            onCancel={handleCancelMoveCatSeq}
+            footer={null}
+            keyboard
+          >
+            <ReactSortable list={Category} setList={setCategory}>
+              {Category.map((item, index) => (
+                <div className="draggableItem">{item.name}</div>
+              ))}
+            </ReactSortable>
+          </Modal>
           <Modal
             open={addDishOpen}
             onCancel={handleCancelAddDish}
             footer={null}
             keyboard
           >
-            <AddDishForm />
+            <AddDishForm onClose={handleCancelAddDish} />
           </Modal>
           <Modal
             open={addCatOpen}
@@ -139,7 +162,7 @@ const ManagerHomePage = () => {
             footer={null}
             keyboard
           >
-            <AddCatForm />
+            <AddCatForm onClose={handleCancelAddCat} />
           </Modal>
           {Category.map((item, index) => (
             <div
