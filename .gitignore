@@ -39,3 +39,6 @@ waitSys/.idea/
 waitSys/.mvn/
 .DS_Store
 .idea/
+**/.DS_Store
+waitSys/src/main/resources/application.properties
+waitSys/target/classes/application.properties
