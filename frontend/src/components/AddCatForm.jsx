@@ -1,15 +1,39 @@
 import * as React from "react";
-import { PlusOutlined } from "@ant-design/icons";
-import { Button, Form, Input, InputNumber, Upload, Card } from "antd";
+import { useState } from "react";
+import { Button, Form, Input, Card } from "antd";
 
-const onFinish = (values) => {
-  console.log("Success:", values);
-};
-const onFinishFailed = (errorInfo) => {
-  console.log("Failed:", errorInfo);
-};
+const AddCatForm = (onClose) => {
+  const sendFormData = (data) => {
+    fetch("http://localhost:8080/waitsys/manager/add_category", {
+      method: "POST",
+      body: data,
+    })
+      .then((response) => {
+        console.log(response);
+        console.log(response.status);
+        if (response.status == 200) {
+          // cant catch error due to no-cors
+          message.success("Dish added successfully!");
+          console.log("Dish added successfully!");
+          onClose();
+        } else {
+          throw new Error("Error adding Category");
+        }
+      })
+      .catch((error) => {
+        console.log("Error:", error);
+      });
+  };
 
-const AddCatForm = () => {
+  const onFinish = async (values) => {
+    const formData = new FormData();
+    formData.append("name", values.Category);
+    sendFormData(formData);
+  };
+
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+  };
   return (
     <Card title="Add New Category" name="addCatCard" bordered={false}>
       <Form

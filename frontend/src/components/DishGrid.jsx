@@ -1,25 +1,40 @@
 import { Card, List } from "antd";
 import * as React from "react";
+import { useState, useEffect } from "react";
 import DishCard from "./DishCard";
-import staticMethods from "antd/es/message";
 const { Meta } = Card;
 
+const GridList = ({ categoryId }) => {
+  const [dishes, setDishes] = React.useState([]);
+  React.useEffect(() => {
+    fetchData(categoryId);
+  }, []);
 
-
-const GridList = (props) => {
-
-  function loadData (){
-    fetch('http://localhost:8080/waitsys/manager/item/showByCategory?categoryId=2&pageNo=1&pageSize=10',{mode:"no-cors", method:"GET"})
-    .then(data => {return data.json();})}
-    //.then(post => {console.log(data);})}
-  
-  const [dishes, setDishes] = React.useState([
-    { title: "DishA", price: "24", index: 1, id: 1 },
-    { title: "DishB", price: "27", index: 2, id: 2 },
-    { title: "DishC", price: "58", index: 3, id: 3 },
-    { title: "DishD", price: "67", index: 4, id: 4 },
-    { title: "DishF", price: "67", index: 5, id: 5 },
-  ]);
+  const fetchData = async (categoryId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/waitsys/manager/item/showByCategory?categoryId=${categoryId}&pageNo=1&pageSize=10`,
+        {
+          method: "GET",
+          headers: {
+            "Content-type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      // 处理数据，将其设置到组件的状态中
+      const processedData = data.records.map((item) => ({
+        title: item.name,
+        price: item.price,
+        index: item.orderNum,
+        id: item.itemId,
+        picture: `data:image/jpeg;base64, ${item.picture}`,
+      }));
+      setDishes(processedData);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   const MoveRight = (id) => {
     setDishes((prevDishes) => {
@@ -28,7 +43,6 @@ const GridList = (props) => {
         const newDishes = [...prevDishes];
         const dish = newDishes.splice(index, 1)[0];
         newDishes.splice(index + 1, 0, dish);
-        loadData();
         return newDishes;
       }
       return prevDishes;
@@ -63,7 +77,8 @@ const GridList = (props) => {
             title={dish.title}
             price={dish.price}
             index={dish.index}
-            id={dish.id}
+            ItemId={dish.id}
+            picture={dish.picture}
           />
         </List.Item>
       )}

@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import * as React from "react";
 const { Meta } = Card;
 
-const DishCard = ({ id, title, price, MoveLeft, MoveRight }) => {
+const DishCard = ({ ItemId, title, price, MoveLeft, MoveRight, picture }) => {
   const [updateDishOpen, updateDishSetOpen] = useState(false);
 
   const showUpdateDish = () => {
@@ -18,17 +18,14 @@ const DishCard = ({ id, title, price, MoveLeft, MoveRight }) => {
     updateDishSetOpen(false);
   };
 
+  console.log(picture);
+
   return (
     <Card
       style={{
         width: 300,
       }}
-      cover={
-        <img
-          alt="example"
-          src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-        />
-      }
+      cover={<img alt="example" src={picture} />}
       actions={[
         <Button ghost={false} icon={<LeftOutlined />} onClick={MoveLeft} />,
         <Button
@@ -48,15 +45,9 @@ const DishCard = ({ id, title, price, MoveLeft, MoveRight }) => {
         centered={true}
         maskClosable={true}
       >
-        <ModifyDishForm />
+        <ModifyDishForm itemId={ItemId} onClose={handleCancelUpdateDish} />
       </Modal>
-      <Meta
-        avatar={
-          <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel" />
-        }
-        title={title}
-        description={price}
-      />
+      <Meta title={title} description={price} />
     </Card>
   );
 };

@@ -1,7 +1,16 @@
 import * as React from "react";
 import { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import { Button, Form, Input, InputNumber, Upload, Card, Space, message } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  InputNumber,
+  Upload,
+  Card,
+  Space,
+  message,
+} from "antd";
 
 const normFile = (e) => {
   if (Array.isArray(e)) {
@@ -10,34 +19,34 @@ const normFile = (e) => {
   return e?.fileList;
 };
 
-const ModifyDishForm = ({onClose, itemId}) => {
+const ModifyDishForm = ({ onClose, itemId }) => {
   const [file, setFile] = useState(null); // State variable to track the uploaded image file
   const onFinish = (values) => {
     const formData = new FormData();
-    formData.append('itemId', itemId);
-    formData.append('name', values.dishName);
-    formData.append('description', values.description);
-    formData.append('ingredient', values.ingredients);
-    formData.append('price', values.price);
-    formData.append('categoryId', 1); //???
+    formData.append("itemId", itemId);
+    formData.append("name", values.dishName);
+    formData.append("description", values.description);
+    formData.append("ingredient", values.ingredients);
+    formData.append("price", values.price);
+    formData.append("categoryId", 1); //???
 
     if (file) {
-      formData.append('picture', file);
+      formData.append("picture", file);
     } else {
-    message.error(`Please add dish image.`);
-    formData.append('picture', null); 
-    return;
+      message.error(`Please add dish image.`);
+      formData.append("picture", null);
+      return;
     }
     sendFormData(formData);
   };
 
   const sendFormData = (data) => {
-    fetch("http://localhost:8080/waitsys/manager/item/edit", { 
+    fetch("http://localhost:8080/waitsys/manager/item/edit", {
       method: "POST",
       body: data,
     })
       .then((response) => {
-        if (response.status === 200) { 
+        if (response.status === 200) {
           console.log("Modify success:", response);
           message.success("Dish modified successfully!");
           onClose();
@@ -53,9 +62,12 @@ const ModifyDishForm = ({onClose, itemId}) => {
   const handleDelete = () => {
     const formData = new FormData();
     formData.append("itemId", itemId);
-    fetch(`http://localhost:8080/waitsys/manager/item/delete?itemId=${itemId}`, {
-      method: "GET",
-    })
+    fetch(
+      `http://localhost:8080/waitsys/manager/item/delete?itemId=${itemId}`,
+      {
+        method: "GET",
+      }
+    )
       .then((response) => {
         if (response.status === 200) {
           console.log("Delete success:", response);
