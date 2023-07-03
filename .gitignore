@@ -6,6 +6,7 @@ yarn-debug.log*
 yarn-error.log*
 
 
+
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build/Release
 
@@ -35,3 +36,6 @@ typings/
 .yarn-integrity
 
 waitSys/.idea/
+waitSys/.mvn/
+.DS_Store
+.idea/

@@ -22,9 +22,11 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/waitsys/manager")
+@CrossOrigin
 public class ManagerController {
     @Autowired
     private ItemService itemService;
+    @Autowired
     private CategoryService categoryService;
 
     @PostMapping("/item/add")
@@ -70,7 +72,7 @@ public class ManagerController {
     }
 
     @PostMapping("/change_category_order")
-    public boolean changeCategoryOrder(@RequestParam(value = "categoryMap") HashMap<Integer, Integer> categoryMap){
+    public boolean changeCategoryOrder(@RequestBody HashMap<Integer, Integer> categoryMap){
         return categoryService.changeCategoryOrder(categoryMap);
     }
 

@@ -37,11 +37,11 @@ class WaitSysApplicationTests {
 
     @Test
     public void testAddNewItem() throws IOException {
-        File file = new File("/Users/vallen/Downloads/DongMian.png");
+        File file = new File("/Users/vallen/IntelliJIDEA/waitSys/src/main/database/ERD.png");
         FileInputStream input = new FileInputStream(file);
         MultipartFile picture = new MockMultipartFile("file",
                 file.getName(), "image/png", input);
-        boolean flag = itemService.updateItem(4,"Dong Dong Noodle", picture, null, null, 17.8f, 2);
+        boolean flag = itemService.addNewItem("test picture null", picture, null, null, 20.8f, 2);
         System.out.println("The flag = " + flag);
     }
 

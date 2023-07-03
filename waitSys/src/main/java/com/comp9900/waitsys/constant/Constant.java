@@ -10,8 +10,8 @@ public class Constant {
     public final static Float INITIAL_RATING = 0f;
 
     // value of true integer -> boolean
-    public static final Integer TRUE_VALUE = 0;
+    public static final Integer TRUE_VALUE = 1;
 
     // value of false integer -> boolean
-    public static final Integer FALSE_VALUE = 1;
+    public static final Integer FALSE_VALUE = 0;
 }

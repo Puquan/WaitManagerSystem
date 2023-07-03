@@ -15,7 +15,7 @@ public class Category implements Serializable {
     private Integer categoryId;
     private String name;
     private Integer isOnMenu;
-    private Integer order;
+    private Integer orderNum;
 
     public Integer getCategoryId() {
         return categoryId;
@@ -41,12 +41,12 @@ public class Category implements Serializable {
         this.isOnMenu = isOnMenu;
     }
 
-    public Integer getOrder() {
-        return order;
+    public Integer getOrderNum() {
+        return orderNum;
     }
 
-    public void setOrder(Integer order) {
-        this.order = order;
+    public void setOrderNum(Integer order) {
+        this.orderNum = order;
     }
 
 //    public category(Integer categoryId, String name, Integer isOnMenu, Integer order) {
@@ -62,7 +62,7 @@ public class Category implements Serializable {
                 "categoryId=" + categoryId +
                 ", name='" + name + '\'' +
                 ", isOnMenu=" + isOnMenu +
-                ", order=" + order +
+                ", order=" + orderNum +
                 '}';
     }
 
