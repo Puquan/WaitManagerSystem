@@ -1,5 +1,5 @@
 import { Layout, theme, Button, Typography, Modal, Anchor } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import AddDishForm from "../components/AddDishForm";
 import AddCatForm from "../components/AddCatForm";
 import "../App.css";
@@ -14,11 +14,18 @@ const ManagerHomePage = () => {
   const [addDishOpen, addDishSetOpen] = useState(false);
   const [addCatOpen, addCatSetOpen] = useState(false);
   const [Category, setCategory] = useState([]);
+  const [Dish, setDish] = useState([]);
   const [moveCat, SetMoveCat] = useState(false);
 
   React.useEffect(() => {
     fetchCategory();
-  }, []);
+    console.log("fetching category");
+  }, [addCatOpen]);
+
+  React.useEffect(() => {
+    fetchDish();
+    console.log("fetching dish");
+  }, [addDishOpen]);
 
   const showMoveCatSeq = () => {
     console.log("Move category sequence");
@@ -30,6 +37,7 @@ const ManagerHomePage = () => {
     SetMoveCat(false);
   };
 
+  // Fetch category
   const fetchCategory = async () => {
     try {
       const response = await fetch(
@@ -42,14 +50,42 @@ const ManagerHomePage = () => {
         }
       );
       const data = await response.json();
-      console.log(data);
-
-      // 处理数据，将其设置到组件的状态中
       const processedData = data.map((item) => ({
         categoryId: item.id,
         name: item.name,
       }));
       setCategory(processedData);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const fetchDish = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8080/waitsys/manager/item/showAll?pageNo=1&pageSize=10",
+        {
+          method: "GET",
+          headers: {
+            "Content-type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      const processedData = data.records.map((item) => ({
+        itemId: item.itemId,
+        name: item.name,
+        picture: item.picture,
+        description: item.description,
+        ingredient: item.ingredient,
+        price: item.price,
+        categoryId: item.categoryId,
+        rating: item.rating,
+        isOnMenu: item.isOnMenu,
+        orderNum: item.orderNum,
+        category: item.category,
+      }));
+      setDish(processedData);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -76,9 +112,7 @@ const ManagerHomePage = () => {
   };
 
   const handleTest = () => {
-    console.log("Test");
-    fetchCategory();
-    //loadData();
+    console.log(Dish);
   };
 
   return (
@@ -144,7 +178,9 @@ const ManagerHomePage = () => {
           >
             <ReactSortable list={Category} setList={setCategory}>
               {Category.map((item, index) => (
-                <div className="draggableItem">{item.name}</div>
+                <div key={index} className="draggableItem">
+                  {item.name}
+                </div>
               ))}
             </ReactSortable>
           </Modal>
@@ -174,7 +210,7 @@ const ManagerHomePage = () => {
               }}
             >
               <h2>{item.name}</h2>
-              <DishGrid categoryId={item.categoryId} />
+              <DishGrid categoryId={item.categoryId} update={Dish} />
             </div>
           ))}
         </Content>

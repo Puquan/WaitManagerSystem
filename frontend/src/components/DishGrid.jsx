@@ -1,14 +1,14 @@
 import { Card, List } from "antd";
 import * as React from "react";
-import { useState, useEffect } from "react";
 import DishCard from "./DishCard";
 const { Meta } = Card;
 
-const GridList = ({ categoryId }) => {
+const GridList = ({ categoryId, update }) => {
   const [dishes, setDishes] = React.useState([]);
+
   React.useEffect(() => {
     fetchData(categoryId);
-  }, []);
+  }, [categoryId, update]);
 
   const fetchData = async (categoryId) => {
     try {

@@ -1,21 +1,17 @@
 import * as React from "react";
-import { useState } from "react";
 import { Button, Form, Input, Card } from "antd";
 
-const AddCatForm = (onClose) => {
+const AddCatForm = ({ onClose }) => {
   const sendFormData = (data) => {
     fetch("http://localhost:8080/waitsys/manager/add_category", {
       method: "POST",
       body: data,
     })
       .then((response) => {
-        console.log(response);
-        console.log(response.status);
         if (response.status == 200) {
           // cant catch error due to no-cors
           message.success("Dish added successfully!");
           console.log("Dish added successfully!");
-          onClose();
         } else {
           throw new Error("Error adding Category");
         }
@@ -29,11 +25,9 @@ const AddCatForm = (onClose) => {
     const formData = new FormData();
     formData.append("name", values.Category);
     sendFormData(formData);
+    onClose();
   };
 
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
   return (
     <Card title="Add New Category" name="addCatCard" bordered={false}>
       <Form
@@ -48,7 +42,6 @@ const AddCatForm = (onClose) => {
           remember: true,
         }}
         onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
       >
         <Form.Item
           label="Category"

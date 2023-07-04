@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import {
   Button,
@@ -24,7 +24,8 @@ const normFile = (e) => {
 const AddDishForm = ({ onClose }) => {
   const [file, setFile] = useState(null); // State variable to track the uploaded image file
   const [categories, setCategories] = useState([]);
-  useEffect(() => {
+
+  React.useEffect(() => {
     fetchCategories();
   }, []);
 
@@ -51,7 +52,6 @@ const AddDishForm = ({ onClose }) => {
       formData.append("picture", file);
     } else {
       message.error("Please add dish image.");
-      console.log("Please add dish image.");
       return;
     }
     sendFormData(formData);
@@ -69,7 +69,6 @@ const AddDishForm = ({ onClose }) => {
           // cant catch error due to no-cors
           message.success("Dish added successfully!");
           console.log("Dish added successfully!");
-          onClose();
         } else {
           throw new Error("Error adding dish");
         }
@@ -77,10 +76,6 @@ const AddDishForm = ({ onClose }) => {
       .catch((error) => {
         console.log("Error:", error);
       });
-  };
-
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
   };
 
   const beforeUpload = (file) => {
@@ -115,7 +110,6 @@ const AddDishForm = ({ onClose }) => {
           remember: true,
         }}
         onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
       >
         <Form.Item
           label="Dish Image"

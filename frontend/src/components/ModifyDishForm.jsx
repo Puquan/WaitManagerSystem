@@ -21,6 +21,7 @@ const normFile = (e) => {
 
 const ModifyDishForm = ({ onClose, itemId }) => {
   const [file, setFile] = useState(null); // State variable to track the uploaded image file
+
   const onFinish = (values) => {
     const formData = new FormData();
     formData.append("itemId", itemId);

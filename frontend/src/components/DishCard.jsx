@@ -1,7 +1,7 @@
-import { Card, Avatar, Modal, Button } from "antd";
+import { Card, Modal, Button } from "antd";
 import { EditOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 import ModifyDishForm from "./ModifyDishForm";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import * as React from "react";
 const { Meta } = Card;
 
@@ -18,14 +18,16 @@ const DishCard = ({ ItemId, title, price, MoveLeft, MoveRight, picture }) => {
     updateDishSetOpen(false);
   };
 
-  console.log(picture);
-
   return (
     <Card
-      style={{
-        width: 300,
-      }}
-      cover={<img alt="example" src={picture} />}
+      cover={
+        <img
+          alt="example"
+          src={picture}
+          style={{ width: "100%", height: 200 }}
+        />
+      }
+      hoverable={true}
       actions={[
         <Button ghost={false} icon={<LeftOutlined />} onClick={MoveLeft} />,
         <Button
