@@ -42,3 +42,4 @@ waitSys/.mvn/
 **/.DS_Store
 waitSys/src/main/resources/application.properties
 waitSys/target/classes/application.properties
+frontend/yarn.lock
