@@ -3,12 +3,13 @@ import * as React from "react";
 import DishCard from "./DishCard";
 const { Meta } = Card;
 
-const GridList = ({ categoryId, update }) => {
+const GridList = ({ categoryId, AllDish }) => {
   const [dishes, setDishes] = React.useState([]);
 
   React.useEffect(() => {
     fetchData(categoryId);
-  }, [categoryId, update]);
+    console.log("upate!!!!");
+  }, [categoryId, AllDish]);
 
   const fetchData = async (categoryId) => {
     try {

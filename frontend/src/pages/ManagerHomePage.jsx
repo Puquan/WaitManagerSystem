@@ -14,7 +14,7 @@ const ManagerHomePage = () => {
   const [addDishOpen, addDishSetOpen] = useState(false);
   const [addCatOpen, addCatSetOpen] = useState(false);
   const [Category, setCategory] = useState([]);
-  const [Dish, setDish] = useState([]);
+  const [Dishes, setDishes] = useState([]);
   const [moveCat, SetMoveCat] = useState(false);
 
   React.useEffect(() => {
@@ -23,8 +23,8 @@ const ManagerHomePage = () => {
   }, [addCatOpen]);
 
   React.useEffect(() => {
-    fetchDish();
-    console.log("fetching dish");
+    fetchAllDishes();
+    console.log(addDishOpen, "fetching dishes");
   }, [addDishOpen]);
 
   const showMoveCatSeq = () => {
@@ -60,9 +60,10 @@ const ManagerHomePage = () => {
     }
   };
 
-  const fetchDish = async () => {
+  const fetchAllDishes = async () => {
     try {
       const response = await fetch(
+        // 这里用的api不对，后面会改
         "http://localhost:8080/waitsys/manager/item/showAll?pageNo=1&pageSize=10",
         {
           method: "GET",
@@ -85,7 +86,7 @@ const ManagerHomePage = () => {
         orderNum: item.orderNum,
         category: item.category,
       }));
-      setDish(processedData);
+      setDishes(processedData);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -129,7 +130,7 @@ const ManagerHomePage = () => {
         }}
       >
         <Anchor
-          items={Category.map((item, index) => {
+          items={Category.map((item) => {
             return {
               key: item.categoryId,
               href: `#grid${item.name}`,
@@ -210,7 +211,7 @@ const ManagerHomePage = () => {
               }}
             >
               <h2>{item.name}</h2>
-              <DishGrid categoryId={item.categoryId} update={Dish} />
+              <DishGrid categoryId={item.categoryId} AllDish={Dishes} />
             </div>
           ))}
         </Content>

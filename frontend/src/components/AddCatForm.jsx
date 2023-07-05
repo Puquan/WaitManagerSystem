@@ -10,8 +10,7 @@ const AddCatForm = ({ onClose }) => {
       .then((response) => {
         if (response.status == 200) {
           // cant catch error due to no-cors
-          message.success("Dish added successfully!");
-          console.log("Dish added successfully!");
+          message.success("Category added successfully!");
         } else {
           throw new Error("Error adding Category");
         }

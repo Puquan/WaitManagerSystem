@@ -24,6 +24,7 @@ const normFile = (e) => {
 const AddDishForm = ({ onClose }) => {
   const [file, setFile] = useState(null); // State variable to track the uploaded image file
   const [categories, setCategories] = useState([]);
+  const [form] = Form.useForm();
 
   React.useEffect(() => {
     fetchCategories();
@@ -47,18 +48,18 @@ const AddDishForm = ({ onClose }) => {
     formData.append("ingredient", values.ingredients);
     formData.append("price", values.price);
     formData.append("categoryId", values.dishCategory);
-
     if (file) {
       formData.append("picture", file);
     } else {
       message.error("Please add dish image.");
       return;
     }
-    sendFormData(formData);
-    onClose();
+    await sendFormData(formData);
+    form.resetFields();
+    form.resetFields(["dishImage"]);
   };
 
-  const sendFormData = (data) => {
+  const sendFormData = async (data) => {
     fetch("http://localhost:8080/waitsys/manager/item/add", {
       method: "POST",
       body: data,
@@ -69,6 +70,7 @@ const AddDishForm = ({ onClose }) => {
           // cant catch error due to no-cors
           message.success("Dish added successfully!");
           console.log("Dish added successfully!");
+          onClose();
         } else {
           throw new Error("Error adding dish");
         }
@@ -99,6 +101,7 @@ const AddDishForm = ({ onClose }) => {
   return (
     <Card title="Add New Dish" name="addDishCard" bordered={false}>
       <Form
+        form={form}
         name="addDishForm"
         labelCol={{
           span: 8,
@@ -113,6 +116,7 @@ const AddDishForm = ({ onClose }) => {
       >
         <Form.Item
           label="Dish Image"
+          name="dishImage"
           valuePropName="fileList"
           getValueFromEvent={normFile}
         >
