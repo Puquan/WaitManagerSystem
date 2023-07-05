@@ -97,7 +97,8 @@ public class ItemServiceImpl extends ServiceImpl<ItemMapper, Item> implements It
                 .leftJoin(Category.class, Category::getCategoryId, Item::getCategoryId)
                 .selectAs(Category::getName, ItemVO::getCategory)
                 .eq(Item::getIsOnMenu, Constant.TRUE_VALUE)
-                .eq(Category::getIsOnMenu, Constant.TRUE_VALUE);
+                .eq(Category::getIsOnMenu, Constant.TRUE_VALUE)
+                .orderByDesc(Item::getOrderNum);
         IPage<ItemVO> itemVOIPage = itemMapper.selectJoinPage(pageSetting, ItemVO.class, wrapper);
         return itemVOIPage;
     }
@@ -111,7 +112,8 @@ public class ItemServiceImpl extends ServiceImpl<ItemMapper, Item> implements It
                 .selectAs(Category::getName, ItemVO::getCategory)
                 .eq(Item::getCategoryId, categoryId)
                 .eq(Item::getIsOnMenu, Constant.TRUE_VALUE)
-                .eq(Category::getIsOnMenu, Constant.TRUE_VALUE);
+                .eq(Category::getIsOnMenu, Constant.TRUE_VALUE)
+                .orderByDesc(Item::getOrderNum);
         IPage<ItemVO> itemVOIPage = itemMapper.selectJoinPage(pageSetting, ItemVO.class, wrapper);
         return itemVOIPage;
     }
@@ -140,6 +142,26 @@ public class ItemServiceImpl extends ServiceImpl<ItemMapper, Item> implements It
                 .eq(Item::getItemId, itemId);
         List<ItemVO> itemVOList = itemMapper.selectJoinList(ItemVO.class, wrapper);
         return itemVOList.get(0);
-//        return null;
+    }
+
+    @Override
+    public List<ItemVO> showAllItemList() {
+        MPJLambdaWrapper<Item> wrapper = JoinWrappers.lambda(Item.class)
+                .selectAll(Item.class)
+                .leftJoin(Category.class, Category::getCategoryId, Item::getCategoryId)
+                .selectAs(Category::getName, ItemVO::getCategory);
+        List<ItemVO> itemVOList = itemMapper.selectJoinList(ItemVO.class, wrapper);
+        return itemVOList;
+    }
+
+    @Override
+    public List<ItemVO> showItemListByCategory(Integer categoryId) {
+        MPJLambdaWrapper<Item> wrapper = JoinWrappers.lambda(Item.class)
+                .selectAll(Item.class)
+                .leftJoin(Category.class, Category::getCategoryId, Item::getCategoryId)
+                .selectAs(Category::getName, ItemVO::getCategory)
+                .eq(Item::getCategoryId, categoryId);
+        List<ItemVO> itemVOList = itemMapper.selectJoinList(ItemVO.class, wrapper);
+        return itemVOList;
     }
 }

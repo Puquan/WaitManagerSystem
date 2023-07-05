@@ -1,16 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import {
-  Button,
-  Form,
-  Input,
-  InputNumber,
-  Upload,
-  Card,
-  message,
-  Select,
-} from "antd";
+import {Button,Form,Input,InputNumber,Upload,Card,message,Select} from "antd";
 
 const { Option } = Select;
 

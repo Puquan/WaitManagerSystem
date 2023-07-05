@@ -64,11 +64,24 @@ public interface ItemService extends IService<Item> {
     IPage<ItemVO> showAllItem(Integer pageNo, Integer pageSize);
 
     /**
+     * show all items of menu
+     * @return pages of items
+     */
+    List<ItemVO> showAllItemList();
+
+    /**
      * show items by their category
      * @param categoryId item category id
      * @return pages of items
      */
     IPage<ItemVO> showItemByCategory(Integer categoryId, Integer pageNo, Integer pageSize);
+
+    /**
+     * show items by their category
+     * @param categoryId item category id
+     * @return pages of items
+     */
+    List<ItemVO> showItemListByCategory(Integer categoryId);
 
     /**
      * show Top 5 highest-rating dish items
