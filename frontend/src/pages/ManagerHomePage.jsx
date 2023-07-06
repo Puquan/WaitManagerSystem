@@ -55,13 +55,35 @@ const ManagerHomePage = () => {
     console.log("Cancel Del Cat");
     delCatOpen(false);
   }
+
+  const buildMap = (keys,values) => {
+    const map = new Map();
+    for(let i = 0; i < keys.length; i++){
+       map.set(keys[i], values[i]);
+    };
+    return map;
+  }
+
   const fetchCatSeq = (data) => {
+    //console.log(data)
+    var catNameList = [] = data.map((item)=>{
+      return item.categoryId
+    })
+    var catOrderList = [] = data.map((item)=>{
+      return item.index
+    })
+    console.log(catNameList)
+    console.log(catOrderList)
+    const newMap = buildMap(catNameList,catOrderList.sort());
+    const obj = Object.fromEntries(newMap);
+    const json = JSON.stringify(obj);
+    console.log(json)
     fetch(
-      `localhost:8080/waitsys/manager/change_category_order`,
+      `http://localhost:8080/waitsys/manager/change_category_order`,
     {
       method: "POST",
       headers:{'Content-type': 'application/json'},
-      body: data
+      body: json
     }
     )
     .then((response) => {
@@ -75,6 +97,7 @@ const ManagerHomePage = () => {
       console.error("Error:", error);
     });
   }
+
   // Fetch category
   const fetchCategory = async () => {
     try {
@@ -91,7 +114,7 @@ const ManagerHomePage = () => {
       const processedData = data.map((item) => ({
         categoryId: item.id,
         name: item.name,
-        index:item.order_num
+        index:item.orderNum
       }));
       setCategory(processedData);
     } catch (error) {
@@ -168,7 +191,8 @@ const ManagerHomePage = () => {
           bottom: 0,
         }}
       >
-        <ReactSortable style = {dragCatColor} list={Category} setList={setCategory} >
+        
+        <ReactSortable style = {dragCatColor} list={Category} setList={setCategory} onChange={fetchCatSeq(Category)}>
           {Category.map((item, index) => (
             <div className="draggableItem">
               <Link activeClass="active" className={item.name} to={item.name} spy={true} smooth={true} duration={500} >{
@@ -188,7 +212,6 @@ const ManagerHomePage = () => {
               <RemoveCatForm categoryId={item.categoryId} onClose={handleCancelDelCat} />
               </Modal>
               {console.log(Category)}
-              
             </div>
             
           ))}
@@ -253,7 +276,7 @@ const ManagerHomePage = () => {
               <Element name={item.name} className="element">
                 <h2>{item.name}</h2>
               </Element>
-  
+
               <DishGrid categoryId={item.categoryId} AllDish={Dishes} />
             </div>
           ))}

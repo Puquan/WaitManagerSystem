@@ -34,7 +34,8 @@ public class CategoryServiceImpl extends MPJBaseServiceImpl<CategoryMapper, Cate
         myWrapper
                 .eq(Category::getIsOnMenu, TRUE_VALUE)
                 .selectAs(Category::getCategoryId,"id")
-                .selectAs(Category::getName,"name");
+                .selectAs(Category::getName,"name")
+                .selectAs(Category::getOrderNum,"orderNum");
 
         return categoryMapper.selectJoinList(CategoryVO.class,myWrapper);
     }
