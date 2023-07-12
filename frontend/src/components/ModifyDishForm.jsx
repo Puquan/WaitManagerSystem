@@ -1,16 +1,9 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import {
-  Button,
-  Form,
-  Input,
-  InputNumber,
-  Upload,
-  Card,
-  Space,
-  message,
-} from "antd";
+import { Button, Form, Input, InputNumber, Upload, Card, Space, message, Select } from "antd";
+
+const { Option } = Select;
 
 const normFile = (e) => {
   if (Array.isArray(e)) {
@@ -20,7 +13,58 @@ const normFile = (e) => {
 };
 
 const ModifyDishForm = ({ onClose, itemId }) => {
-  const [file, setFile] = useState(null); // State variable to track the uploaded image file
+  const [file, setFile] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [item, setItem] = useState(null);
+
+  useEffect(() => {
+    fetchCategories();
+    fetchItem();
+  }, []);
+
+  const fetchCategories = () => {
+    fetch("http://localhost:8080/waitsys/manager/list_all_categories")
+      .then((response) => response.json())
+      .then((data) => {
+        setCategories(data);
+      })
+      .catch((error) => {
+        console.log("Error fetching categories:", error);
+      });
+  };
+
+  const fetchItem = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/waitsys/manager/item/showById?itemId=${itemId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-type": "application/json",
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch item");
+      }
+      const data = await response.json();
+      console.log("Fetched item data:", data);
+      const processedData = {
+        title: data.name,
+        price: data.price,
+        id: data.itemId,
+        description: data.description,
+        ingredient: data.ingredient,
+        categoryId: data.categoryId,
+        picture: `data:image/jpeg;base64, ${data.picture}`,
+        pictureonly: data.picture,
+      };
+      console.log("Processed item data:", processedData);
+      setItem(processedData);
+    } catch (error) {
+      console.log("Error fetching item:", error);
+    }
+  };
 
   const onFinish = (values) => {
     const formData = new FormData();
@@ -29,16 +73,23 @@ const ModifyDishForm = ({ onClose, itemId }) => {
     formData.append("description", values.description);
     formData.append("ingredient", values.ingredients);
     formData.append("price", values.price);
-    formData.append("categoryId", 1); //???
-
+    formData.append("categoryId", values.dishCategory);
     if (file) {
       formData.append("picture", file);
     } else {
-      message.error(`Please add dish image.`);
-      formData.append("picture", null);
-      return;
+      formData.append("picture", base64ToFile(item.pictureonly));
     }
     sendFormData(formData);
+  };
+
+  const base64ToFile = (base64Data) => {
+    const byteCharacters = atob(base64Data);
+    const byteArrays = [];
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteArrays.push(byteCharacters.charCodeAt(i));
+    }
+    const byteArray = new Uint8Array(byteArrays);
+    return new File([byteArray], "picture.jpg", { type: "image/jpeg" });
   };
 
   const sendFormData = (data) => {
@@ -51,6 +102,7 @@ const ModifyDishForm = ({ onClose, itemId }) => {
           console.log("Modify success:", response);
           message.success("Dish modified successfully!");
           onClose();
+          window.location.reload();
         } else {
           throw new Error("Failed to modify dish.");
         }
@@ -63,17 +115,15 @@ const ModifyDishForm = ({ onClose, itemId }) => {
   const handleDelete = () => {
     const formData = new FormData();
     formData.append("itemId", itemId);
-    fetch(
-      `http://localhost:8080/waitsys/manager/item/delete?itemId=${itemId}`,
-      {
-        method: "GET",
-      }
-    )
+    fetch(`http://localhost:8080/waitsys/manager/item/delete?itemId=${itemId}`, {
+      method: "GET",
+    })
       .then((response) => {
         if (response.status === 200) {
           console.log("Delete success:", response);
           message.success("Dish deleted successfully!");
           onClose();
+          window.location.reload();
         } else {
           throw new Error("Failed to delete dish.");
         }
@@ -105,6 +155,10 @@ const ModifyDishForm = ({ onClose, itemId }) => {
     console.log("Failed:", errorInfo);
   };
 
+  if (!item) {
+    return null; 
+  }
+
   return (
     <Card title="Modify Dish" name="modifyDishForm" bordered={false}>
       <Form
@@ -116,7 +170,11 @@ const ModifyDishForm = ({ onClose, itemId }) => {
           span: 20,
         }}
         initialValues={{
-          remember: true,
+          dishName: item.title,
+          price: item.price,
+          description: item.description,
+          ingredients: item.ingredient,
+          dishCategory: item.categoryId,
         }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
@@ -131,6 +189,7 @@ const ModifyDishForm = ({ onClose, itemId }) => {
             action="/upload.do"
             listType="picture-card"
             beforeUpload={beforeUpload}
+            defaultFileList={item.picture ? [{ uid: '1', name: 'image', status: 'done', url: item.picture }] : []}
           >
             <div>
               <PlusOutlined />
@@ -192,6 +251,24 @@ const ModifyDishForm = ({ onClose, itemId }) => {
           ]}
         >
           <Input.TextArea />
+        </Form.Item>
+        <Form.Item
+        label="Category"
+        name="dishCategory"
+        rules={[
+          {
+            required: true,
+            message: "Please select the category!",
+          },
+        ]}
+      >
+        <Select>
+          {categories.map((category) => (
+            <Option key={category.name} value={category.id}>
+              {category.name}
+            </Option>
+          ))}
+        </Select>
         </Form.Item>
         <Form.Item
           wrapperCol={{
