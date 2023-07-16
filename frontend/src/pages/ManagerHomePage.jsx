@@ -2,12 +2,21 @@ import { Layout, theme, Button, Typography, Modal, Anchor } from "antd";
 import React, { useState } from "react";
 import AddDishForm from "../components/AddDishForm";
 import AddCatForm from "../components/AddCatForm";
+import RemoveCatForm from "../components/RemoveCat";
 import "../App.css";
 const { Header, Content, Sider } = Layout;
 import DishGrid from "../components/DishGrid";
 import { ReactSortable } from "react-sortablejs";
+import { Link, Element } from 'react-scroll';
 
 const ManagerHomePage = () => {
+
+  const dragCatColor = {
+    fontSize: "25px",
+    color:"#998900",
+
+  };
+
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -16,6 +25,7 @@ const ManagerHomePage = () => {
   const [Category, setCategory] = useState([]);
   const [Dishes, setDishes] = useState([]);
   const [moveCat, SetMoveCat] = useState(false);
+  const [delCat,delCatOpen] = useState(false);
 
   React.useEffect(() => {
     fetchCategory();
@@ -37,6 +47,57 @@ const ManagerHomePage = () => {
     SetMoveCat(false);
   };
 
+  const showDelCat = () => {
+    console.log("Del Cat");
+    delCatOpen(true);
+  };
+  const handleCancelDelCat = () =>{
+    console.log("Cancel Del Cat");
+    delCatOpen(false);
+  }
+
+  const buildMap = (keys,values) => {
+    const map = new Map();
+    for(let i = 0; i < keys.length; i++){
+       map.set(keys[i], values[i]);
+    };
+    return map;
+  }
+
+  const fetchCatSeq = (data) => {
+    //console.log(data)
+    var catNameList = [] = data.map((item)=>{
+      return item.categoryId
+    })
+    var catOrderList = [] = data.map((item)=>{
+      return item.index
+    })
+    console.log(catNameList)
+    console.log(catOrderList)
+    const newMap = buildMap(catNameList,catOrderList.sort());
+    const obj = Object.fromEntries(newMap);
+    const json = JSON.stringify(obj);
+    console.log(json)
+    fetch(
+      `http://localhost:8080/waitsys/manager/change_category_order`,
+    {
+      method: "POST",
+      headers:{'Content-type': 'application/json'},
+      body: json
+    }
+    )
+    .then((response) => {
+      if (response.status === 200) {
+        console.log("Success:", response);
+      } else {
+        throw new Error("Failed to move dish.");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+  }
+
   // Fetch category
   const fetchCategory = async () => {
     try {
@@ -53,6 +114,7 @@ const ManagerHomePage = () => {
       const processedData = data.map((item) => ({
         categoryId: item.id,
         name: item.name,
+        index:item.orderNum
       }));
       setCategory(processedData);
     } catch (error) {
@@ -129,15 +191,31 @@ const ManagerHomePage = () => {
           bottom: 0,
         }}
       >
-        <Anchor
-          items={Category.map((item) => {
-            return {
-              key: item.categoryId,
-              href: `#grid${item.name}`,
-              title: item.name,
-            };
-          })}
-        />
+        
+        <ReactSortable style = {dragCatColor} list={Category} setList={setCategory} onChange={fetchCatSeq(Category)}>
+          {Category.map((item, index) => (
+            <div className="draggableItem">
+              <Link activeClass="active" className={item.name} to={item.name} spy={true} smooth={true} duration={500} >{
+              }to</Link>
+              {item.name}
+              <Button onClick={showDelCat}>
+              Del</Button>
+              <Modal
+                open={delCat}
+                onCancel={handleCancelDelCat}
+                footer={null}
+                destroyOnClose={true}
+                closable={false}
+                centered={true}
+                maskClosable={true}
+              >
+              <RemoveCatForm categoryId={item.categoryId} onClose={handleCancelDelCat} />
+              </Modal>
+              {console.log(Category)}
+            </div>
+            
+          ))}
+        </ReactSortable>
       </Sider>
       <Layout
         className="site-layout"
@@ -170,21 +248,6 @@ const ManagerHomePage = () => {
           <Button onClick={showAddDish}>Add New Dish</Button>
           <Button onClick={showAddCat}>Add New Category</Button>
           <Button onClick={handleTest}>Test</Button>
-          <Button onClick={showMoveCatSeq}>Move Category Sequence</Button>
-          <Modal
-            open={moveCat}
-            onCancel={handleCancelMoveCatSeq}
-            footer={null}
-            keyboard
-          >
-            <ReactSortable list={Category} setList={setCategory}>
-              {Category.map((item, index) => (
-                <div key={index} className="draggableItem">
-                  {item.name}
-                </div>
-              ))}
-            </ReactSortable>
-          </Modal>
           <Modal
             open={addDishOpen}
             onCancel={handleCancelAddDish}
@@ -210,7 +273,10 @@ const ManagerHomePage = () => {
                 background: `rgba(99,${index + 120},${index + 10},0.1)`,
               }}
             >
-              <h2>{item.name}</h2>
+              <Element name={item.name} className="element">
+                <h2>{item.name}</h2>
+              </Element>
+
               <DishGrid categoryId={item.categoryId} AllDish={Dishes} />
             </div>
           ))}
