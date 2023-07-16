@@ -2,7 +2,6 @@ package com.comp9900.waitsys.manager.controller;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.comp9900.waitsys.manager.entity.Category;
 import com.comp9900.waitsys.manager.entity.ItemVO;
 import com.comp9900.waitsys.manager.entity.VO.CategoryVO;
 import com.comp9900.waitsys.manager.service.CategoryService;
@@ -83,6 +82,11 @@ public class ManagerController {
         return itemService.showItemByCategory(categoryId, pageNo, pageSize);
     }
 
+    @GetMapping("/item/showListByCategory")
+    public List<ItemVO> showListByCategory(@RequestParam(value = "categoryId") Integer categoryId) {
+        return itemService.showItemListByCategory(categoryId);
+    }
+
     @GetMapping("/item/showTop5")
     public List<ItemVO> showTop5() {
         return itemService.showTop5Item();
@@ -97,6 +101,11 @@ public class ManagerController {
     public IPage<ItemVO> showAll(@RequestParam(value = "pageNo") Integer pageNo,
                                  @RequestParam(value = "pageSize") Integer pageSize) {
         return itemService.showAllItem(pageNo, pageSize);
+    }
+
+    @GetMapping("/item/showAllList")
+    public List<ItemVO> showAllList() {
+        return itemService.showAllItemList();
     }
 
     @GetMapping("/list_all_categories")
