@@ -5,7 +5,7 @@ import { useState } from "react";
 import * as React from "react";
 const { Meta } = Card;
 
-const CustomerDishCard = ({ ItemId, title, price, picture }) => {
+const CustomerDishCard = ({ ItemId, title, price, picture , tableId, orderId}) => {
   const [showDetail, updateShowDetail] = useState(false);
 
   const displayDetail = () => {
@@ -19,6 +19,7 @@ const CustomerDishCard = ({ ItemId, title, price, picture }) => {
       updateShowDetail(false);
     }, 0);
   };
+
 
   return (
     <Card
@@ -42,11 +43,10 @@ const CustomerDishCard = ({ ItemId, title, price, picture }) => {
         maskClosable={true}
         closable={true}
         centered={true}
-
       >
-        <CustomerDetailedDish itemId={ItemId}/>
+        <CustomerDetailedDish itemId={ItemId} tableId={tableId} orderId={orderId}/>
       </Modal>
-      <Meta title={title} description={price} />
+      <Meta title={title} description={'Price:  '+price} />
     </Card>
   );
 };

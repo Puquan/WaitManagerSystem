@@ -38,8 +38,10 @@ public class KitchenOrderItemServiceImpl extends MPJBaseServiceImpl<OrderItemMap
         MPJLambdaWrapper<Order> myWrapper = new MPJLambdaWrapper<>();
         myWrapper
                 .eq(Order::getIsCook, FALSE_VALUE)
+                .eq(Order::getIsComplete, ORDER_ISCOMPLETE_START)
                 .selectAs(Order::getOrderId,"orderId")
                 .selectAs(Order::getTableId,"tableId")
+                .selectAs(Order::getStartTime,"startTime")
                 .orderByAsc(Order::getStartTime);
         List<OrderDTO> orderDTOList=orderMapper.selectJoinList(OrderDTO.class,myWrapper);
         for (OrderDTO orderDTO:orderDTOList)
@@ -47,13 +49,15 @@ public class KitchenOrderItemServiceImpl extends MPJBaseServiceImpl<OrderItemMap
             OrderKitchenVO orderKitchenVO=new OrderKitchenVO();
             orderKitchenVO.setTableId(orderDTO.getTableId());
             orderKitchenVO.setOrderId(orderDTO.getOrderId());
+            orderKitchenVO.setStartTime(orderDTO.getStartTime());
             MPJLambdaWrapper<OrderItem> myWrapper2 = new MPJLambdaWrapper<>();
             myWrapper2
                     .leftJoin(Item.class,Item::getItemId,OrderItem::getItemId)
                     .eq(OrderItem::getOrderId,orderDTO.getOrderId())
                     .selectAs(OrderItem::getId,"id")
                     .selectAs(Item::getName,"itemName")
-                    .selectAs(OrderItem::getIsCook,"isCook");
+                    .selectAs(OrderItem::getIsCook,"isCook")
+                    .orderByAsc(OrderItem::getId);
             List<OrderItemKitchenVO> orderItemList=orderItemMapper.selectJoinList(OrderItemKitchenVO.class,myWrapper2);
             orderKitchenVO.setOrderItemList(orderItemList);
             orderKitchenVOList.add(orderKitchenVO);
@@ -65,11 +69,16 @@ public class KitchenOrderItemServiceImpl extends MPJBaseServiceImpl<OrderItemMap
     }
 
     @Override
-    public boolean modifyOrderItemIsCook(Integer orderItemId) {
+    public Integer modifyOrderItemIsCook(Integer orderItemId) {
 
         OrderItem orderItem=this.getById(orderItemId);
-        orderItem.setIsCook(ORDERITEM_ISCOOK_TRUE);
-        return updateById(orderItem);
+        Integer isCook=orderItem.getIsCook();
+        if (isCook==0){
+            orderItem.setIsCook(ORDERITEM_ISCOOK_TRUE);
+        }
+        else{orderItem.setIsCook(ORDERITEM_ISCOOK_FALSE);}
+        updateById(orderItem);
+        return orderItem.getIsCook();
     }
 
 
