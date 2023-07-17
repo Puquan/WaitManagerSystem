@@ -1,18 +1,22 @@
-import { Card, Button, Row, Space, message } from "antd";
+import { Card, Button, Row, Space, message, Modal, Table } from "antd";
 import {
   BellOutlined,
   DollarCircleOutlined,
   CheckOutlined,
   CoffeeOutlined,
 } from "@ant-design/icons";
+import { useState } from "react";
 
 const WSCard = ({ table }) => {
   const { tableId, state, needHelp, orderItemList } = table;
 
+  const [openPopup, setOpenPopup] = useState(false);
+  const [popupData, setPopupData] = useState([]);
+
   const handleNotifyAssistance = () => {
-    if (needHelp == 0) {
-        message.error("Help not required");
-        return;
+    if (needHelp === 0) {
+      message.error("Help not required");
+      return;
     }
     markNeedHelp(tableId);
   };
@@ -22,7 +26,7 @@ const WSCard = ({ table }) => {
       method: "POST",
     })
       .then(() => {
-        console.log(`table ${tableId} request completed`);
+        console.log(`Table ${tableId} request completed`);
         message.success("Request completed");
       })
       .catch((error) => {
@@ -32,9 +36,9 @@ const WSCard = ({ table }) => {
 
   const handleRequestBill = () => {
     if (state === 0 || state === 1) {
-        message.error("Table not ready for bill");
-        return;
-      }
+      message.error("Table not ready for bill");
+      return;
+    }
     confirmRequestBill(tableId);
   };
 
@@ -56,12 +60,6 @@ const WSCard = ({ table }) => {
   };
 
   const ItemServe = (orderItemId) => {
-    const item = orderItemList.find((item) => item.id === orderItemId);
-    if (item.isCook === 0) {
-      message.error("Dish is not ready");
-      return;
-    }
-  
     fetch(`http://localhost:8080/waitsys/waitstaff/modify_order_item_is_serve?orderItemId=${orderItemId}`, {
       method: "POST",
     })
@@ -73,9 +71,47 @@ const WSCard = ({ table }) => {
         console.error(`Error posting for itemId ${orderItemId}:`, error);
       });
   };
-  
+
+  const filteredOrderItemList = orderItemList.filter(
+    (item) => item.isCook === 1 && item.isServe === 0
+  );
+
+  const handleShowPreviousItems = () => {
+    fetch(`http://localhost:8080/waitsys/customer/order/showAllPreviousItems?tableId=${tableId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        // Process the data and display the popup window
+        console.log(data); // Replace with the code to process the data
+
+        // Show the popup window
+        setPopupData(data);
+        setOpenPopup(true);
+      })
+      .catch((error) => {
+        console.error("Error fetching previous items:", error);
+      });
+  };
+
+  const columns = [
+    {
+      title: "Dish",
+      dataIndex: "itemName",
+      key: "itemName",
+    },
+    {
+      title: "Quantity",
+      dataIndex: "itemNumber",
+      key: "itemNumber",
+    },
+    {
+      title: "Total Price",
+      dataIndex: "totalPrice",
+      key: "totalPrice",
+    },
+  ];
+
   return (
-    <Card title={`Table ${tableId}`}>
+    <Card title={`Table ${tableId}`} style={{ width: 300, height: 400 }}>
       <Row justify="space-between" align="middle">
         <Button
           icon={<BellOutlined />}
@@ -87,9 +123,10 @@ const WSCard = ({ table }) => {
           onClick={handleRequestBill}
           style={{ backgroundColor: state === 2 ? "yellow" : "" }}
         />
+        <Button onClick={handleShowPreviousItems}>Show Dishes</Button>
       </Row>
       <ul style={{ listStyle: "none", padding: 0 }}>
-        {orderItemList.map((item) => (
+        {filteredOrderItemList.map((item) => (
           <li key={item.id} style={{ display: "flex", alignItems: "center" }}>
             <span>{item.itemName}</span>
             <Space align="end" style={{ marginLeft: "auto" }}>
@@ -117,6 +154,18 @@ const WSCard = ({ table }) => {
           </li>
         ))}
       </ul>
+      <Modal
+        open={openPopup}
+        onCancel={() => setOpenPopup(false)}
+        footer={null}
+      >
+        <Table
+          columns={columns}
+          dataSource={popupData}
+          pagination={{ pageSize: 10 }}
+          rowKey="itemId"
+        />
+      </Modal>
     </Card>
   );
 };
