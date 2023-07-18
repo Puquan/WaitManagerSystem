@@ -1,19 +1,26 @@
-import { Layout, theme, Card,Button, Typography, FloatButton,Modal,message } from "antd";
-import React, { useState,useRef } from "react";
+import {
+  Layout,
+  theme,
+  Card,
+  Button,
+  Typography,
+  FloatButton,
+  Modal,
+  message,
+} from "antd";
+import React, { useState, useRef } from "react";
 import "../App.css";
 const { Header, Content, Sider } = Layout;
 import CustomerDishGrid from "../components/CustomerDishGrid";
-import { Link, Element } from 'react-scroll';
-import { FileTextOutlined,BellOutlined } from '@ant-design/icons';
+import { Link, Element } from "react-scroll";
+import { FileTextOutlined, BellOutlined } from "@ant-design/icons";
 import CustomerViewCart from "../components/CustomerViewCart";
 import CustomerViewAllCompeleteOrder from "../components/CustomerViewAllCompeleteOrder";
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 const CustomerHomePage = () => {
-
   const dragCatColor = {
     fontSize: "25px",
-    color:"#998900",
-
+    color: "#998900",
   };
 
   const {
@@ -22,22 +29,21 @@ const CustomerHomePage = () => {
 
   const navigate = useNavigate();
 
-  const [orderId,setOrderId] = useState();
-  const [tableId,setTableId] = useState();
+  const [orderId, setOrderId] = useState();
+  const [tableId, setTableId] = useState();
   const [addDishOpen, addDishSetOpen] = useState(false);
   const [addCatOpen, addCatSetOpen] = useState(false);
   const [Category, setCategory] = useState([]);
   const [Dishes, setDishes] = useState([]);
 
-  const [helpStatus,setHelpStatus] = useState(false);
-  const [viewCart,setViewCart] = useState(false); 
-  const [cartData,setCartData] = useState();
-  const [currentOrderCost,setCurrentOrderCost] = useState();
+  const [helpStatus, setHelpStatus] = useState(false);
+  const [viewCart, setViewCart] = useState(false);
+  const [cartData, setCartData] = useState();
+  const [currentOrderCost, setCurrentOrderCost] = useState();
 
-  const [viewCompeleteOrder,setViewCompeleteOrder] = useState(false); 
-  const [compeleteOrder,setCompeleteOrder] = useState();
-  const [compeleteOrderCost,setCompeleteOrderCost] = useState();
-
+  const [viewCompeleteOrder, setViewCompeleteOrder] = useState(false);
+  const [compeleteOrder, setCompeleteOrder] = useState();
+  const [compeleteOrderCost, setCompeleteOrderCost] = useState();
 
   React.useEffect(() => {
     fetchCategory();
@@ -52,48 +58,48 @@ const CustomerHomePage = () => {
   React.useEffect(() => {
     readLocalOrderId();
     console.log(orderId);
-  },[]);
+  }, []);
 
   React.useEffect(() => {
     readLocalTableId();
     console.log(tableId);
-  },[]);
+  }, []);
 
-  const readLocalOrderId = () =>{
+  const readLocalOrderId = () => {
     const orderId = localStorage.getItem("orderId");
     const localOrderId = JSON.parse(orderId);
     setOrderId(localOrderId);
   };
 
-  const readLocalTableId = () =>{
+  const readLocalTableId = () => {
     const tableId = localStorage.getItem("tableId");
     const localTableId = JSON.parse(tableId);
     setTableId(localTableId);
   };
 
-  const triggerRenderCart = () =>{
+  const triggerRenderCart = () => {
     console.log("trigger render cart");
     fetchCart();
     getCurrentOrderCost();
     setViewCart(true);
-  }
+  };
 
-  const untriggerRenderCart = () =>{
+  const untriggerRenderCart = () => {
     console.log("cancel render cart");
     setViewCart(false);
-  }
+  };
 
-  const triggerRenderAllPreviousOrder = () =>{
+  const triggerRenderAllPreviousOrder = () => {
     console.log("trigger previous order list");
     fetchAllCompeleteOrder();
     getAllPreviousOrderCost();
     setViewCompeleteOrder(true);
-  }
+  };
 
-  const untriggerRenderAllPreviousOrder = () =>{
+  const untriggerRenderAllPreviousOrder = () => {
     console.log("cancel trigger previous order list");
     setViewCompeleteOrder(false);
-  }
+  };
 
   // Fetch category
   const fetchCategory = async () => {
@@ -111,7 +117,7 @@ const CustomerHomePage = () => {
       const processedData = data.map((item) => ({
         categoryId: item.id,
         name: item.name,
-        index:item.orderNum
+        index: item.orderNum,
       }));
       setCategory(processedData);
     } catch (error) {
@@ -121,62 +127,68 @@ const CustomerHomePage = () => {
 
   const getAllPreviousOrderCost = () => {
     const response = fetch(
-    `http://localhost:8080/waitsys/customer/order/showTotalCost?tableId=${parseInt(tableId)}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-type": "application/json",
-      },
-    }
-  )
-  .then( async (response) => {
-    console.log(response);
-    if (response.status === 200) {
-      // cant catch error due to no-cors
-      const data = await response.json();
-      console.log("Collect all previous order cost!");
-      console.log(data)
-      setCompeleteOrderCost(parseInt(data));
-    } else {
-      throw new Error("Error Collect current order cost");
-    }
-  })
-  .catch((error) => {
-    console.log("Error:", error);
-  });
-};
+      `http://localhost:8080/waitsys/customer/order/showTotalCost?tableId=${parseInt(
+        tableId
+      )}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json",
+        },
+      }
+    )
+      .then(async (response) => {
+        console.log(response);
+        if (response.status === 200) {
+          // cant catch error due to no-cors
+          const data = await response.json();
+          console.log("Collect all previous order cost!");
+          console.log(data);
+          setCompeleteOrderCost(parseInt(data));
+        } else {
+          throw new Error("Error Collect current order cost");
+        }
+      })
+      .catch((error) => {
+        console.log("Error:", error);
+      });
+  };
 
   const getCurrentOrderCost = () => {
     const response = fetch(
-    `http://localhost:8080/waitsys/customer/order/showCurrentCost?orderId=${parseInt(orderId)}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-type": "application/json",
-      },
-    }
-  )
-  .then( async (response) => {
-    console.log(response);
-    if (response.status === 200) {
-      // cant catch error due to no-cors
-      const data = await response.json();
-      console.log("Collect current order cost!");
-      console.log(data)
-      setCurrentOrderCost(parseInt(data));
-    } else {
-      throw new Error("Error Collect current order cost");
-    }
-  })
-  .catch((error) => {
-    console.log("Error:", error);
-  });
-};
+      `http://localhost:8080/waitsys/customer/order/showCurrentCost?orderId=${parseInt(
+        orderId
+      )}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json",
+        },
+      }
+    )
+      .then(async (response) => {
+        console.log(response);
+        if (response.status === 200) {
+          // cant catch error due to no-cors
+          const data = await response.json();
+          console.log("Collect current order cost!");
+          console.log(data);
+          setCurrentOrderCost(parseInt(data));
+        } else {
+          throw new Error("Error Collect current order cost");
+        }
+      })
+      .catch((error) => {
+        console.log("Error:", error);
+      });
+  };
 
   const askForHelp = () => {
     console.log(helpStatus);
     const response = fetch(
-      `http://localhost:8080/waitsys/customer/table/askForHelp?tableId=${parseInt(tableId)}`,
+      `http://localhost:8080/waitsys/customer/table/askForHelp?tableId=${parseInt(
+        tableId
+      )}`,
       {
         method: "POST",
         headers: {
@@ -184,61 +196,60 @@ const CustomerHomePage = () => {
         },
       }
     )
-    .then((response) => {
-      console.log(response);
-      if (response.status === 200) {
-        // cant catch error due to no-cors
-        message.success("Ask help successfully!");
-        console.log("Ask help successfully!");
-        setHelpStatus(true);
-      
-        onClose();
-      } else {
-        throw new Error("Error Ask help");
-      }
-    })
-    .catch((error) => {
-      console.log("Error:", error);
-    });
+      .then((response) => {
+        console.log(response);
+        if (response.status === 200) {
+          // cant catch error due to no-cors
+          message.success("Ask help successfully!");
+          console.log("Ask help successfully!");
+          setHelpStatus(true);
+
+          onClose();
+        } else {
+          throw new Error("Error Ask help");
+        }
+      })
+      .catch((error) => {
+        console.log("Error:", error);
+      });
   };
 
   const fetchCart = () => {
     try {
       const response = fetch(
-        `http://localhost:8080/waitsys/customer/order/showAllItems?orderId=${parseInt(orderId)}`,
+        `http://localhost:8080/waitsys/customer/order/showAllItems?orderId=${parseInt(
+          orderId
+        )}`,
         {
           method: "GET",
           headers: {
             "Content-type": "application/json",
           },
         }
-      )
-      .then( async (response) => {
+      ).then(async (response) => {
         if (response.status === 200) {
           console.log("Success:", response);
           const data = await response.json();
           console.log(orderId);
           console.log(tableId);
           console.log(data);
-          const processData = await data.map((item)=>({
-            id : item.itemId,
-            title : item.itemName,
-            amount : item.itemNumber,
-            price : item.totalPrice,
-            picture : item.itemPicture,
-          }))
+          const processData = await data.map((item) => ({
+            id: item.itemId,
+            title: item.itemName,
+            amount: item.itemNumber,
+            price: item.totalPrice,
+            picture: item.itemPicture,
+          }));
           setCartData(processData);
           console.log(processData);
         } else {
           throw new Error("Failed to fetch order.");
         }
-      })
+      });
     } catch (error) {
       console.log("Error fetching item:", error);
     }
   };
-  
-
 
   const fetchAllDishes = async () => {
     try {
@@ -273,17 +284,19 @@ const CustomerHomePage = () => {
   };
 
   const checkOut = () => {
-    console.log(tableId,orderId)
-      const response = fetch(
-        `http://localhost:8080/waitsys/customer/order/finishOrder?tableId=${parseInt(tableId)}&orderId=${parseInt(orderId)}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-        }
-      )
-      .then(async(response) => {
+    console.log(tableId, orderId);
+    const response = fetch(
+      `http://localhost:8080/waitsys/customer/order/finishOrder?tableId=${parseInt(
+        tableId
+      )}&orderId=${parseInt(orderId)}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+      }
+    )
+      .then(async (response) => {
         console.log(response);
         if (response.status === 200) {
           // cant catch error due to no-cors
@@ -303,11 +316,13 @@ const CustomerHomePage = () => {
       .catch((error) => {
         console.log("Error:", error);
       });
-    }
+  };
 
   const fetchAllCompeleteOrder = () => {
     const response = fetch(
-      `http://localhost:8080/waitsys/customer/order/showAllPreviousItems?tableId=${parseInt(tableId)}`,
+      `http://localhost:8080/waitsys/customer/order/showAllPreviousItems?tableId=${parseInt(
+        tableId
+      )}`,
       {
         method: "GET",
         headers: {
@@ -315,43 +330,45 @@ const CustomerHomePage = () => {
         },
       }
     )
-    .then(async(response) => {
-      console.log(response);
-      if (response.status === 200) {
-        // cant catch error due to no-cors
-        console.log("Finish Collect Previous Order Information!");
-        const data = await response.json();
-        console.log(data);
-        const processedData = data.map((item) => ({
-          id: item.itemId,
-          title: item.itemName,
-          amount:item.itemNumber,
-          price:item.totalPrice,
-          picture:item.itemPicture
-        }));
-        console.log(processedData);
-        setCompeleteOrder(processedData);
-      } else {
-        throw new Error("Error Finish Current Order");
-      }
-    })
-    .catch((error) => {
-      console.log("Error:", error);
-    });
+      .then(async (response) => {
+        console.log(response);
+        if (response.status === 200) {
+          // cant catch error due to no-cors
+          console.log("Finish Collect Previous Order Information!");
+          const data = await response.json();
+          console.log(data);
+          const processedData = data.map((item) => ({
+            id: item.itemId,
+            title: item.itemName,
+            amount: item.itemNumber,
+            price: item.totalPrice,
+            picture: item.itemPicture,
+          }));
+          console.log(processedData);
+          setCompeleteOrder(processedData);
+        } else {
+          throw new Error("Error Finish Current Order");
+        }
+      })
+      .catch((error) => {
+        console.log("Error:", error);
+      });
   };
 
   const finishMeal = () => {
-    console.log(tableId,orderId)
-      const response = fetch(
-        `http://localhost:8080/waitsys/customer/finish?tableId=${parseInt(tableId)}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-        }
-      )
-      .then(async(response) => {
+    console.log(tableId, orderId);
+    const response = fetch(
+      `http://localhost:8080/waitsys/customer/finish?tableId=${parseInt(
+        tableId
+      )}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+      }
+    )
+      .then(async (response) => {
         console.log(response);
         if (response.status === 200) {
           // cant catch error due to no-cors
@@ -364,22 +381,24 @@ const CustomerHomePage = () => {
       .catch((error) => {
         console.log("Error:", error);
       });
-      const response2 = fetch(
-        `http://localhost:8080/waitsys/customer/table/toPayTable?tableId=${parseInt(tableId)}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-        }
-      )
-      .then(async(response2) => {
+    const response2 = fetch(
+      `http://localhost:8080/waitsys/customer/table/toPayTable?tableId=${parseInt(
+        tableId
+      )}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+      }
+    )
+      .then(async (response2) => {
         console.log(response2);
         if (response2.status === 200) {
           // cant catch error due to no-cors
           message.success("Finish Payment");
           console.log("Finish Payment");
-          navigate('/');
+          navigate("/");
         } else {
           throw new Error("Error Finish Payment");
         }
@@ -387,11 +406,9 @@ const CustomerHomePage = () => {
       .catch((error) => {
         console.log("Error:", error);
       });
-    }
+  };
   return (
-    
     <Layout>
-
       <Sider
         theme="dark"
         style={{
@@ -403,11 +420,19 @@ const CustomerHomePage = () => {
           bottom: 0,
         }}
       >
-      <div style={dragCatColor}>
+        <div style={dragCatColor}>
           {Category.map((item, index) => (
             <div className="Category">
-              <Link activeClass="active" className={item.name} to={item.name} spy={true} smooth={true} duration={500} >{
-              item.name}</Link>
+              <Link
+                activeClass="active"
+                className={item.name}
+                to={item.name}
+                spy={true}
+                smooth={true}
+                duration={500}
+              >
+                {item.name}
+              </Link>
             </div>
           ))}
         </div>
@@ -429,7 +454,16 @@ const CustomerHomePage = () => {
               style={{ color: "black", textAlign: "center" }}
             >
               Customer Home Page
-              <Button icon={<BellOutlined />} onClick={()=>askForHelp()} style={{ marginBottom: "8px", backgroundColor: helpStatus === false ? "" : "yellow" }}>AskForHelp</Button>
+              <Button
+                icon={<BellOutlined />}
+                onClick={() => askForHelp()}
+                style={{
+                  marginBottom: "8px",
+                  backgroundColor: helpStatus === false ? "" : "yellow",
+                }}
+              >
+                AskForHelp
+              </Button>
             </Typography.Title>
           </div>
         </Header>
@@ -441,51 +475,60 @@ const CustomerHomePage = () => {
             marginLeft: 200,
           }}
         >
-        <FloatButton
-          icon={<FileTextOutlined />}
-          description="Current Order"
-          shape="square"
-          style={{
-            right: 200,
-          }}
-          onClick={()=>triggerRenderCart()}
-        /> 
-        <FloatButton
-          icon={<FileTextOutlined />}
-          description="All Compelete order"
-          shape="square"
-          style={{
-            right: 100,
-          }}
-          onClick={()=>triggerRenderAllPreviousOrder()}
-        /> 
-
-        <Modal                 
-          open={viewCompeleteOrder}
-          onCancel={untriggerRenderAllPreviousOrder}
-          footer={null}
-          destroyOnClose={true}
-          closable={false}
-          centered={true}
-          maskClosable={true}
-        >
-          <CustomerViewAllCompeleteOrder cost={compeleteOrderCost} data={compeleteOrder} onClose={untriggerRenderAllPreviousOrder}/>
-          <Button onClick={()=>finishMeal()}>Finish Meal And Request Bill</Button>
-
-        </Modal>
-
-        <Modal                 
-          open={viewCart}
-          onCancel={untriggerRenderCart}
-          footer={null}
-          destroyOnClose={true}
-          closable={false}
-          centered={true}
-          maskClosable={true}
-        >
-          <CustomerViewCart tableId={tableId} orderId={orderId} cost={currentOrderCost} data={cartData} onClose={untriggerRenderCart}/>
-          <Button onClick={()=>checkOut()}>CheckOut</Button>
-        </Modal>
+          <FloatButton
+            icon={<FileTextOutlined />}
+            description="Current Order"
+            shape="square"
+            style={{
+              right: 200,
+            }}
+            onClick={() => triggerRenderCart()}
+          />
+          <FloatButton
+            icon={<FileTextOutlined />}
+            description="All Compelete order"
+            shape="square"
+            style={{
+              right: 100,
+            }}
+            onClick={() => triggerRenderAllPreviousOrder()}
+          />
+          <Modal
+            open={viewCompeleteOrder}
+            onCancel={untriggerRenderAllPreviousOrder}
+            footer={null}
+            destroyOnClose={true}
+            closable={false}
+            centered={true}
+            maskClosable={true}
+          >
+            <CustomerViewAllCompeleteOrder
+              cost={compeleteOrderCost}
+              data={compeleteOrder}
+              onClose={untriggerRenderAllPreviousOrder}
+            />
+            <Button onClick={() => finishMeal()}>
+              Finish Meal And Request Bill
+            </Button>
+          </Modal>
+          <Modal
+            open={viewCart}
+            onCancel={untriggerRenderCart}
+            footer={null}
+            destroyOnClose={true}
+            closable={false}
+            centered={true}
+            maskClosable={true}
+          >
+            <CustomerViewCart
+              tableId={tableId}
+              orderId={orderId}
+              cost={currentOrderCost}
+              data={cartData}
+              onClose={untriggerRenderCart}
+            />
+            <Button onClick={() => checkOut()}>CheckOut</Button>
+          </Modal>
           {Category.map((item, index) => (
             <div
               key={item.categoryId}
@@ -498,7 +541,12 @@ const CustomerHomePage = () => {
               <Element name={item.name} className="element">
                 <h2>{item.name}</h2>
               </Element>
-              <CustomerDishGrid categoryId={item.categoryId} AllDish={Dishes} tableId={tableId} orderId={orderId}/>
+              <CustomerDishGrid
+                categoryId={item.categoryId}
+                AllDish={Dishes}
+                tableId={tableId}
+                orderId={orderId}
+              />
             </div>
           ))}
         </Content>

@@ -20,11 +20,12 @@ const DishCard = ({ ItemId, title, price, MoveLeft, MoveRight, picture }) => {
 
   return (
     <Card
+      bordered={true}
       cover={
         <img
           alt="example"
           src={picture}
-          style={{ width: "100%", height: 200 }}
+          style={{ width: "100%", height: 150 }}
         />
       }
       hoverable={true}
@@ -37,6 +38,7 @@ const DishCard = ({ ItemId, title, price, MoveLeft, MoveRight, picture }) => {
         />,
         <Button ghost={false} icon={<RightOutlined />} onClick={MoveRight} />,
       ]}
+      style={{ boxShadow: "12px 0px 24px rgba(0, 0, 0, 0.2)" }}
     >
       <Modal
         open={updateDishOpen}
