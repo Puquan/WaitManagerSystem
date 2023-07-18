@@ -4,19 +4,26 @@ import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { Space, Switch, Button, Popconfirm, Pagination, message } from "antd";
 const { Meta } = Card;
 
-const TableCard = ({ tableId, orderItems, orderId }) => {
+const TableCard = ({ tableId, orderItems, orderId, startTime }) => {
   const tableTitle = "Table" + tableId.toString();
-  const [disabled, setDisabled] = useState(false);
   const [isOrderFinished, setIsOrderFinished] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 12;
+  const pageSize = 8;
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = currentPage * pageSize;
   const displayedItems = orderItems.slice(startIndex, endIndex);
+  const timeString =
+    "Order Time: " +
+    new Date(startTime).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
 
   useEffect(() => {
     // 当传入的 props 发生变化时执行的逻辑
     console.log("Props have changed");
+    // console.log(startTime);
     // 可以在这里进行需要执行的副操作
   }, [tableId, orderItems, orderId]); // 在这里添加需要监视的 props 变化
 
@@ -62,15 +69,18 @@ const TableCard = ({ tableId, orderItems, orderId }) => {
           style={{ height: "55vh", position: "relative" }}
           hoverable={true}
         >
+          <Meta description={timeString} />
           {displayedItems.map((item) => (
             <div
               key={`item-${item.id}`}
-              style={{ display: "flex", alignItems: "flex-start" }}
+              style={{
+                display: "flex",
+                marginTop: 12,
+              }}
             >
               <Space size={8} key={`item-${item.id}`}>
                 {item.itemName}
                 <Switch
-                  disabled={disabled}
                   checkedChildren={<CheckOutlined />}
                   unCheckedChildren={<CloseOutlined />}
                   onChange={(checked) => onChange(checked, item.id)}
@@ -79,39 +89,44 @@ const TableCard = ({ tableId, orderItems, orderId }) => {
               </Space>
             </div>
           ))}
-          {orderItems.length > pageSize && (
-            <Pagination
-              current={currentPage}
-              pageSize={pageSize}
-              total={orderItems.length}
-              onChange={setCurrentPage}
-              style={{ marginTop: 16 }}
-            />
-          )}
           <div
             style={{
               position: "absolute",
-              bottom: 16,
+              bottom: 10,
               left: "50%",
               transform: "translateX(-50%)",
             }}
           >
-            <Popconfirm
-              title="Finish Order?"
-              description="Are you sure to Finish this order?"
-              onConfirm={() => confirm(orderId)}
-              onCancel={cancel}
-              okText="Yes"
-              cancelText="No"
-            >
-              <Button
-                type="primary"
-                shape="round"
-                style={{ backgroundColor: "green" }}
+            {orderItems.length > pageSize && (
+              <div style={{ textAlign: "center" }}>
+                <Pagination
+                  current={currentPage}
+                  pageSize={pageSize}
+                  total={orderItems.length}
+                  onChange={setCurrentPage}
+                  style={{ display: "inline-block", marginTop: 12 }}
+                  responsive={true}
+                />
+              </div>
+            )}
+            <div style={{ textAlign: "center" }}>
+              <Popconfirm
+                title="Finish Order?"
+                description="Are you sure to Finish this order?"
+                onConfirm={() => confirm(orderId)}
+                onCancel={cancel}
+                okText="Yes"
+                cancelText="No"
               >
-                Finish Order
-              </Button>
-            </Popconfirm>
+                <Button
+                  type="primary"
+                  shape="round"
+                  style={{ backgroundColor: "green" }}
+                >
+                  Finish Order
+                </Button>
+              </Popconfirm>
+            </div>
           </div>
         </Card>
       )}

@@ -3,15 +3,17 @@ import KitchenPage from "./pages/KitchenPage";
 import { Routes, Route } from "react-router-dom";
 import CustomerHomePage from "./pages/CustomerHomePage";
 import CustomerSelectTable from "./pages/CustomerSelectTable";
+import WaitStaffHomePage from "./pages/WaitStaffHomePage";
 
 function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<ManagerHomePage />} />
-        <Route path="/kitchen" element={<KitchenPage />} />
-        <Route path="/order" element={<CustomerHomePage/>} />
-        <Route path="/" element={<CustomerSelectTable/>} />
+        <Route path="/Manager" element={<ManagerHomePage />} />
+        <Route path="/Kitchen" element={<KitchenPage />} />
+        <Route path="/Order" element={<CustomerHomePage />} />
+        <Route path="/" element={<CustomerSelectTable />} />
+        <Route path="/Waitstaff" element={<WaitStaffHomePage />} />
       </Routes>
     </>
   );
