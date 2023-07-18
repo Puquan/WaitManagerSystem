@@ -1,28 +1,17 @@
-import {
-  Layout,
-  theme,
-  Card,
-  Button,
-  Typography,
-  FloatButton,
-  Modal,
-  message,
-} from "antd";
+import { Layout, theme, Button, FloatButton, Modal, message } from "antd";
 import React, { useState, useRef } from "react";
 import "../App.css";
 const { Header, Content, Sider } = Layout;
 import CustomerDishGrid from "../components/customer/CustomerDishGrid";
 import { Link, Element } from "react-scroll";
-import { FileTextOutlined, BellOutlined } from "@ant-design/icons";
+import {
+  ShoppingCartOutlined,
+  PayCircleOutlined,
+  BellOutlined,
+} from "@ant-design/icons";
 import CustomerViewCart from "../components/customer/CustomerViewCart";
-import CustomerViewAllCompeleteOrder from "../components/customer/CustomerViewAllCompeleteOrder";
 import { useNavigate } from "react-router-dom";
 const CustomerHomePage = () => {
-  const dragCatColor = {
-    fontSize: "25px",
-    color: "#998900",
-  };
-
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -35,41 +24,30 @@ const CustomerHomePage = () => {
   const [addCatOpen, addCatSetOpen] = useState(false);
   const [Category, setCategory] = useState([]);
   const [Dishes, setDishes] = useState([]);
-
   const [helpStatus, setHelpStatus] = useState(false);
   const [viewCart, setViewCart] = useState(false);
-  const [cartData, setCartData] = useState();
+  const [cartData, setCartData] = useState([]);
   const [currentOrderCost, setCurrentOrderCost] = useState();
   const [viewCompeleteOrder, setViewCompeleteOrder] = useState(false);
   const [compeleteOrder, setCompeleteOrder] = useState();
   const [compeleteOrderCost, setCompeleteOrderCost] = useState();
   const [paymentStatus, setPaymentStatus] = useState(false);
   const [readyToGo, setReadyToGo] = useState(false);
+  const [hasOrder, setHasOrder] = useState(false);
   const isInitialMount1 = useRef(true);
-
-  React.useEffect(() => {
-    fetchCategory();
-    console.log("fetching category");
-  }, [addCatOpen]);
-
-  React.useEffect(() => {
-    fetchAllDishes();
-    console.log(addDishOpen, "fetching dishes");
-  }, [addDishOpen]);
-
-  React.useEffect(() => {
-    readLocalOrderId();
-    console.log(orderId);
-  }, []);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   React.useEffect(() => {
     readLocalTableId();
-    console.log(tableId);
+    readLocalOrderId();
+    fetchCategory();
+    fetchAllDishes();
   }, []);
 
   React.useEffect(() => {
     const timer = setInterval(() => {
-      console.log(tableId);
+      // console.log(tableId);
       fetchFinishPayment();
       handleFinishPayment();
     }, 1000);
@@ -96,7 +74,7 @@ const CustomerHomePage = () => {
         }
       );
       const data = await response.json();
-      console.log(data["state"]);
+      // console.log(data["state"]);
       setPaymentStatus(data["state"]);
     } catch (error) {
       console.error("Error:", error);
@@ -123,7 +101,7 @@ const CustomerHomePage = () => {
   };
 
   const untriggerRenderCart = () => {
-    console.log("cancel render cart");
+    // console.log("cancel render cart");
     setViewCart(false);
   };
 
@@ -268,9 +246,6 @@ const CustomerHomePage = () => {
         if (response.status === 200) {
           console.log("Success:", response);
           const data = await response.json();
-          console.log(orderId);
-          console.log(tableId);
-          console.log(data);
           const processData = await data.map((item) => ({
             id: item.itemId,
             title: item.itemName,
@@ -279,7 +254,6 @@ const CustomerHomePage = () => {
             picture: item.itemPicture,
           }));
           setCartData(processData);
-          console.log(processData);
         } else {
           throw new Error("Failed to fetch order.");
         }
@@ -421,22 +395,40 @@ const CustomerHomePage = () => {
         console.log("Error:", error);
       });
   };
+
+  const handleBreakpoint = (broken) => {
+    setIsSmallScreen(broken);
+  };
+
+  const handleCollapse = (collapsed, type) => {
+    setIsCollapsed(collapsed);
+  };
+
   return (
-    <Layout>
-      <Sider
-        theme="dark"
-        style={{
-          overflow: "auto",
-          height: "100vh",
-          position: "fixed",
-          left: 0,
-          top: 0,
-          bottom: 0,
-        }}
-      >
-        <div style={dragCatColor}>
+    <>
+      <Layout>
+        <Sider
+          theme="light"
+          style={{
+            overflow: "auto",
+            height: "100vh",
+            position: "fixed",
+            left: 0,
+            top: 0,
+            bottom: 0,
+            zIndex: 1,
+            boxShadow: "4px 0 8px rgba(0, 0, 0, 0.1)",
+          }}
+          breakpoint="lg"
+          collapsedWidth="0"
+          onBreakpoint={handleBreakpoint}
+          onCollapse={handleCollapse}
+        >
+          <div className="lato-bold" style={{ margin: "32px 25px" }}>
+            Menu
+          </div>
           {Category.map((item, index) => (
-            <div className="Category">
+            <div key={`category${index}`} style={{ margin: "28px 25px" }}>
               <Link
                 activeClass="active"
                 className={item.name}
@@ -445,122 +437,102 @@ const CustomerHomePage = () => {
                 smooth={true}
                 duration={500}
               >
-                {item.name}
+                <div className="playfair-display">{item.name}</div>
               </Link>
             </div>
           ))}
-        </div>
-      </Sider>
-      <Layout
-        className="site-layout"
-        style={{
-          marginLeft: 0,
-        }}
-      >
-        <Header
-          style={{
-            background: colorBgContainer,
-          }}
-        >
-          <div>
-            <Typography.Title
-              level={3}
-              style={{ color: "black", textAlign: "center" }}
-            >
-              Customer Home Page {"tableId: " + tableId}
-            </Typography.Title>
-          </div>
-
-          <FloatButton
-            icon={<FileTextOutlined />}
-            description="Help"
-            shape="square"
+        </Sider>
+        <Layout style={{ marginLeft: isSmallScreen ? 0 : 200 }}>
+          <Header
             style={{
-              top: 20,
-              right: 40,
-              bottom: 1200,
+              background: "#fff",
+              color: "#333",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              marginLeft: -10,
+              marginTop: -10,
+              boxShadow: "2px 5px 12px rgba(0, 0, 0, 0.1)",
             }}
-            onClick={() => askForHelp()}
-          />
-
-          <FloatButton
-            icon={<FileTextOutlined />}
-            description="Bill"
-            shape="square"
-            style={{
-              top: 20,
-              right: 120,
-              bottom: 1200,
-            }}
-            onClick={() => {
-              finishMeal();
-            }}
-          />
-        </Header>
-        <Content
-          style={{
-            margin: "24px 16px 0",
-            overflow: "initial",
-            minHeight: `calc(100vh - 64px)`,
-            marginLeft: 200,
-          }}
-        >
-          <FloatButton
-            icon={<FileTextOutlined />}
-            description="Current Order"
-            shape="square"
-            style={{
-              right: 50,
-            }}
-            onClick={() => {
-              triggerRenderCart();
-              triggerRenderAllPreviousOrder();
-            }}
-          />
-
-          <Modal
-            open={viewCart}
-            onCancel={untriggerRenderCart}
-            footer={null}
-            destroyOnClose={true}
-            closable={false}
-            centered={true}
-            maskClosable={true}
           >
-            <CustomerViewCart
-              tableId={tableId}
-              orderId={orderId}
-              cost={currentOrderCost}
-              data={cartData}
-              onClose={untriggerRenderCart}
-              compeleteOrderCost={compeleteOrderCost}
-              compeleteOrderData={compeleteOrder}
-            />
-            <Button onClick={() => checkOut()}>Place Current Order</Button>
-          </Modal>
-          {Category.map((item, index) => (
-            <div
-              key={item.categoryId}
-              id={`grid${item.name}`}
+            <div className="lato">
+              <h1>{"Table Number: " + tableId}</h1>
+            </div>
+            <FloatButton
+              icon={<BellOutlined />}
+              description="Help"
+              shape="square"
               style={{
-                height: "100vh",
-                background: `rgba(99,${index + 120},${index + 10},0.1)`,
+                top: 20,
+                right: 40,
+                bottom: 1200,
               }}
+              onClick={() => askForHelp()}
+            />
+            <FloatButton
+              icon={<PayCircleOutlined />}
+              description="Bill"
+              shape="square"
+              style={{
+                top: 20,
+                right: 120,
+                bottom: 1200,
+              }}
+              onClick={() => {
+                finishMeal();
+              }}
+            />
+          </Header>
+          <Content style={{ margin: "12px 16px", overflow: "initial" }}>
+            <FloatButton
+              icon={<ShoppingCartOutlined />}
+              badge={{ dot: false }}
+              shape="square"
+              style={{
+                right: 50,
+              }}
+              onClick={() => {
+                triggerRenderCart();
+                triggerRenderAllPreviousOrder();
+              }}
+            />
+            <Modal
+              open={viewCart}
+              onCancel={untriggerRenderCart}
+              footer={null}
+              destroyOnClose={true}
+              closable={false}
+              centered={true}
+              maskClosable={true}
             >
-              <Element name={item.name} className="element">
-                <h2>{item.name}</h2>
-              </Element>
-              <CustomerDishGrid
-                categoryId={item.categoryId}
-                AllDish={Dishes}
+              <CustomerViewCart
                 tableId={tableId}
                 orderId={orderId}
+                cost={currentOrderCost}
+                data={cartData}
+                onClose={untriggerRenderCart}
+                compeleteOrderCost={compeleteOrderCost}
+                compeleteOrderData={compeleteOrder}
               />
-            </div>
-          ))}
-        </Content>
+              <Button onClick={() => checkOut()}>Place Current Order</Button>
+            </Modal>
+            {Category.map((item) => (
+              <div key={item.categoryId} id={`grid${item.name}`}>
+                <Element name={item.name} className="lato-small ">
+                  <h2>{item.name}</h2>
+                </Element>
+                <CustomerDishGrid
+                  categoryId={item.categoryId}
+                  AllDish={Dishes}
+                  tableId={tableId}
+                  orderId={orderId}
+                />
+              </div>
+            ))}
+          </Content>
+        </Layout>
       </Layout>
-    </Layout>
+    </>
   );
 };
 export default CustomerHomePage;

@@ -1,4 +1,4 @@
-import { Card, Modal, Button } from "antd";
+import { Card, Modal } from "antd";
 import CustomerDetailedDish from "./CustomerDetailedDish";
 import { useState } from "react";
 import * as React from "react";
@@ -29,11 +29,7 @@ const CustomerDishCard = ({
   return (
     <Card
       cover={
-        <img
-          alt="example"
-          src={picture}
-          style={{ width: "100%", height: 200 }}
-        />
+        <img alt="image" src={picture} style={{ width: "100%", height: 200 }} />
       }
       hoverable={true}
       onClick={displayDetail}
@@ -53,7 +49,7 @@ const CustomerDishCard = ({
           orderId={orderId}
         />
       </Modal>
-      <Meta title={title} description={"Price:  " + price} />
+      <Meta title={title} description={price + "$"} />
     </Card>
   );
 };

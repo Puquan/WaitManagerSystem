@@ -201,16 +201,30 @@ const ManagerHomePage = () => {
     console.log(e);
   };
   return (
-    <Layout style={{ margin: -8, padding: 0, minHeight: "100vh" }}>
-      <Sider theme="light">
+    <Layout hasSider>
+      <Sider
+        theme="light"
+        style={{
+          overflow: "auto",
+          height: "100vh",
+          position: "fixed",
+          left: 0,
+          top: 0,
+          bottom: 0,
+        }}
+      >
         <ReactSortable
           style={dragCatColor}
           list={Category}
           setList={setCategory}
           onChange={fetchCatSeq(Category)}
         >
-          {Category.map((item) => (
-            <div className="draggableItem" style={{ margin: "24px 4px" }}>
+          {Category.map((item, index) => (
+            <div
+              className="draggableItem"
+              key={`category${index}`}
+              style={{ margin: "24px 4px" }}
+            >
               <Link
                 activeClass="active"
                 className={item.name}
@@ -232,12 +246,7 @@ const ManagerHomePage = () => {
           ))}
         </ReactSortable>
       </Sider>
-      <Layout
-        className="site-layout"
-        style={{
-          marginLeft: 0,
-        }}
-      >
+      <Layout style={{ marginLeft: 200, padding: "0 24px 24px" }}>
         <Header
           style={{
             background: "#fff",
