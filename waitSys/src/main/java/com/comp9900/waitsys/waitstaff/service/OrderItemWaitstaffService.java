@@ -15,5 +15,5 @@ public interface OrderItemWaitstaffService extends IService<OrderItem> {
     * @Author: Weizhe Pan
     * @Date: 2023/7/14
     */
-    boolean modifyIsServe(Integer orderItemId);
+    Integer modifyIsServe(Integer orderItemId);
 }
