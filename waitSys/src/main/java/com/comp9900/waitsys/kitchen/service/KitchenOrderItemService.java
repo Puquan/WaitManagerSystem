@@ -27,7 +27,7 @@ public interface KitchenOrderItemService extends IService<OrderItem> {
     * @Author: Weizhe Pan
     * @Date: 2023/7/13
     */
-    boolean modifyOrderItemIsCook(Integer orderItemId);
+    Integer modifyOrderItemIsCook(Integer orderItemId);
 
 
 

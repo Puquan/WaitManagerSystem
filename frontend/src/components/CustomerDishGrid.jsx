@@ -3,7 +3,7 @@ import * as React from "react";
 import CustomerDishCard from "./CustomerDishCard";
 const { Meta } = Card;
 
-const GridList = ({ categoryId, AllDish }) => {
+const GridList = ({ categoryId, AllDish, tableId, orderId }) => {
   const [dishes, setDishes] = React.useState([]);
 
   React.useEffect(() => {
@@ -45,10 +45,6 @@ const GridList = ({ categoryId, AllDish }) => {
       );
       const data = await response.json();
       // 处理数据，将其设置到组件的状态中
-      console.log("sad")
-      console.log("sad")
-      console.log("sad")
-      console.log(data)
       const processedData = data.records.map((item) => ({
         title: item.name,
         price: item.price,
@@ -143,6 +139,8 @@ const GridList = ({ categoryId, AllDish }) => {
             index={dish.index}
             ItemId={dish.id}
             picture={dish.picture}
+            tableId={tableId}
+            orderId={orderId}
           />
         </List.Item>
       )}

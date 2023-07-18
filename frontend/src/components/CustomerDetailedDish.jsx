@@ -2,8 +2,9 @@ import * as React from "react";
 import { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import {
+  Button,
   Card,
-  Modal
+    Divider,message
 } from "antd";
 
 const normFile = (e) => {
@@ -13,8 +14,9 @@ const normFile = (e) => {
   return e?.fileList;
 };
 
-const CustomerDetailedDish = ({itemId}) => {
-
+const CustomerDetailedDish = ({itemId,tableId,orderId}) => {
+    const [tableNuber,setTableNumber] = React.useState();
+    const [orderNumber,setOrderNumber] = React.useState();
     const [id,setId]=  React.useState();
     const [title,setTitle] =  React.useState();
     const [description,setDescription ]= React.useState();
@@ -27,6 +29,32 @@ const CustomerDetailedDish = ({itemId}) => {
         console.log("upate!!!!");
       }, [itemId]);
 
+    const addDishMethod = () => {
+      console.log(itemId,tableId,orderId)
+        const response = fetch(
+          `http://localhost:8080/waitsys/customer/order/addItem?tableId=${parseInt(tableId)}&orderId=${parseInt(orderId)}&itemId=${parseInt(itemId)}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-type": "application/json",
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response);
+          if (response.status === 200) {
+            // cant catch error due to no-cors
+            message.success("Dish added successfully!");
+            console.log("Dish added successfully!");
+            onClose();
+          } else {
+            throw new Error("Error adding dish");
+          }
+        })
+        .catch((error) => {
+          console.log("Error:", error);
+        });
+      }
 
     const fetchData = async (itemId) => {
     try {
@@ -56,8 +84,21 @@ const CustomerDetailedDish = ({itemId}) => {
 
 
   return (
-    <Card title="Detailed Dish" bordered={false}>
-        {id}
+    <Card title={title} bordered={false}>
+        <img src={picture} style={{ width: "100%", height: 200, alignItems: "center"}}/>
+        <p>Description</p>
+        <Divider />
+        <p>{description}</p>
+        <Divider />
+        <p>Ingredients</p>
+        <Divider />
+        <p>{ingredient}</p>
+        <Divider />
+        <p>Price</p>
+        <Divider />
+        <p>{price}</p>
+        <Divider />
+        <Button onClick={()=>addDishMethod()}>Add Dish</Button>
     </Card>
   );
 };

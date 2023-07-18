@@ -38,6 +38,9 @@ public class TableWaitstaffServiceImpl extends MPJBaseServiceImpl<TableMapper, T
     @Autowired
     private TableMapper tableMapper;
 
+    @Autowired
+    private OrderMapper orderMapper;
+
 
 
     @Override
@@ -62,12 +65,14 @@ public class TableWaitstaffServiceImpl extends MPJBaseServiceImpl<TableMapper, T
             myWrapper2
                     .leftJoin(Item.class,Item::getItemId,OrderItem::getItemId)
                     .leftJoin(Table.class,Table::getTableId,OrderItem::getTableId)
+                    .leftJoin(Order.class,Order::getOrderId,OrderItem::getOrderId)
+                    .eq(Order::getIsComplete,ORDER_ISCOMPLETE_START)
                     .eq(Table::getTableId,tableDTO.getTableId())
-                    .eq(OrderItem::getIsServe,ORDERITEM_ISSERVE_FALSE)
                     .selectAs(OrderItem::getId,"id")
                     .selectAs(Item::getName,"itemName")
                     .selectAs(OrderItem::getIsCook,"isCook")
-                    .selectAs(OrderItem::getIsServe,"isServe");
+                    .selectAs(OrderItem::getIsServe,"isServe")
+                    .orderByAsc(OrderItem::getId);
             List<OrderItemWaitstaffVO> orderItemWaitstaffVOList=orderItemMapper.selectJoinList(OrderItemWaitstaffVO.class,myWrapper2);
             tableWaitstaffVO.setOrderItemList(orderItemWaitstaffVOList);
             tableWaitstaffVOList.add(tableWaitstaffVO);
@@ -79,6 +84,27 @@ public class TableWaitstaffServiceImpl extends MPJBaseServiceImpl<TableMapper, T
     public boolean confirmRequestBill(Integer tableId) {
         Table table=this.getById(tableId);
         table.setState(TABLE_STATE_EMPTY);
+
+        MPJLambdaWrapper<Order> myWrapper = new MPJLambdaWrapper<>();
+        myWrapper
+                .eq(Order::getTableId,tableId)
+                .eq(Order::getIsComplete,ORDER_ISCOMPLETE_START)
+                .selectAll(Order.class);
+        List<Order> orderList=orderMapper.selectJoinList(Order.class,myWrapper);
+        orderList.forEach(order -> {
+            order.setIsComplete(ORDER_ISCOMPLETE_FINISH);
+            orderMapper.updateById(order);
+        });
+        MPJLambdaWrapper<Order> myWrapper2 = new MPJLambdaWrapper<>();
+        myWrapper2
+                .eq(Order::getTableId,tableId)
+                .eq(Order::getIsComplete,ORDER_ISCOMPLETE_ORDERING)
+                .selectAll(Order.class);
+        List<Order> orderList2=orderMapper.selectJoinList(Order.class,myWrapper2);
+        orderList2=orderMapper.selectJoinList(Order.class,myWrapper2);
+        orderList2.forEach(order -> {
+            orderMapper.deleteById(order);
+        });
         return updateById(table);
     }
 
