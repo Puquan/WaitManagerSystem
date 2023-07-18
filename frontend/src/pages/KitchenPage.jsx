@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col } from "antd";
 import TableCard from "../components/kitchen/TableCard";
+import { Spin } from "antd";
+
 const KitchenPage = () => {
   const [kitchenOrders, setkitchenOrders] = useState([]);
 
@@ -21,11 +23,12 @@ const KitchenPage = () => {
 
   const generateTableCards = () => {
     return kitchenOrders.map((order, index) => (
-      <Col span={24} md={6} key={order.orderId}>
+      <Col span={32} md={10} key={order.orderId}>
         <TableCard
           tableId={order.tableId}
           orderId={order.orderId}
           orderItems={order.orderItemList}
+          startTime={order.startTime}
         />
       </Col>
     ));
@@ -49,18 +52,29 @@ const KitchenPage = () => {
 
   return (
     <>
-      <h1>Kitchen Staff Page</h1>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "45px",
+        }}
+      >
+        <h2>Kitchen Page</h2>
+      </div>
       {kitchenOrders.length > 0 ? (
         <>
-          <button onClick={fetchKitchenOrders}>Click me</button>
-          <div style={{ overflowY: "scroll" }}>
+          <div>
             <Row gutter={{ xs: 12, sm: 16, md: 24, lg: 32 }}>
               {generateTableCards()}
             </Row>
           </div>
         </>
       ) : (
-        <div>No Order</div>
+        <div>
+          <Spin />
+          <p>Fetching kitchen orders...</p>
+        </div>
       )}
     </>
   );

@@ -10,10 +10,10 @@ function App() {
     <>
       <Routes>
         <Route path="/Manager" element={<ManagerHomePage />} />
-        <Route path="/kitchen" element={<KitchenPage />} />
-        <Route path="/order" element={<CustomerHomePage/>} />
-        <Route path="/" element={<CustomerSelectTable/>} />
-        <Route path="/WaitStaff" element={<WaitStaffHomePage/>} />
+        <Route path="/Kitchen" element={<KitchenPage />} />
+        <Route path="/Order" element={<CustomerHomePage />} />
+        <Route path="/" element={<CustomerSelectTable />} />
+        <Route path="/Waitstaff" element={<WaitStaffHomePage />} />
       </Routes>
     </>
   );
