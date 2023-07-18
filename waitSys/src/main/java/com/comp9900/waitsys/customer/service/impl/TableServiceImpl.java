@@ -1,7 +1,6 @@
 package com.comp9900.waitsys.customer.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.comp9900.waitsys.constant.Constant;
 import com.comp9900.waitsys.customer.entity.Table;
@@ -63,5 +62,11 @@ public class TableServiceImpl extends ServiceImpl<TableMapper, Table> implements
         Table table = getById(tableId);
         table.setNeedHelp(Constant.TABLE_NEEDHELP_NEED_HELP);
         return updateById(table);
+    }
+
+    @Override
+    public Table checkTableInfo(Integer tableId) {
+        Table table=getById(tableId);
+        return table;
     }
 }

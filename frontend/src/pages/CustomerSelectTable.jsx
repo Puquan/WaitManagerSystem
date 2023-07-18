@@ -43,6 +43,7 @@ const About = () => {
 
     const fetchData = async () => {
         try {
+
           const response = await fetch(
             `http://localhost:8080/waitsys/customer/table/showAll`,
             {
@@ -52,7 +53,9 @@ const About = () => {
               },
             }
           );
+
           const data = await response.json();
+          console.log(data)
           createSelectMenu(data);
         } catch (error) {
           console.error("Error:", error);
