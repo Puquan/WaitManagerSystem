@@ -116,7 +116,7 @@ const WSCard = ({ table }) => {
         <Button
           icon={<BellOutlined />}
           onClick={handleNotifyAssistance}
-          style={{ marginBottom: "8px", backgroundColor: needHelp === 1 ? "yellow" : "" }}
+          style={{ backgroundColor: needHelp === 1 ? "yellow" : "" }}
         />
         <Button
           icon={<DollarCircleOutlined />}
