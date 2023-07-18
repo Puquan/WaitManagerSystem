@@ -56,4 +56,13 @@ public interface TableService extends IService<Table> {
      */
     boolean askForHelp(Integer tableId);
 
+    /**
+    * @Description:
+    * @Param: [tableId]
+    * @return: com.comp9900.waitsys.customer.entity.TableVO
+    * @Author: Weizhe Pan
+    * @Date: 2023/7/18
+    */
+    Table checkTableInfo(Integer tableId);
+
 }

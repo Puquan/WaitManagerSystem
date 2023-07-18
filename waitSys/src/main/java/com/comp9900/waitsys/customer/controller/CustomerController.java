@@ -1,6 +1,7 @@
 package com.comp9900.waitsys.customer.controller;
 
 import com.comp9900.waitsys.customer.entity.OrderItemVO;
+import com.comp9900.waitsys.customer.entity.Table;
 import com.comp9900.waitsys.customer.service.OrderItemService;
 import com.comp9900.waitsys.customer.service.OrderService;
 import com.comp9900.waitsys.customer.service.TableService;
@@ -111,6 +112,11 @@ public class CustomerController {
         map.put("tableId", tableId);
         map.put("orderId", newOrderId);
         return map;
+    }
+
+    @GetMapping("/checkTableInfo")
+    public Table checkTableInfo(@RequestParam(value = "tableId") Integer tableId){
+        return tableService.checkTableInfo(tableId);
     }
 
 }

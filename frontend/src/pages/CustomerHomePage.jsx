@@ -40,10 +40,12 @@ const CustomerHomePage = () => {
   const [viewCart, setViewCart] = useState(false);
   const [cartData, setCartData] = useState();
   const [currentOrderCost, setCurrentOrderCost] = useState();
-
   const [viewCompeleteOrder, setViewCompeleteOrder] = useState(false);
   const [compeleteOrder, setCompeleteOrder] = useState();
   const [compeleteOrderCost, setCompeleteOrderCost] = useState();
+  const [paymentStatus, setPaymentStatus] = useState(false);
+  const [readyToGo, setReadyToGo] = useState(false);
+  const isInitialMount1 = useRef(true);
 
   React.useEffect(() => {
     fetchCategory();
@@ -64,6 +66,42 @@ const CustomerHomePage = () => {
     readLocalTableId();
     console.log(tableId);
   }, []);
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      console.log(tableId);
+      fetchFinishPayment();
+      handleFinishPayment();
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [paymentStatus]);
+
+  const handleFinishPayment = () => {
+    if (paymentStatus == "0" && readyToGo) {
+      navigate("/");
+    }
+  };
+
+  const fetchFinishPayment = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/waitsys/customer/checkTableInfo?tableId=${parseInt(
+          tableId
+        )}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      console.log(data["state"]);
+      setPaymentStatus(data["state"]);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   const readLocalOrderId = () => {
     const orderId = localStorage.getItem("orderId");
@@ -144,7 +182,7 @@ const CustomerHomePage = () => {
           const data = await response.json();
           console.log("Collect all previous order cost!");
           console.log(data);
-          setCompeleteOrderCost(parseInt(data));
+          setCompeleteOrderCost(parseFloat(data));
         } else {
           throw new Error("Error Collect current order cost");
         }
@@ -173,7 +211,7 @@ const CustomerHomePage = () => {
           const data = await response.json();
           console.log("Collect current order cost!");
           console.log(data);
-          setCurrentOrderCost(parseInt(data));
+          setCurrentOrderCost(parseFloat(data));
         } else {
           throw new Error("Error Collect current order cost");
         }
@@ -357,30 +395,6 @@ const CustomerHomePage = () => {
 
   const finishMeal = () => {
     console.log(tableId, orderId);
-    const response = fetch(
-      `http://localhost:8080/waitsys/customer/finish?tableId=${parseInt(
-        tableId
-      )}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-      }
-    )
-      .then(async (response) => {
-        console.log(response);
-        if (response.status === 200) {
-          // cant catch error due to no-cors
-          message.success("Finish Meal");
-          console.log("Finish Meal");
-        } else {
-          throw new Error("Error Finish Meal");
-        }
-      })
-      .catch((error) => {
-        console.log("Error:", error);
-      });
     const response2 = fetch(
       `http://localhost:8080/waitsys/customer/table/toPayTable?tableId=${parseInt(
         tableId
@@ -396,9 +410,9 @@ const CustomerHomePage = () => {
         console.log(response2);
         if (response2.status === 200) {
           // cant catch error due to no-cors
-          message.success("Finish Payment");
-          console.log("Finish Payment");
-          navigate("/");
+          message.success("Request Bill Successfully");
+          console.log("Request Bill Successfully");
+          setReadyToGo(true);
         } else {
           throw new Error("Error Finish Payment");
         }
@@ -453,19 +467,35 @@ const CustomerHomePage = () => {
               level={3}
               style={{ color: "black", textAlign: "center" }}
             >
-              Customer Home Page
-              <Button
-                icon={<BellOutlined />}
-                onClick={() => askForHelp()}
-                style={{
-                  marginBottom: "8px",
-                  backgroundColor: helpStatus === false ? "" : "yellow",
-                }}
-              >
-                AskForHelp
-              </Button>
+              Customer Home Page {"tableId: " + tableId}
             </Typography.Title>
           </div>
+
+          <FloatButton
+            icon={<FileTextOutlined />}
+            description="Help"
+            shape="square"
+            style={{
+              top: 20,
+              right: 40,
+              bottom: 1200,
+            }}
+            onClick={() => askForHelp()}
+          />
+
+          <FloatButton
+            icon={<FileTextOutlined />}
+            description="Bill"
+            shape="square"
+            style={{
+              top: 20,
+              right: 120,
+              bottom: 1200,
+            }}
+            onClick={() => {
+              finishMeal();
+            }}
+          />
         </Header>
         <Content
           style={{
@@ -480,37 +510,14 @@ const CustomerHomePage = () => {
             description="Current Order"
             shape="square"
             style={{
-              right: 200,
+              right: 50,
             }}
-            onClick={() => triggerRenderCart()}
-          />
-          <FloatButton
-            icon={<FileTextOutlined />}
-            description="All Compelete order"
-            shape="square"
-            style={{
-              right: 100,
+            onClick={() => {
+              triggerRenderCart();
+              triggerRenderAllPreviousOrder();
             }}
-            onClick={() => triggerRenderAllPreviousOrder()}
           />
-          <Modal
-            open={viewCompeleteOrder}
-            onCancel={untriggerRenderAllPreviousOrder}
-            footer={null}
-            destroyOnClose={true}
-            closable={false}
-            centered={true}
-            maskClosable={true}
-          >
-            <CustomerViewAllCompeleteOrder
-              cost={compeleteOrderCost}
-              data={compeleteOrder}
-              onClose={untriggerRenderAllPreviousOrder}
-            />
-            <Button onClick={() => finishMeal()}>
-              Finish Meal And Request Bill
-            </Button>
-          </Modal>
+
           <Modal
             open={viewCart}
             onCancel={untriggerRenderCart}
@@ -526,8 +533,10 @@ const CustomerHomePage = () => {
               cost={currentOrderCost}
               data={cartData}
               onClose={untriggerRenderCart}
+              compeleteOrderCost={compeleteOrderCost}
+              compeleteOrderData={compeleteOrder}
             />
-            <Button onClick={() => checkOut()}>CheckOut</Button>
+            <Button onClick={() => checkOut()}>Place Current Order</Button>
           </Modal>
           {Category.map((item, index) => (
             <div
