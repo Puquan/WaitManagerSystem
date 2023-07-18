@@ -1,4 +1,4 @@
-import { Card, List,message} from "antd";
+import { Card, List, message } from "antd";
 import * as React from "react";
 import CustomerDishCard from "./CustomerDishCard";
 const { Meta } = Card;
@@ -12,25 +12,22 @@ const GridList = ({ categoryId, AllDish, tableId, orderId }) => {
   }, [categoryId, AllDish]);
 
   const fetchMoveCat = (data) => {
-    fetch(
-      `http://localhost:8080/waitsys/manager/item/changeOrder`,
-    {
+    fetch(`http://localhost:8080/waitsys/manager/item/changeOrder`, {
       method: "POST",
-      headers:{'Content-type': 'application/json'},
-      body: data
-    }
-    )
-    .then((response) => {
-      if (response.status === 200) {
-        console.log("Success:", response);
-      } else {
-        throw new Error("Failed to move dish.");
-      }
+      headers: { "Content-type": "application/json" },
+      body: data,
     })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
-  }
+      .then((response) => {
+        if (response.status === 200) {
+          console.log("Success:", response);
+        } else {
+          throw new Error("Failed to move dish.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
 
   const fetchData = async (categoryId) => {
     try {
@@ -70,15 +67,15 @@ const GridList = ({ categoryId, AllDish, tableId, orderId }) => {
         const newnewDishes = [...newDishes];
         const dishB = newnewDishes.splice(index, 1)[0];
         console.log(dishB);
-        newnewDishes.splice(index+1, 0, dishB);
-        
-        const firstVar = dishA['id'];
-        const secondVar = dishB['id'];
-        const firstPara = dishA['index'];
-        const secondPara = dishB['index'];
+        newnewDishes.splice(index + 1, 0, dishB);
+
+        const firstVar = dishA["id"];
+        const secondVar = dishB["id"];
+        const firstPara = dishA["index"];
+        const secondPara = dishB["index"];
         const entries = new Map([
           [firstVar, secondPara],
-          [secondVar, firstPara]
+          [secondVar, firstPara],
         ]);
         console.log(entries);
         const obj = Object.fromEntries(entries);
@@ -103,15 +100,15 @@ const GridList = ({ categoryId, AllDish, tableId, orderId }) => {
         const newnewDishes = [...newDishes];
         const dishB = newnewDishes.splice(index, 1)[0];
         console.log(dishB);
-        newnewDishes.splice(index-1, 0, dishB);
-        
-        const firstVar = dishA['id'];
-        const secondVar = dishB['id'];
-        const firstPara = dishA['index'];
-        const secondPara = dishB['index'];
+        newnewDishes.splice(index - 1, 0, dishB);
+
+        const firstVar = dishA["id"];
+        const secondVar = dishB["id"];
+        const firstPara = dishA["index"];
+        const secondPara = dishB["index"];
         const entries = new Map([
           [firstVar, secondPara],
-          [secondVar, firstPara]
+          [secondVar, firstPara],
         ]);
 
         const obj = Object.fromEntries(entries);

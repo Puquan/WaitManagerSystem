@@ -1,11 +1,17 @@
 import { Card, Modal, Button } from "antd";
-import { EditOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 import CustomerDetailedDish from "./CustomerDetailedDish";
 import { useState } from "react";
 import * as React from "react";
 const { Meta } = Card;
 
-const CustomerDishCard = ({ ItemId, title, price, picture , tableId, orderId}) => {
+const CustomerDishCard = ({
+  ItemId,
+  title,
+  price,
+  picture,
+  tableId,
+  orderId,
+}) => {
   const [showDetail, updateShowDetail] = useState(false);
 
   const displayDetail = () => {
@@ -20,7 +26,6 @@ const CustomerDishCard = ({ ItemId, title, price, picture , tableId, orderId}) =
     }, 0);
   };
 
-
   return (
     <Card
       cover={
@@ -32,9 +37,7 @@ const CustomerDishCard = ({ ItemId, title, price, picture , tableId, orderId}) =
       }
       hoverable={true}
       onClick={displayDetail}
-
     >
-      
       <Modal
         open={showDetail}
         onCancel={handleCancelDisplayDetail}
@@ -44,9 +47,13 @@ const CustomerDishCard = ({ ItemId, title, price, picture , tableId, orderId}) =
         closable={true}
         centered={true}
       >
-        <CustomerDetailedDish itemId={ItemId} tableId={tableId} orderId={orderId}/>
+        <CustomerDetailedDish
+          itemId={ItemId}
+          tableId={tableId}
+          orderId={orderId}
+        />
       </Modal>
-      <Meta title={title} description={'Price:  '+price} />
+      <Meta title={title} description={"Price:  " + price} />
     </Card>
   );
 };

@@ -11,11 +11,11 @@ import {
 import React, { useState, useRef } from "react";
 import "../App.css";
 const { Header, Content, Sider } = Layout;
-import CustomerDishGrid from "../components/CustomerDishGrid";
+import CustomerDishGrid from "../components/customer/CustomerDishGrid";
 import { Link, Element } from "react-scroll";
 import { FileTextOutlined, BellOutlined } from "@ant-design/icons";
-import CustomerViewCart from "../components/CustomerViewCart";
-import CustomerViewAllCompeleteOrder from "../components/CustomerViewAllCompeleteOrder";
+import CustomerViewCart from "../components/customer/CustomerViewCart";
+import CustomerViewAllCompeleteOrder from "../components/customer/CustomerViewAllCompeleteOrder";
 import { useNavigate } from "react-router-dom";
 const CustomerHomePage = () => {
   const dragCatColor = {

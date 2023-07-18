@@ -1,15 +1,14 @@
 import { Layout, theme, Button, Modal, Popconfirm } from "antd";
 import { DeleteTwoTone } from "@ant-design/icons";
 import React, { useState } from "react";
-import AddDishForm from "../components/AddDishForm";
-import AddCatForm from "../components/AddCatForm";
-import RemoveCatForm from "../components/RemoveCat";
+import AddDishForm from "../components/manager/AddDishForm";
+import AddCatForm from "../components/manager/AddCatForm";
+import DishGrid from "../components/manager/DishGrid";
 import "../App.css";
-const { Header, Content, Sider } = Layout;
-import DishGrid from "../components/DishGrid";
 import { ReactSortable } from "react-sortablejs";
 import { Link, Element } from "react-scroll";
 
+const { Header, Content, Sider } = Layout;
 const ManagerHomePage = () => {
   const dragCatColor = {
     fontSize: "25px",
