@@ -49,7 +49,7 @@ const CustomerDishCard = ({
           orderId={orderId}
         />
       </Modal>
-      <Meta title={title} description={price + "$"} />
+      <Meta title={title} description={"$" + price} />
     </Card>
   );
 };

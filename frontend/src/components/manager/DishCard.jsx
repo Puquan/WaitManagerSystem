@@ -51,7 +51,7 @@ const DishCard = ({ ItemId, title, price, MoveLeft, MoveRight, picture }) => {
       >
         <ModifyDishForm itemId={ItemId} onClose={handleCancelUpdateDish} />
       </Modal>
-      <Meta title={title} description={`${price}$`} />
+      <Meta title={title} description={`$${price}`} />
     </Card>
   );
 };
