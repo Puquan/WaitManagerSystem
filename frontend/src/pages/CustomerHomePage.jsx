@@ -416,7 +416,6 @@ const CustomerHomePage = () => {
             left: 0,
             top: 0,
             bottom: 0,
-            zIndex: 1,
             boxShadow: "4px 0 8px rgba(0, 0, 0, 0.1)",
           }}
           breakpoint="lg"

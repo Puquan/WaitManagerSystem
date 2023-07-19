@@ -1,5 +1,10 @@
-import { Layout, theme, Button, Modal, Popconfirm } from "antd";
-import { DeleteTwoTone } from "@ant-design/icons";
+import { Layout, theme, Button, Modal, Popconfirm, Space } from "antd";
+import {
+  DeleteTwoTone,
+  LineChartOutlined,
+  PlusOutlined,
+  NumberOutlined,
+} from "@ant-design/icons";
 import React, { useState } from "react";
 import AddDishForm from "../components/manager/AddDishForm";
 import AddCatForm from "../components/manager/AddCatForm";
@@ -25,6 +30,8 @@ const ManagerHomePage = () => {
   const [Dishes, setDishes] = useState([]);
   const [moveCat, SetMoveCat] = useState(false);
   const [delCat, delCatOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   React.useEffect(() => {
     fetchCategory();
@@ -200,6 +207,14 @@ const ManagerHomePage = () => {
   const cancel = (e) => {
     console.log(e);
   };
+
+  const handleBreakpoint = (broken) => {
+    setIsSmallScreen(broken);
+  };
+
+  const handleCollapse = (collapsed, type) => {
+    setIsCollapsed(collapsed);
+  };
   return (
     <Layout hasSider>
       <Sider
@@ -211,8 +226,16 @@ const ManagerHomePage = () => {
           left: 0,
           top: 0,
           bottom: 0,
+          boxShadow: "4px 0 8px rgba(0, 0, 0, 0.1)",
         }}
+        breakpoint="lg"
+        collapsedWidth="0"
+        onBreakpoint={handleBreakpoint}
+        onCollapse={handleCollapse}
       >
+        <div className="lato-bold" style={{ margin: "32px 25px" }}>
+          Menu
+        </div>
         <ReactSortable
           style={dragCatColor}
           list={Category}
@@ -223,7 +246,9 @@ const ManagerHomePage = () => {
             <div
               className="draggableItem"
               key={`category${index}`}
-              style={{ margin: "24px 4px" }}
+              style={{
+                margin: "28px 25px",
+              }}
             >
               <Link
                 activeClass="active"
@@ -233,7 +258,7 @@ const ManagerHomePage = () => {
                 smooth={true}
                 duration={500}
               ></Link>
-              {item.name}
+              <div className="category-container">{item.name}</div>
               <Popconfirm
                 title="Delete the task"
                 description="Are you sure to delete this task?"
@@ -246,7 +271,7 @@ const ManagerHomePage = () => {
           ))}
         </ReactSortable>
       </Sider>
-      <Layout style={{ marginLeft: 200, padding: "0 24px 24px" }}>
+      <Layout style={{ marginLeft: 200 }}>
         <Header
           style={{
             background: "#fff",
@@ -254,18 +279,26 @@ const ManagerHomePage = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            marginLeft: -10,
+            marginTop: -10,
+            boxShadow: "2px 5px 12px rgba(0, 0, 0, 0.1)",
           }}
         >
-          <h2>Manager Page</h2>
+          <div className="lato">
+            <h1>Manager Page</h1>
+          </div>
         </Header>
-        <Content
-          style={{
-            margin: "24px 16px 0",
-            overflow: "initial",
-          }}
-        >
-          <Button onClick={showAddDish}>Add New Dish</Button>
-          <Button onClick={showAddCat}>Add New Category</Button>
+        <Content style={{ margin: "12px 16px", overflow: "initial" }}>
+          <Space size={12}>
+            <Button icon={<PlusOutlined />} onClick={showAddDish}>
+              Add New Dish
+            </Button>
+            <Button icon={<PlusOutlined />} onClick={showAddCat}>
+              Add New Category
+            </Button>
+            <Button icon={<NumberOutlined />}>Set Table Number</Button>
+            <Button icon={<LineChartOutlined />}>Statistics</Button>
+          </Space>
           <Modal
             open={addDishOpen}
             onCancel={handleCancelAddDish}
@@ -284,7 +317,7 @@ const ManagerHomePage = () => {
           </Modal>
           {Category.map((item, index) => (
             <div key={item.categoryId} id={`grid${item.name}`}>
-              <Element name={item.name} className="element">
+              <Element name={item.name} className="lato-small">
                 <h2>{item.name}</h2>
               </Element>
               <DishGrid categoryId={item.categoryId} AllDish={Dishes} />
