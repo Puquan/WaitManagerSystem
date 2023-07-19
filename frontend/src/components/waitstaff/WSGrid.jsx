@@ -1,5 +1,5 @@
 import { Row, Col } from "antd";
-import WSCard from "../components/WSCard";
+import WSCard from "./WSCard";
 
 const WSGrid = ({ tables }) => {
   return (

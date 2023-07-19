@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Layout, Typography } from "antd";
-import WSGrid from "../components/WSGrid";
+import WSGrid from "../components/waitstaff/WSGrid";
 
 const { Header, Content } = Layout;
 const { Title } = Typography;
@@ -10,8 +10,8 @@ const WaitStaffHomePage = () => {
 
   useEffect(() => {
     fetchTables();
-    const timer = setInterval(fetchTables, 1000); 
-    return () => clearInterval(timer); 
+    const timer = setInterval(fetchTables, 1000);
+    return () => clearInterval(timer);
   }, []);
 
   const fetchTables = async () => {

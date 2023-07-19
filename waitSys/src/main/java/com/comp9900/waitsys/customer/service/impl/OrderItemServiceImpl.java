@@ -120,6 +120,10 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
                 .eq(OrderItem::getOrderId, orderId)
                 .eq(OrderItem::getItemId, itemId);
         List<OrderItem> orderItems = list(lqw);
-        return removeById(orderItems.get(0));
+        Order order = orderMapper.selectById(orderId);
+        Item item = itemMapper.selectById(itemId);
+        order.setCost(order.getCost() - item.getPrice());
+        boolean flag = orderMapper.updateById(order) == 1;
+        return removeById(orderItems.get(0)) && flag;
     }
 }
