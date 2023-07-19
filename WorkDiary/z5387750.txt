@@ -8,3 +8,9 @@ week4:
 Learn JS and React. Write several pages.
 week5:
 Write move order functionalities and base pages.
+week6:
+flexablie week.
+week7:
+Develope customer front end.
+week8:
+Fix the customer end bug.
