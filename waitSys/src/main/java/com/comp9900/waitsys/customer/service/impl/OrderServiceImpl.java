@@ -82,7 +82,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         Float totalCost = Constant.INITIAL_COST;
         LambdaQueryWrapper<Order> lqw = new LambdaQueryWrapper<>();
         lqw.eq(Order::getTableId, tableId)
-                .ne(Order::getIsComplete, Constant.ORDER_ISCOMPLETE_FINISH);
+                .eq(Order::getIsComplete, Constant.ORDER_ISCOMPLETE_START);
         List<Order> orders = list(lqw);
         for (Order order : orders) {
             totalCost += order.getCost();

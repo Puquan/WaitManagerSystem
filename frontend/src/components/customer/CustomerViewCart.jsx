@@ -6,8 +6,6 @@ const CustomerViewCart = ({
   onClose,
   data,
   cost,
-  compeleteOrderCost,
-  compeleteOrderData,
   tableId,
   orderId,
 }) => {
@@ -18,11 +16,6 @@ const CustomerViewCart = ({
   const [newCost, setNewCost] = useState(parseFloat(cost));
   const [newData, setNewData] = useState(data);
 
-  const [newCompeleteOrderCost, setNewCompeleteOrderCost] = useState(
-    parseFloat(compeleteOrderCost)
-  );
-  const [newComeleteOrderData, setNewComeleteOrderData] =
-    useState(compeleteOrderData);
 
   const isInitialMount1 = useRef(true);
 
@@ -33,75 +26,8 @@ const CustomerViewCart = ({
       console.log("1");
       fetchCart();
       getCurrentOrderCost();
-      fetchAllCompeleteOrder();
-      getAllPreviousOrderCost();
     }
-  }, [newData, newCost, newCompeleteOrderCost, newComeleteOrderData]);
-
-  const getAllPreviousOrderCost = () => {
-    const response = fetch(
-      `http://localhost:8080/waitsys/customer/order/showTotalCost?tableId=${parseInt(
-        newTableId
-      )}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-type": "application/json",
-        },
-      }
-    )
-      .then(async (response) => {
-        console.log(response);
-        if (response.status === 200) {
-          // cant catch error due to no-cors
-          const data = await response.json();
-          console.log("Collect all previous order cost!");
-          console.log(data);
-          setNewCompeleteOrderCost(parseFloat(data));
-        } else {
-          throw new Error("Error Collect current order cost");
-        }
-      })
-      .catch((error) => {
-        console.log("Error:", error);
-      });
-  };
-
-  const fetchAllCompeleteOrder = () => {
-    const response = fetch(
-      `http://localhost:8080/waitsys/customer/order/showAllPreviousItems?tableId=${parseInt(
-        newTableId
-      )}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-type": "application/json",
-        },
-      }
-    )
-      .then(async (response) => {
-        console.log(response);
-        if (response.status === 200) {
-          // cant catch error due to no-cors
-          console.log("Finish Collect Previous Order Information!");
-          const data = await response.json();
-          console.log(data);
-          const processedData = data.map((item) => ({
-            id: item.itemId,
-            title: item.itemName,
-            amount: item.itemNumber,
-            price: item.totalPrice,
-            picture: item.itemPicture,
-          }));
-          setNewComeleteOrderData(processedData);
-        } else {
-          throw new Error("Error Finish Current Order");
-        }
-      })
-      .catch((error) => {
-        console.log("Error:", error);
-      });
-  };
+  }, [newData, newCost]);
 
   const fetchCart = () => {
     try {
@@ -216,32 +142,6 @@ const CustomerViewCart = ({
       />
       <Divider />
       <Statistic title="Current Order Cost (AUD)" value={newCost} />
-      <Divider />
-      <List
-        pagination={{
-          position,
-          align,
-        }}
-        dataSource={newComeleteOrderData}
-        renderItem={(item) => (
-          <List.Item>
-            <List.Item.Meta
-              avatar={
-                <img
-                  src={`data:image/jpeg;base64, ${item.picture}`}
-                  style={{ width: 50, height: 50 }}
-                />
-              }
-              title={item.title + " " + "*" + item.amount.toString()}
-              description={"Price:  " + item.price.toString()}
-            ></List.Item.Meta>
-          </List.Item>
-        )}
-      />
-      <Statistic
-        title="Total Cost (Include un placed order)(AUD)"
-        value={newCompeleteOrderCost}
-      />
     </>
   );
 };

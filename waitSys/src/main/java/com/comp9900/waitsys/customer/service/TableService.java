@@ -47,7 +47,7 @@ public interface TableService extends IService<Table> {
      * @param tableId table id
      * @return true or false
      */
-    boolean toPayTable(Integer tableId);
+    List<Integer> toPayTable(Integer tableId);
 
     /**
      * ask for help

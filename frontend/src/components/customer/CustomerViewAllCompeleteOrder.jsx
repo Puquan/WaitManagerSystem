@@ -1,10 +1,100 @@
-import React, { useState } from "react";
-import { List, Divider, Statistic } from "antd";
+import React, { useState, useRef } from "react";
+import { List, Divider, Statistic, Button } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 
-const CustomerViewAllCompeleteOrder = ({ data, cost, onClose }) => {
+const CustomerViewCompeleterOrder = ({
+  onClose,
+  compeleteOrderCost,
+  compeleteOrderData,
+  tableId,
+  orderId,
+}) => {
   const [position, setPosition] = useState("bottom");
   const [align, setAlign] = useState("center");
+  const [newTableId, setNewTableId] = useState(parseInt(tableId));
+  const [newOrderId, setNewOrderId] = useState(parseInt(orderId));
+  const [newCompeleteOrderCost, setNewCompeleteOrderCost] = useState(
+    parseFloat(compeleteOrderCost)
+  );
+  const [newComeleteOrderData, setNewComeleteOrderData] =
+    useState(compeleteOrderData);
+
+  const isInitialMount1 = useRef(true);
+
+  React.useEffect(() => {
+    if (isInitialMount1.current) {
+      isInitialMount1.current = false;
+    } else {
+      console.log("1");
+      fetchAllCompeleteOrder();
+      getAllPreviousOrderCost();
+    }
+  }, [newCompeleteOrderCost, newComeleteOrderData]);
+
+  const getAllPreviousOrderCost = () => {
+    const response = fetch(
+      `http://localhost:8080/waitsys/customer/order/showTotalCost?tableId=${parseInt(
+        newTableId
+      )}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json",
+        },
+      }
+    )
+      .then(async (response) => {
+        console.log(response);
+        if (response.status === 200) {
+          // cant catch error due to no-cors
+          const data = await response.json();
+          console.log("Collect all previous order cost!");
+          console.log(data);
+          setNewCompeleteOrderCost(parseFloat(data));
+        } else {
+          throw new Error("Error Collect current order cost");
+        }
+      })
+      .catch((error) => {
+        console.log("Error:", error);
+      });
+  };
+
+  const fetchAllCompeleteOrder = () => {
+    const response = fetch(
+      `http://localhost:8080/waitsys/customer/order/showAllPreviousItems?tableId=${parseInt(
+        newTableId
+      )}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json",
+        },
+      }
+    )
+      .then(async (response) => {
+        console.log(response);
+        if (response.status === 200) {
+          // cant catch error due to no-cors
+          console.log("Finish Collect Previous Order Information!");
+          const data = await response.json();
+          console.log(data);
+          const processedData = data.map((item) => ({
+            id: item.itemId,
+            title: item.itemName,
+            amount: item.itemNumber,
+            price: item.totalPrice,
+            picture: item.itemPicture,
+          }));
+          setNewComeleteOrderData(processedData);
+        } else {
+          throw new Error("Error Finish Current Order");
+        }
+      })
+      .catch((error) => {
+        console.log("Error:", error);
+      });
+  };
 
   return (
     <>
@@ -13,7 +103,7 @@ const CustomerViewAllCompeleteOrder = ({ data, cost, onClose }) => {
           position,
           align,
         }}
-        dataSource={data}
+        dataSource={newComeleteOrderData}
         renderItem={(item) => (
           <List.Item>
             <List.Item.Meta
@@ -23,20 +113,17 @@ const CustomerViewAllCompeleteOrder = ({ data, cost, onClose }) => {
                   style={{ width: 50, height: 50 }}
                 />
               }
-              title={item.title}
-              description={
-                "OrderCounts:  *" +
-                item.amount.toString() +
-                "Price:  " +
-                item.price.toString()
-              }
+              title={item.title + " " + "*" + item.amount.toString()}
+              description={"Price:  " + item.price.toString()}
             ></List.Item.Meta>
           </List.Item>
         )}
       />
-      <Divider />
-      <Statistic title="Current Order Cost (AUD)" value={cost} precision={2} />
+      <Statistic
+        title="Total Cost (Not include un placed order)(AUD)"
+        value={newCompeleteOrderCost}
+      />
     </>
   );
 };
-export default CustomerViewAllCompeleteOrder;
+export default CustomerViewCompeleterOrder;

@@ -1,10 +1,12 @@
 package com.comp9900.waitsys.customer.controller;
 
+import com.comp9900.waitsys.customer.entity.ItemRatingDTO;
 import com.comp9900.waitsys.customer.entity.OrderItemVO;
 import com.comp9900.waitsys.customer.entity.Table;
 import com.comp9900.waitsys.customer.service.OrderItemService;
 import com.comp9900.waitsys.customer.service.OrderService;
 import com.comp9900.waitsys.customer.service.TableService;
+import com.comp9900.waitsys.manager.entity.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,7 +62,7 @@ public class CustomerController {
     }
 
     @PostMapping("/table/toPayTable")
-    public boolean toPayTable(@RequestParam(value = "tableId") Integer tableId){
+    public List<Integer> toPayTable(@RequestParam(value = "tableId") Integer tableId){
         return tableService.toPayTable(tableId);
     }
 
@@ -117,6 +119,19 @@ public class CustomerController {
     @GetMapping("/checkTableInfo")
     public Table checkTableInfo(@RequestParam(value = "tableId") Integer tableId){
         return tableService.checkTableInfo(tableId);
+    }
+
+    @GetMapping("/order/showItemsByOrders")
+    public List<Item> showItemsByOrders(@RequestParam(value = "orderIds") List<Integer> orderIds) {
+        return orderItemService.showAllItemsByOrders(orderIds);
+    }
+
+    @PostMapping("/order/rating")
+    public boolean ratingOrderItems(@RequestBody ItemRatingDTO itemRatingDTO){
+        Integer tableId = itemRatingDTO.getTableId();
+        List<Integer> orderIds = itemRatingDTO.getOrderIds();
+        HashMap<Integer, Float> itemRatings = itemRatingDTO.getItemRatings();
+        return orderItemService.ratingOrderItems(orderIds, tableId, itemRatings);
     }
 
 }

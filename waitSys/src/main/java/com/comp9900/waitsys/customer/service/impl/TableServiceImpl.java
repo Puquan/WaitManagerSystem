@@ -3,9 +3,12 @@ package com.comp9900.waitsys.customer.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.comp9900.waitsys.constant.Constant;
+import com.comp9900.waitsys.customer.entity.Order;
 import com.comp9900.waitsys.customer.entity.Table;
+import com.comp9900.waitsys.customer.mapper.OrderMapper;
 import com.comp9900.waitsys.customer.mapper.TableMapper;
 import com.comp9900.waitsys.customer.service.TableService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +17,9 @@ import java.util.stream.Collectors;
 @Service
 public class TableServiceImpl extends ServiceImpl<TableMapper, Table> implements TableService {
 
+
+    @Autowired
+    private OrderMapper orderMapper;
 
     @Override
     public List<Integer> showAllAvailable() {
@@ -51,10 +57,20 @@ public class TableServiceImpl extends ServiceImpl<TableMapper, Table> implements
     }
 
     @Override
-    public boolean toPayTable(Integer tableId) {
+    public List<Integer> toPayTable(Integer tableId) {
         Table table = getById(tableId);
         table.setState(Constant.TABLE_STATE_TO_PAY);
-        return updateById(table);
+        updateById(table);
+        LambdaQueryWrapper<Order> lqw = new LambdaQueryWrapper<>();
+        lqw.select(Order::getOrderId)
+                .eq(Order::getTableId, tableId)
+                .eq(Order::getIsComplete, Constant.ORDER_ISCOMPLETE_START);
+        List<Object> orders = orderMapper.selectObjs(lqw);
+        List<Integer> orderIds = orders.stream()
+                .filter(obj -> obj instanceof Integer)
+                .map(obj -> (Integer) obj)
+                .collect(Collectors.toList());
+        return orderIds;
     }
 
     @Override

@@ -11,6 +11,7 @@ import {
 } from "@ant-design/icons";
 import CustomerViewCart from "../components/customer/CustomerViewCart";
 import { useNavigate } from "react-router-dom";
+import CustomerViewCompeleterOrder from "../components/customer/CustomerViewAllCompeleteOrder";
 const CustomerHomePage = () => {
   const {
     token: { colorBgContainer },
@@ -457,6 +458,7 @@ const CustomerHomePage = () => {
             <div className="lato">
               <h1>{"Table Number: " + tableId}</h1>
             </div>
+
             <FloatButton
               icon={<BellOutlined />}
               description="Help"
@@ -468,19 +470,39 @@ const CustomerHomePage = () => {
               }}
               onClick={() => askForHelp()}
             />
+
             <FloatButton
               icon={<PayCircleOutlined />}
               description="Bill"
               shape="square"
               style={{
                 top: 20,
-                right: 120,
+                right: 100,
                 bottom: 1200,
               }}
               onClick={() => {
-                finishMeal();
+                triggerRenderAllPreviousOrder();
               }}
             />
+            <Modal
+              open={viewCompeleteOrder}
+              onCancel={untriggerRenderAllPreviousOrder}
+              footer={null}
+              destroyOnClose={true}
+              closable={false}
+              centered={true}
+              maskClosable={true}
+            >
+              <CustomerViewCompeleterOrder
+                tableId={tableId}
+                orderId={orderId}
+                onClose={untriggerRenderAllPreviousOrder}
+                compeleteOrderCost={compeleteOrderCost}
+                compeleteOrderData={compeleteOrder}
+              />
+              <Button onClick={() => finishMeal()}>Finish Meal</Button>
+            </Modal>
+
           </Header>
           <Content style={{ margin: "12px 16px", overflow: "initial" }}>
             <FloatButton
@@ -492,7 +514,6 @@ const CustomerHomePage = () => {
               }}
               onClick={() => {
                 triggerRenderCart();
-                triggerRenderAllPreviousOrder();
               }}
             />
             <Modal
@@ -510,8 +531,6 @@ const CustomerHomePage = () => {
                 cost={currentOrderCost}
                 data={cartData}
                 onClose={untriggerRenderCart}
-                compeleteOrderCost={compeleteOrderCost}
-                compeleteOrderData={compeleteOrder}
               />
               <Button onClick={() => checkOut()}>Place Current Order</Button>
             </Modal>
