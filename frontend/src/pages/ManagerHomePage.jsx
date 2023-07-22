@@ -1,31 +1,37 @@
-import { Layout, theme, Button, Typography, Modal, Anchor } from "antd";
+import { Layout, theme, Button, Modal, Popconfirm, Space } from "antd";
+import {
+  DeleteTwoTone,
+  LineChartOutlined,
+  PlusOutlined,
+  NumberOutlined,
+} from "@ant-design/icons";
 import React, { useState } from "react";
-import AddDishForm from "../components/AddDishForm";
-import AddCatForm from "../components/AddCatForm";
-import RemoveCatForm from "../components/RemoveCat";
+import AddDishForm from "../components/manager/AddDishForm";
+import AddCatForm from "../components/manager/AddCatForm";
+import DishGrid from "../components/manager/DishGrid";
 import "../App.css";
-const { Header, Content, Sider } = Layout;
-import DishGrid from "../components/DishGrid";
 import { ReactSortable } from "react-sortablejs";
-import { Link, Element } from 'react-scroll';
+import { Link, Element } from "react-scroll";
 
+const { Header, Content, Sider } = Layout;
 const ManagerHomePage = () => {
-
   const dragCatColor = {
     fontSize: "25px",
-    color:"#998900",
-
+    color: "#2131231",
   };
 
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+
   const [addDishOpen, addDishSetOpen] = useState(false);
   const [addCatOpen, addCatSetOpen] = useState(false);
   const [Category, setCategory] = useState([]);
   const [Dishes, setDishes] = useState([]);
   const [moveCat, SetMoveCat] = useState(false);
-  const [delCat,delCatOpen] = useState(false);
+  const [delCat, delCatOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   React.useEffect(() => {
     fetchCategory();
@@ -51,52 +57,49 @@ const ManagerHomePage = () => {
     console.log("Del Cat");
     delCatOpen(true);
   };
-  const handleCancelDelCat = () =>{
+  const handleCancelDelCat = () => {
     console.log("Cancel Del Cat");
     delCatOpen(false);
-  }
+  };
 
-  const buildMap = (keys,values) => {
+  const buildMap = (keys, values) => {
     const map = new Map();
-    for(let i = 0; i < keys.length; i++){
-       map.set(keys[i], values[i]);
-    };
+    for (let i = 0; i < keys.length; i++) {
+      map.set(keys[i], values[i]);
+    }
     return map;
-  }
+  };
 
   const fetchCatSeq = (data) => {
     //console.log(data)
-    var catNameList = [] = data.map((item)=>{
-      return item.categoryId
-    })
-    var catOrderList = [] = data.map((item)=>{
-      return item.index
-    })
-    console.log(catNameList)
-    console.log(catOrderList)
-    const newMap = buildMap(catNameList,catOrderList.sort());
+    var catNameList = ([] = data.map((item) => {
+      return item.categoryId;
+    }));
+    var catOrderList = ([] = data.map((item) => {
+      return item.index;
+    }));
+    console.log(catNameList);
+    console.log(catOrderList);
+    const newMap = buildMap(catNameList, catOrderList.sort());
     const obj = Object.fromEntries(newMap);
     const json = JSON.stringify(obj);
-    console.log(json)
-    fetch(
-      `http://localhost:8080/waitsys/manager/change_category_order`,
-    {
+    console.log(json);
+    fetch(`http://localhost:8080/waitsys/manager/change_category_order`, {
       method: "POST",
-      headers:{'Content-type': 'application/json'},
-      body: json
-    }
-    )
-    .then((response) => {
-      if (response.status === 200) {
-        console.log("Success:", response);
-      } else {
-        throw new Error("Failed to move dish.");
-      }
+      headers: { "Content-type": "application/json" },
+      body: json,
     })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
-  }
+      .then((response) => {
+        if (response.status === 200) {
+          console.log("Success:", response);
+        } else {
+          throw new Error("Failed to move dish.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
 
   // Fetch category
   const fetchCategory = async () => {
@@ -114,7 +117,7 @@ const ManagerHomePage = () => {
       const processedData = data.map((item) => ({
         categoryId: item.id,
         name: item.name,
-        index:item.orderNum
+        index: item.orderNum,
       }));
       setCategory(processedData);
     } catch (error) {
@@ -154,6 +157,29 @@ const ManagerHomePage = () => {
     }
   };
 
+  const DeleteCategory = (categoryId) => {
+    const formData = new FormData();
+    formData.append("itemId", categoryId);
+    fetch(
+      `http://localhost:8080/waitsys/manager/remove_category?id=${categoryId}`,
+      {
+        method: "POST",
+      }
+    )
+      .then((response) => {
+        if (response.status === 200) {
+          console.log("Delete success:", response);
+          message.success("Dish deleted successfully!");
+          onClose();
+        } else {
+          throw new Error("Failed to delete dish.");
+        }
+      })
+      .catch((error) => {
+        console.error("Delete failed:", error);
+      });
+  };
+
   const showAddDish = () => {
     console.log("Add Dish");
     addDishSetOpen(true);
@@ -174,14 +200,25 @@ const ManagerHomePage = () => {
     addCatSetOpen(false);
   };
 
-  const handleTest = () => {
-    console.log(Dish);
+  const confirm = (categoryId) => {
+    DeleteCategory(categoryId);
   };
 
+  const cancel = (e) => {
+    console.log(e);
+  };
+
+  const handleBreakpoint = (broken) => {
+    setIsSmallScreen(broken);
+  };
+
+  const handleCollapse = (collapsed, type) => {
+    setIsCollapsed(collapsed);
+  };
   return (
-    <Layout>
+    <Layout hasSider>
       <Sider
-        theme="dark"
+        theme="light"
         style={{
           overflow: "auto",
           height: "100vh",
@@ -189,65 +226,79 @@ const ManagerHomePage = () => {
           left: 0,
           top: 0,
           bottom: 0,
+          boxShadow: "4px 0 8px rgba(0, 0, 0, 0.1)",
         }}
+        breakpoint="lg"
+        collapsedWidth="0"
+        onBreakpoint={handleBreakpoint}
+        onCollapse={handleCollapse}
       >
-        
-        <ReactSortable style = {dragCatColor} list={Category} setList={setCategory} onChange={fetchCatSeq(Category)}>
+        <div className="lato-bold" style={{ margin: "32px 25px" }}>
+          Menu
+        </div>
+        <ReactSortable
+          style={dragCatColor}
+          list={Category}
+          setList={setCategory}
+          onChange={fetchCatSeq(Category)}
+        >
           {Category.map((item, index) => (
-            <div className="draggableItem">
-              <Link activeClass="active" className={item.name} to={item.name} spy={true} smooth={true} duration={500} >{
-              }to</Link>
-              {item.name}
-              <Button onClick={showDelCat}>
-              Del</Button>
-              <Modal
-                open={delCat}
-                onCancel={handleCancelDelCat}
-                footer={null}
-                destroyOnClose={true}
-                closable={false}
-                centered={true}
-                maskClosable={true}
+            <div
+              className="draggableItem"
+              key={`category${index}`}
+              style={{
+                margin: "28px 25px",
+              }}
+            >
+              <Link
+                activeClass="active"
+                className={item.name}
+                to={item.name}
+                spy={true}
+                smooth={true}
+                duration={500}
+              ></Link>
+              <div className="category-container">{item.name}</div>
+              <Popconfirm
+                title="Delete the task"
+                description="Are you sure to delete this task?"
+                onConfirm={() => confirm(item.categoryId)}
+                onCancel={cancel}
               >
-              <RemoveCatForm categoryId={item.categoryId} onClose={handleCancelDelCat} />
-              </Modal>
-              {console.log(Category)}
+                <Button icon={<DeleteTwoTone />} onClick={showDelCat} />
+              </Popconfirm>
             </div>
-            
           ))}
         </ReactSortable>
       </Sider>
-      <Layout
-        className="site-layout"
-        style={{
-          marginLeft: 0,
-        }}
-      >
+      <Layout style={{ marginLeft: 200 }}>
         <Header
           style={{
-            background: colorBgContainer,
+            background: "#fff",
+            color: "#333",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            marginLeft: -10,
+            marginTop: -10,
+            boxShadow: "2px 5px 12px rgba(0, 0, 0, 0.1)",
           }}
         >
-          <div>
-            <Typography.Title
-              level={3}
-              style={{ color: "black", textAlign: "center" }}
-            >
-              Manager Home Page
-            </Typography.Title>
+          <div className="lato">
+            <h1>Manager Page</h1>
           </div>
         </Header>
-        <Content
-          style={{
-            margin: "24px 16px 0",
-            overflow: "initial",
-            minHeight: `calc(100vh - 64px)`,
-            marginLeft: 200,
-          }}
-        >
-          <Button onClick={showAddDish}>Add New Dish</Button>
-          <Button onClick={showAddCat}>Add New Category</Button>
-          <Button onClick={handleTest}>Test</Button>
+        <Content style={{ margin: "12px 16px", overflow: "initial" }}>
+          <Space size={12}>
+            <Button icon={<PlusOutlined />} onClick={showAddDish}>
+              Add New Dish
+            </Button>
+            <Button icon={<PlusOutlined />} onClick={showAddCat}>
+              Add New Category
+            </Button>
+            <Button icon={<NumberOutlined />}>Set Table Number</Button>
+            <Button icon={<LineChartOutlined />}>Statistics</Button>
+          </Space>
           <Modal
             open={addDishOpen}
             onCancel={handleCancelAddDish}
@@ -265,18 +316,10 @@ const ManagerHomePage = () => {
             <AddCatForm onClose={handleCancelAddCat} />
           </Modal>
           {Category.map((item, index) => (
-            <div
-              key={item.categoryId}
-              id={`grid${item.name}`}
-              style={{
-                height: "100vh",
-                background: `rgba(99,${index + 120},${index + 10},0.1)`,
-              }}
-            >
-              <Element name={item.name} className="element">
+            <div key={item.categoryId} id={`grid${item.name}`}>
+              <Element name={item.name} className="lato-small">
                 <h2>{item.name}</h2>
               </Element>
-
               <DishGrid categoryId={item.categoryId} AllDish={Dishes} />
             </div>
           ))}

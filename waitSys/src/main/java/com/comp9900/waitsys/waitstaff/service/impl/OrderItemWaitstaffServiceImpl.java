@@ -7,6 +7,7 @@ import com.comp9900.waitsys.waitstaff.service.OrderItemWaitstaffService;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import org.springframework.stereotype.Service;
 
+import static com.comp9900.waitsys.constant.Constant.ORDERITEM_ISSERVE_FALSE;
 import static com.comp9900.waitsys.constant.Constant.ORDERITEM_ISSERVE_TRUE;
 
 /**
@@ -17,9 +18,14 @@ import static com.comp9900.waitsys.constant.Constant.ORDERITEM_ISSERVE_TRUE;
 public class OrderItemWaitstaffServiceImpl  extends MPJBaseServiceImpl<OrderItemMapper, OrderItem> implements OrderItemWaitstaffService {
 
     @Override
-    public boolean modifyIsServe(Integer orderItemId) {
+    public Integer modifyIsServe(Integer orderItemId) {
         OrderItem orderItem=this.getById(orderItemId);
-        orderItem.setIsServe(ORDERITEM_ISSERVE_TRUE);
-        return updateById(orderItem);
+        Integer isServe=orderItem.getIsServe();
+        if (isServe==0){
+            orderItem.setIsServe(ORDERITEM_ISSERVE_TRUE);
+        }
+        else{orderItem.setIsServe(ORDERITEM_ISSERVE_FALSE);}
+        updateById(orderItem);
+        return orderItem.getIsServe();
     }
 }

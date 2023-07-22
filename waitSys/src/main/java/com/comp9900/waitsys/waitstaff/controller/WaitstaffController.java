@@ -36,7 +36,7 @@ public class WaitstaffController {
     }
 
     @PostMapping("/modify_order_item_is_serve")
-    public boolean modifyIsServe(@RequestParam(value = "orderItemId")Integer orderItemId){
+    public Integer modifyIsServe(@RequestParam(value = "orderItemId")Integer orderItemId){
         return orderItemWaitstaffService.modifyIsServe(orderItemId);
     }
 }

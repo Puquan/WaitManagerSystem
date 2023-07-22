@@ -42,6 +42,7 @@ public class Constant {
     // value of order isComplete when table requests bill and ready to pay
     public static final Integer ORDER_ISCOMPLETE_FINISH = 2;
 
+
     // value of orderItem isCook when item of this order is cooked
     public static final Integer ORDERITEM_ISCOOK_TRUE = 1;
 

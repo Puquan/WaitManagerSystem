@@ -1,4 +1,4 @@
-import { Card, List,message} from "antd";
+import { Card, List,message,  Row, Col,} from "antd";
 import * as React from "react";
 import DishCard from "./DishCard";
 const { Meta } = Card;
@@ -125,14 +125,9 @@ const GridList = ({ categoryId, AllDish }) => {
   };
 
   return (
-    <List
-      grid={{
-        gutter: 16,
-        column: 4,
-      }}
-      dataSource={dishes}
-      renderItem={(dish) => (
-        <List.Item>
+    <Row gutter={[16, 16]}>
+      {dishes.map((dish) => (
+        <Col key={dish.id} xs={24} sm={12} md={8} lg={6}>
           <DishCard
             MoveRight={() => MoveRight(dish.id)}
             MoveLeft={() => MoveLeft(dish.id)}
@@ -142,9 +137,9 @@ const GridList = ({ categoryId, AllDish }) => {
             ItemId={dish.id}
             picture={dish.picture}
           />
-        </List.Item>
-      )}
-    />
+        </Col>
+      ))}
+    </Row>
   );
 };
 

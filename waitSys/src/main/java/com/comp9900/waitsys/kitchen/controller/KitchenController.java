@@ -30,7 +30,7 @@ public class KitchenController {
     }
 
     @PostMapping("/modify_order_item_is_cook")
-    public boolean modifyOrderItemIsCook(@RequestParam(value = "orderItemId") Integer orderItemId){
+    public Integer modifyOrderItemIsCook(@RequestParam(value = "orderItemId") Integer orderItemId){
         return kitchenOrderItemService.modifyOrderItemIsCook(orderItemId);
     }
 

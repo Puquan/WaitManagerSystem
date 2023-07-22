@@ -36,9 +36,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         LambdaQueryWrapper<Order> lqwOrder = new LambdaQueryWrapper<>();
         lqwOrder.eq(Order::getTableId, tableId).eq(Order::getIsComplete, Constant.ORDER_ISCOMPLETE_ORDERING);
         // need to delete all order_items which orderId = orderId
-         Order order = getOne(lqwOrder);
-         Integer orderId = order.getOrderId();
-         orderItemService.deleteOrderItemsByOrder(orderId);
+        // Order order = getOne(lqwOrder);
+        // Integer orderId = order.getOrderId();
+        // orderItemService.deleteOrderItemsByOrder(orderId);
         return remove(lqwOrder);
     }
 
