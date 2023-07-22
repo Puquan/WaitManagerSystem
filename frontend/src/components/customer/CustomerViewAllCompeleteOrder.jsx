@@ -25,7 +25,7 @@ const CustomerViewCompeleterOrder = ({
     if (isInitialMount1.current) {
       isInitialMount1.current = false;
     } else {
-      console.log("1");
+      
       fetchAllCompeleteOrder();
       getAllPreviousOrderCost();
     }
@@ -44,12 +44,11 @@ const CustomerViewCompeleterOrder = ({
       }
     )
       .then(async (response) => {
-        console.log(response);
+        
         if (response.status === 200) {
           // cant catch error due to no-cors
           const data = await response.json();
-          console.log("Collect all previous order cost!");
-          console.log(data);
+
           setNewCompeleteOrderCost(parseFloat(data));
         } else {
           throw new Error("Error Collect current order cost");
@@ -73,12 +72,12 @@ const CustomerViewCompeleterOrder = ({
       }
     )
       .then(async (response) => {
-        console.log(response);
+        
         if (response.status === 200) {
           // cant catch error due to no-cors
-          console.log("Finish Collect Previous Order Information!");
+          
           const data = await response.json();
-          console.log(data);
+          
           const processedData = data.map((item) => ({
             id: item.itemId,
             title: item.itemName,

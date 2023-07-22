@@ -12,6 +12,8 @@ import {
 import CustomerViewCart from "../components/customer/CustomerViewCart";
 import { useNavigate } from "react-router-dom";
 import CustomerViewCompeleterOrder from "../components/customer/CustomerViewAllCompeleteOrder";
+import CustomerRate from "../components/customer/CustomerRate";
+
 const CustomerHomePage = () => {
   const {
     token: { colorBgContainer },
@@ -38,6 +40,8 @@ const CustomerHomePage = () => {
   const isInitialMount1 = useRef(true);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [startRate,setStartRate] = useState(false);
+  const [orderIdsForRating,setOrderIdsForRating] = useState(); 
 
   React.useEffect(() => {
     readLocalTableId();
@@ -385,9 +389,14 @@ const CustomerHomePage = () => {
         console.log(response2);
         if (response2.status === 200) {
           // cant catch error due to no-cors
+          const orderIds = await response2.json();
           message.success("Request Bill Successfully");
           console.log("Request Bill Successfully");
+          untriggerRenderAllPreviousOrder();
           setReadyToGo(true);
+          console.log(orderIds);
+          setOrderIdsForRating(orderIds);
+          setStartRate(true);
         } else {
           throw new Error("Error Finish Payment");
         }
@@ -395,6 +404,7 @@ const CustomerHomePage = () => {
       .catch((error) => {
         console.log("Error:", error);
       });
+    
   };
 
   const handleBreakpoint = (broken) => {
@@ -501,6 +511,21 @@ const CustomerHomePage = () => {
                 compeleteOrderData={compeleteOrder}
               />
               <Button onClick={() => finishMeal()}>Finish Meal</Button>
+            </Modal>
+
+            <Modal
+              open={startRate}
+              footer={null}
+              destroyOnClose={true}
+              closable={false}
+              centered={true}
+              maskClosable={false}
+            >
+              <CustomerRate
+                tableId={tableId}
+                orderIds={orderIdsForRating}
+                data = {compeleteOrder}
+              />
             </Modal>
 
           </Header>
