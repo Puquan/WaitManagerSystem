@@ -22,6 +22,7 @@ const GridList = ({ categoryId, AllDish, tableId, orderId }) => {
         }
       );
       const data = await response.json();
+      console.log(data);
       // Process data and set it to the component state
       const processedData = data.records.map((item) => ({
         title: item.name,
@@ -29,6 +30,7 @@ const GridList = ({ categoryId, AllDish, tableId, orderId }) => {
         index: item.orderNum,
         id: item.itemId,
         picture: `data:image/jpeg;base64, ${item.picture}`,
+        rating:item.rating,
       }));
       setDishes(processedData);
     } catch (error) {
@@ -48,6 +50,7 @@ const GridList = ({ categoryId, AllDish, tableId, orderId }) => {
             picture={dish.picture}
             tableId={tableId}
             orderId={orderId}
+            itemRate={dish.rating}
           />
         </Col>
       ))}

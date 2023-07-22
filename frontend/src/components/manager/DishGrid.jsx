@@ -73,6 +73,7 @@ const GridList = ({ categoryId, AllDish }) => {
         index: item.orderNum,
         id: item.itemId,
         picture: `data:image/jpeg;base64, ${item.picture}`,
+        rating:item.rating
       }));
       setDishes(processedData);
     } catch (error) {
@@ -157,13 +158,12 @@ const GridList = ({ categoryId, AllDish }) => {
         <Col key={dish.id} xs={24} sm={12} md={8} lg={6}>
           <div style={{margin:'24px'}}>
             <DishCard
-              MoveRight={() => MoveRight(dish.id)}
-              MoveLeft={() => MoveLeft(dish.id)}
               title={dish.title}
               price={dish.price}
               index={dish.index}
               ItemId={dish.id}
               picture={dish.picture}
+              itemRate={dish.rating}
             />
          </div>
 

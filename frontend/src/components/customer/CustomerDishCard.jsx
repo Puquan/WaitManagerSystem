@@ -1,4 +1,4 @@
-import { Card, Modal } from "antd";
+import { Card, Modal,Rate } from "antd";
 import CustomerDetailedDish from "./CustomerDetailedDish";
 import { useState } from "react";
 import * as React from "react";
@@ -11,6 +11,7 @@ const CustomerDishCard = ({
   picture,
   tableId,
   orderId,
+  itemRate
 }) => {
   const [showDetail, updateShowDetail] = useState(false);
 
@@ -50,6 +51,7 @@ const CustomerDishCard = ({
         />
       </Modal>
       <Meta title={title} description={"$" + price} />
+      <Rate disabled defaultValue={itemRate} />
     </Card>
   );
 };
