@@ -12,6 +12,7 @@ import DishGrid from "../components/manager/DishGrid";
 import "../App.css";
 import { ReactSortable } from "react-sortablejs";
 import { Link, Element } from "react-scroll";
+import { useNavigate } from "react-router-dom";
 
 const { Header, Content, Sider } = Layout;
 const ManagerHomePage = () => {
@@ -28,6 +29,7 @@ const ManagerHomePage = () => {
   const [addCatOpen, addCatSetOpen] = useState(false);
   const [Category, setCategory] = useState([]);
   const [Dishes, setDishes] = useState([]);
+  const navigate = useNavigate();
   const [moveCat, SetMoveCat] = useState(false);
   const [delCat, delCatOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -123,6 +125,12 @@ const ManagerHomePage = () => {
     } catch (error) {
       console.error("Error:", error);
     }
+  };
+
+  const goStatisticsPage = () => {
+    const targetUrl = "/statistics";
+    console.log("Go to statistics page");
+    navigate(targetUrl);
   };
 
   const fetchAllDishes = async () => {
@@ -297,7 +305,9 @@ const ManagerHomePage = () => {
               Add New Category
             </Button>
             <Button icon={<NumberOutlined />}>Set Table Number</Button>
-            <Button icon={<LineChartOutlined />}>Statistics</Button>
+            <Button onClick={goStatisticsPage} icon={<LineChartOutlined />}>
+              Statistics
+            </Button>
           </Space>
           <Modal
             open={addDishOpen}
