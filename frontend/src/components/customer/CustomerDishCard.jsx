@@ -1,4 +1,4 @@
-import { Card, Modal,Rate } from "antd";
+import { Card, Modal, Rate } from "antd";
 import CustomerDetailedDish from "./CustomerDetailedDish";
 import { useState } from "react";
 import * as React from "react";
@@ -11,7 +11,7 @@ const CustomerDishCard = ({
   picture,
   tableId,
   orderId,
-  itemRate
+  itemRate,
 }) => {
   const [showDetail, updateShowDetail] = useState(false);
 

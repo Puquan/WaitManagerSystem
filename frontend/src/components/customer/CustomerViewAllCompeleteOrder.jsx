@@ -25,7 +25,6 @@ const CustomerViewCompeleterOrder = ({
     if (isInitialMount1.current) {
       isInitialMount1.current = false;
     } else {
-      
       fetchAllCompeleteOrder();
       getAllPreviousOrderCost();
     }
@@ -44,7 +43,6 @@ const CustomerViewCompeleterOrder = ({
       }
     )
       .then(async (response) => {
-        
         if (response.status === 200) {
           // cant catch error due to no-cors
           const data = await response.json();
@@ -72,12 +70,11 @@ const CustomerViewCompeleterOrder = ({
       }
     )
       .then(async (response) => {
-        
         if (response.status === 200) {
           // cant catch error due to no-cors
-          
+
           const data = await response.json();
-          
+
           const processedData = data.map((item) => ({
             id: item.itemId,
             title: item.itemName,

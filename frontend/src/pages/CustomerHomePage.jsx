@@ -40,8 +40,8 @@ const CustomerHomePage = () => {
   const isInitialMount1 = useRef(true);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
-  const [startRate,setStartRate] = useState(false);
-  const [orderIdsForRating,setOrderIdsForRating] = useState(); 
+  const [startRate, setStartRate] = useState(false);
+  const [orderIdsForRating, setOrderIdsForRating] = useState();
 
   React.useEffect(() => {
     readLocalTableId();
@@ -404,7 +404,6 @@ const CustomerHomePage = () => {
       .catch((error) => {
         console.log("Error:", error);
       });
-    
   };
 
   const handleBreakpoint = (broken) => {
@@ -524,10 +523,9 @@ const CustomerHomePage = () => {
               <CustomerRate
                 tableId={tableId}
                 orderIds={orderIdsForRating}
-                data = {compeleteOrder}
+                data={compeleteOrder}
               />
             </Modal>
-
           </Header>
           <Content style={{ margin: "12px 16px", overflow: "initial" }}>
             <FloatButton
@@ -557,7 +555,13 @@ const CustomerHomePage = () => {
                 data={cartData}
                 onClose={untriggerRenderCart}
               />
-              <Button onClick={() => checkOut()}>Place Current Order</Button>
+              <Button
+                style={{ backgroundColor: "green", marginTop: 5 }}
+                type="primary"
+                onClick={() => checkOut()}
+              >
+                Place Order
+              </Button>
             </Modal>
             {Category.map((item) => (
               <div key={item.categoryId} id={`grid${item.name}`}>

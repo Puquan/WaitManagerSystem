@@ -2,20 +2,13 @@ import React, { useState, useRef } from "react";
 import { List, Divider, Statistic, Button } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 
-const CustomerViewCart = ({
-  onClose,
-  data,
-  cost,
-  tableId,
-  orderId,
-}) => {
+const CustomerViewCart = ({ onClose, data, cost, tableId, orderId }) => {
   const [position, setPosition] = useState("bottom");
   const [align, setAlign] = useState("center");
   const [newTableId, setNewTableId] = useState(parseInt(tableId));
   const [newOrderId, setNewOrderId] = useState(parseInt(orderId));
   const [newCost, setNewCost] = useState(parseFloat(cost));
   const [newData, setNewData] = useState(data);
-
 
   const isInitialMount1 = useRef(true);
 
@@ -134,14 +127,14 @@ const CustomerViewCart = ({
                   style={{ width: 50, height: 50 }}
                 />
               }
-              title={item.title + " " + "*" + item.amount.toString()}
-              description={"Price:  " + item.price.toString()}
+              title={item.title + " " + "* " + item.amount.toString()}
+              description={"$" + item.price.toString()}
             ></List.Item.Meta>
           </List.Item>
         )}
       />
       <Divider />
-      <Statistic title="Current Order Cost (AUD)" value={newCost} />
+      <Statistic title="Total Cost" value={`$${newCost}`} />
     </>
   );
 };

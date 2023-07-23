@@ -11,7 +11,7 @@ const KitchenPage = () => {
     const interval = setInterval(() => {
       fetchKitchenOrders(); // 每隔一段时间执行一次
       console.log("fetching kitchen orders");
-    }, 5000); // 间隔时间为 5 秒
+    }, 2000); // 间隔时间为 2 秒
     return () => {
       clearInterval(interval); // 组件卸载时清除定时器
     };
