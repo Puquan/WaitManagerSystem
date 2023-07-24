@@ -15,7 +15,7 @@ import java.util.Arrays;
 @TableName("Item")
 public class Item implements Serializable{
     @TableId(type = IdType.AUTO)
-    private Integer itemId;
+    public Integer itemId;
     private String name;
     private byte[] picture;
     private String description;

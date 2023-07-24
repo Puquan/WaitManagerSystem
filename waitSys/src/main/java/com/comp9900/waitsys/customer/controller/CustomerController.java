@@ -43,6 +43,11 @@ public class CustomerController {
         return tableService.showAllAvailable();
     }
 
+    @GetMapping("/table/getTableNum")
+    public Integer getTableNumber(){
+        return tableService.getTableNumber();
+    }
+
     @PostMapping("start")
     public Map<String, Integer> startMeal(@RequestParam(value = "tableId") Integer tableId){
         Map<String,Integer> resultMap = new HashMap<>();

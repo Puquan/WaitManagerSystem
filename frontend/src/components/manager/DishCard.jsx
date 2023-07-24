@@ -1,4 +1,4 @@
-import { Card, Modal, Button,Rate } from "antd";
+import { Card, Modal, Button,Rate,Divider,Tag } from "antd";
 import { EditOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 import ModifyDishForm from "./ModifyDishForm";
 import { useState } from "react";
@@ -17,6 +17,8 @@ const DishCard = ({ itemRate,ItemId, title, price,picture }) => {
     console.log("Cancel Update Dish");
     updateDishSetOpen(false);
   };
+
+  const isItemRatedZero = itemRate === 0;
 
   return (
     <Card
@@ -52,7 +54,19 @@ const DishCard = ({ itemRate,ItemId, title, price,picture }) => {
         <ModifyDishForm itemId={ItemId} onClose={handleCancelUpdateDish} />
       </Modal>
       <Meta title={title} description={`$${price}`} />
-      <Rate disabled defaultValue={itemRate} />
+      <Divider />
+      <div>{isItemRatedZero ? (
+        <div style={{ display: "flex", alignItems: "center" }}>
+        <Tag style={{ height: 30, lineHeight: `30px`, marginBottom: 0 }} color="blue">
+          Not Rate
+        </Tag>
+        </div>
+      ) : (
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Rate disabled defaultValue={itemRate} style={{ height: 30, lineHeight: '30px', marginBottom: 0 }} />
+        </div>
+        
+      )}</div>
     </Card>
   );
 };

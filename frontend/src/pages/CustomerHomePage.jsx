@@ -10,9 +10,10 @@ import {
   BellOutlined,
 } from "@ant-design/icons";
 import CustomerViewCart from "../components/customer/CustomerViewCart";
-import { useNavigate } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import CustomerViewCompeleterOrder from "../components/customer/CustomerViewAllCompeleteOrder";
 import CustomerRate from "../components/customer/CustomerRate";
+
 
 const CustomerHomePage = () => {
   const {
@@ -23,8 +24,6 @@ const CustomerHomePage = () => {
 
   const [orderId, setOrderId] = useState();
   const [tableId, setTableId] = useState();
-  const [addDishOpen, addDishSetOpen] = useState(false);
-  const [addCatOpen, addCatSetOpen] = useState(false);
   const [Category, setCategory] = useState([]);
   const [Dishes, setDishes] = useState([]);
   const [helpStatus, setHelpStatus] = useState(false);
@@ -36,12 +35,11 @@ const CustomerHomePage = () => {
   const [compeleteOrderCost, setCompeleteOrderCost] = useState();
   const [paymentStatus, setPaymentStatus] = useState(false);
   const [readyToGo, setReadyToGo] = useState(false);
-  const [hasOrder, setHasOrder] = useState(false);
-  const isInitialMount1 = useRef(true);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [startRate, setStartRate] = useState(false);
   const [orderIdsForRating, setOrderIdsForRating] = useState();
+  const [checkLocalReady,setCheckLocalReady] = useState(false); 
 
   React.useEffect(() => {
     readLocalTableId();
@@ -413,6 +411,25 @@ const CustomerHomePage = () => {
   const handleCollapse = (collapsed, type) => {
     setIsCollapsed(collapsed);
   };
+
+  const checkTableAndOrder = () => {
+    const tableId = localStorage.getItem("tableId");
+    const orderId = localStorage.getItem("orderId");
+    if (!tableId || !orderId) {
+      navigate("/"); 
+    }
+  };
+
+React.useEffect(() => {
+  // 在组件挂载时执行检查
+  checkTableAndOrder();
+}, []);
+
+React.useEffect(() => {
+  // 在组件挂载时执行检查
+  checkTableAndOrder();
+}, []);
+
 
   return (
     <>

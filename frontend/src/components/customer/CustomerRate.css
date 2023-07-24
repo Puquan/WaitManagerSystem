@@ -1,0 +1,17 @@
+/* CustomerRate.css */
+.centered-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 25px; /* Adjust the height as needed */
+    font-family: "Arial", sans-serif; /* Custom font family */
+  }
+  
+.centered-message p {
+  font-size: 24px; /* Custom font size */
+  color: #2b4f75; /* Custom font color */
+}
+
+.hide-button {
+  display: none;
+}

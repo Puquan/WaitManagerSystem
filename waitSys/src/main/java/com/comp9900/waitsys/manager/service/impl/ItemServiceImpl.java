@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.comp9900.waitsys.constant.Constant;
+import com.comp9900.waitsys.customer.entity.OrderItem;
 import com.comp9900.waitsys.manager.entity.Category;
 import com.comp9900.waitsys.manager.entity.Item;
 import com.comp9900.waitsys.manager.entity.ItemVO;
@@ -16,8 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Wei Chen
@@ -126,7 +127,8 @@ public class ItemServiceImpl extends ServiceImpl<ItemMapper, Item> implements It
                 .selectAs(Category::getName, ItemVO::getCategory)
                 .orderByDesc(Item::getRating)
                 .eq(Item::getIsOnMenu, Constant.TRUE_VALUE)
-                .eq(Category::getIsOnMenu, Constant.TRUE_VALUE);
+                .eq(Category::getIsOnMenu, Constant.TRUE_VALUE)
+                .last("limit 5");
         List<ItemVO> itemVOList = itemMapper.selectJoinList(ItemVO.class, wrapper);
         return itemVOList;
     }
@@ -149,7 +151,9 @@ public class ItemServiceImpl extends ServiceImpl<ItemMapper, Item> implements It
         MPJLambdaWrapper<Item> wrapper = JoinWrappers.lambda(Item.class)
                 .selectAll(Item.class)
                 .leftJoin(Category.class, Category::getCategoryId, Item::getCategoryId)
-                .selectAs(Category::getName, ItemVO::getCategory);
+                .selectAs(Category::getName, ItemVO::getCategory)
+                .eq(Item::getIsOnMenu, Constant.TRUE_VALUE)
+                .eq(Category::getIsOnMenu, Constant.TRUE_VALUE);
         List<ItemVO> itemVOList = itemMapper.selectJoinList(ItemVO.class, wrapper);
         return itemVOList;
     }
@@ -160,8 +164,46 @@ public class ItemServiceImpl extends ServiceImpl<ItemMapper, Item> implements It
                 .selectAll(Item.class)
                 .leftJoin(Category.class, Category::getCategoryId, Item::getCategoryId)
                 .selectAs(Category::getName, ItemVO::getCategory)
-                .eq(Item::getCategoryId, categoryId);
+                .eq(Item::getCategoryId, categoryId)
+                .eq(Item::getIsOnMenu, Constant.TRUE_VALUE)
+                .eq(Category::getIsOnMenu, Constant.TRUE_VALUE);
         List<ItemVO> itemVOList = itemMapper.selectJoinList(ItemVO.class, wrapper);
         return itemVOList;
+    }
+
+    @Override
+    public List<ItemVO> showTop5SaleItems() {
+        MPJLambdaWrapper<Item> wrapper = JoinWrappers.lambda(Item.class)
+                .selectAll(Item.class)
+                .leftJoin(Category.class, Category::getCategoryId, Item::getCategoryId)
+                .selectAs(Category::getName, ItemVO::getCategory)
+                .leftJoin(OrderItem.class, OrderItem::getItemId, Item::getItemId)
+                .eq(Item::getIsOnMenu, Constant.TRUE_VALUE)
+                .eq(Category::getIsOnMenu, Constant.TRUE_VALUE);
+        List<ItemVO> itemVOList = itemMapper.selectJoinList(ItemVO.class, wrapper);
+        Map<ItemVO, Integer> map = new LinkedHashMap<>();
+        for (ItemVO itemVO: itemVOList) {
+            if (!map.containsKey(itemVO)) {
+                map.put(itemVO, 1);
+            }
+            else {
+                map.put(itemVO, map.get(itemVO) + 1);
+            }
+        }
+        List<ItemVO> itemVOS = map.entrySet().stream()
+                .sorted((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+        List<ItemVO> res = new LinkedList<>();
+        for (int i = 0; i < itemVOS.size(); i++) {
+            if (i < 5) {
+                res.add(itemVOS.get(i));
+            }
+            else {
+                break;
+            }
+        }
+        res.forEach(System.out::println);
+        return res;
     }
 }

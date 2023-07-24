@@ -46,6 +46,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     public boolean orderById(Integer orderId) {
         Order order = getById(orderId);
         order.setIsComplete(Constant.ORDER_ISCOMPLETE_START);
+        order.setStartTime(new Timestamp(System.currentTimeMillis()));
         return updateById(order);
     }
 

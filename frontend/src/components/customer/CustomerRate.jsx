@@ -1,8 +1,11 @@
 import React, { useState, useRef } from "react";
-import { List, Divider, Statistic, Button, Rate, message } from "antd";
+import { List, Divider, Modal, Button, Rate, message } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
+import "./CustomerRate.css";
 
 const CustomerRate = ({ data, tableId, orderIds }) => {
+  const [showThanks, setShowThanks] = useState(false); 
+  
   const [rateList, setRateList] = useState(
     data.map((item) => ({
       itemId: item.id,
@@ -44,6 +47,7 @@ const CustomerRate = ({ data, tableId, orderIds }) => {
         }
       );
       if (response.status === 200) {
+        setShowThanks(true);
         message.success("Rate Succefffully!");
         console.log("Rate Succefffully!");
       } else {
@@ -58,7 +62,13 @@ const CustomerRate = ({ data, tableId, orderIds }) => {
     <>
       <div>Table {tableId}</div>
       <Divider />
-      <List
+      <div >{showThanks ? (
+        <div className="centered-message">    
+        <p >Thanks for rating!</p>    
+        </div>
+      ) : (
+        <div>
+          <List
         dataSource={data}
         renderItem={(item) => (
           <List.Item>
@@ -78,7 +88,13 @@ const CustomerRate = ({ data, tableId, orderIds }) => {
           </List.Item>
         )}
       />
-      <Button type="primary" onClick={handleSubmit}>
+      </div>
+      )}</div>
+      <Button
+        type="primary"
+        onClick={handleSubmit}
+        className={showThanks ? "hide-button" : ""}
+      >
         Submit Rating
       </Button>
     </>

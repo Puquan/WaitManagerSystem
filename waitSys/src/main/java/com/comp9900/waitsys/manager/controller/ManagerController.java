@@ -92,6 +92,11 @@ public class ManagerController {
         return itemService.showTop5Item();
     }
 
+    @GetMapping("/item/showTopSale5")
+    public List<ItemVO> showTopSale5() {
+        return itemService.showTop5SaleItems();
+    }
+
     @PostMapping("/item/changeOrder")
     public boolean changeOrder(@RequestBody HashMap<Integer, Integer> itemMap) {
         return itemService.changeItemOrderNum(itemMap);

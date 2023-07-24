@@ -1,5 +1,7 @@
 package com.comp9900.waitsys.manager.entity;
 
+import java.util.Objects;
+
 /**
  * @author Wei Chen
  * Date:2023-06-25 23:00
@@ -28,7 +30,20 @@ public class ItemVO extends Item{
     @Override
     public String toString() {
         return "ItemVO{" +
-                "category='" + category + '\'' +
+                "itemId='" + itemId + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ItemVO itemVO = (ItemVO) o;
+        return Objects.equals(itemId, itemVO.itemId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(itemId);
     }
 }

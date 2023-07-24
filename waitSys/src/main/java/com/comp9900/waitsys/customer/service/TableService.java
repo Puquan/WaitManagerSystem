@@ -19,6 +19,12 @@ public interface TableService extends IService<Table> {
     List<Integer> showAllAvailable();
 
     /**
+     * return the total number of tables
+     * @return number of tables
+     */
+    Integer getTableNumber();
+
+    /**
      * add new table
      * default state = TABLE_EMPTY, needHelp = NO_NEED_HELP
      * @return true or false

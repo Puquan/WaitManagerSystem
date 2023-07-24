@@ -85,4 +85,9 @@ public class TableServiceImpl extends ServiceImpl<TableMapper, Table> implements
         Table table=getById(tableId);
         return table;
     }
+
+    @Override
+    public Integer getTableNumber() {
+        return list().size();
+    }
 }

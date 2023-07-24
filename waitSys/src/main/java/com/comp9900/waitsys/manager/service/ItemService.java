@@ -89,6 +89,8 @@ public interface ItemService extends IService<Item> {
      */
     List<ItemVO> showTop5Item();
 
+    List<ItemVO> showTop5SaleItems();
+
     /**
      * show the item information by itemId
      * @param itemId item id

@@ -1,4 +1,4 @@
-import { Card, Modal, Rate } from "antd";
+import { Card, Divider, Modal, Rate,Tag } from "antd";
 import CustomerDetailedDish from "./CustomerDetailedDish";
 import { useState } from "react";
 import * as React from "react";
@@ -27,6 +27,8 @@ const CustomerDishCard = ({
     }, 0);
   };
 
+  const isItemRatedZero = itemRate === 0;
+
   return (
     <Card
       cover={
@@ -51,7 +53,20 @@ const CustomerDishCard = ({
         />
       </Modal>
       <Meta title={title} description={"$" + price} />
-      <Rate disabled defaultValue={itemRate} />
+      <Divider />
+      <div>{isItemRatedZero ? (
+        <div style={{ display: "flex", alignItems: "center" }}>
+        <Tag style={{ height: 30, lineHeight: `30px`, marginBottom: 0 }} color="blue">
+          Not Rate
+        </Tag>
+        </div>
+      ) : (
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Rate disabled defaultValue={itemRate} style={{ height: 30, lineHeight: '30px', marginBottom: 0 }} />
+        </div>
+        
+      )}</div>
+       
     </Card>
   );
 };
