@@ -1,4 +1,4 @@
-import { Layout, theme, Button, Modal, Popconfirm, Space } from "antd";
+import { Layout, theme, Button, Modal, Popconfirm, Space, message } from "antd";
 import {
   DeleteTwoTone,
   LineChartOutlined,
@@ -188,6 +188,39 @@ const ManagerHomePage = () => {
       });
   };
 
+
+  const addTableHandler = () => {
+    // Make a POST request to add a table to the backend
+    fetch("http://localhost:8080/waitsys/customer/table/addTable", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log("Table added successfully!");
+          // Fetch the total number of tables to display the message
+          fetch("http://localhost:8080/waitsys/customer/table/getTableNum")
+            .then((response) => response.text()) // Use response.text() instead of response.json()
+            .then((totalTables) => {
+              if (totalTables === "") {
+                throw new Error("Total tables is undefined.");
+              }
+              message.success(`Table added successfully! Total tables: ${totalTables}`);
+            })
+            .catch((error) => {
+              console.error("Error while fetching table data:", error);
+            });
+        } else {
+          throw new Error("Failed to add a table.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
   const showAddDish = () => {
     console.log("Add Dish");
     addDishSetOpen(true);
@@ -304,7 +337,9 @@ const ManagerHomePage = () => {
             <Button icon={<PlusOutlined />} onClick={showAddCat}>
               Add New Category
             </Button>
-            <Button icon={<NumberOutlined />}>Set Table Number</Button>
+            <Button icon={<PlusOutlined />} onClick={addTableHandler}>
+              Add Table
+            </Button>
             <Button onClick={goStatisticsPage} icon={<LineChartOutlined />}>
               Statistics
             </Button>
