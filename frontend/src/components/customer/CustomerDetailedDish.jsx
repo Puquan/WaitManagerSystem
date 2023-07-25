@@ -79,24 +79,30 @@ const CustomerDetailedDish = ({ itemId, tableId, orderId }) => {
   };
 
   return (
-    <Card title={title} bordered={false}>
+    <Card title={<strong style={{ fontSize: "24px" }}>{title}</strong>} bordered={false}>
       <img
+        alt="image"
         src={picture}
-        style={{ width: "100%", height: 200, alignItems: "center" }}
+        style={{ width: "100%", height: 320 }}
       />
-      <p>Description</p>
-      <Divider />
-      <p>{description}</p>
-      <Divider />
-      <p>Ingredients</p>
-      <Divider />
-      <p>{ingredient}</p>
-      <Divider />
-      <p>Price</p>
-      <Divider />
-      <p>{price}</p>
-      <Divider />
-      <Button onClick={() => addDishMethod()}>Add Dish</Button>
+      <div style={{ padding: "16px", textAlign: "left" }}>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <strong style={{ flex: "0 0 120px", marginRight: "8px" }}>Description:</strong>
+          <p>{description}</p>
+        </div>
+        <Divider style={{ margin: "8px 0" }} />
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <strong style={{ flex: "0 0 120px", marginRight: "8px" }}>Ingredients:</strong>
+          <p>{ingredient}</p>
+        </div>
+        <Divider style={{ margin: "8px 0" }} />
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <strong style={{ flex: "0 0 120px", marginRight: "8px" }}>Price:</strong>
+          <p>{price}</p>
+        </div>
+        <Divider style={{ margin: "8px 0" }} />
+        <Button onClick={() => addDishMethod()}>Add Dish</Button>
+      </div>
     </Card>
   );
 };
