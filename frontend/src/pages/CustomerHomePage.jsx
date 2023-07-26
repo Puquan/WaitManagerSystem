@@ -13,6 +13,7 @@ import CustomerViewCart from "../components/customer/CustomerViewCart";
 import { useNavigate} from "react-router-dom";
 import CustomerViewCompeleterOrder from "../components/customer/CustomerViewAllCompeleteOrder";
 import CustomerRate from "../components/customer/CustomerRate";
+import CarouselComponent from "../components/customer/CarouselComponent";
 
 
 const CustomerHomePage = () => {
@@ -40,6 +41,13 @@ const CustomerHomePage = () => {
   const [startRate, setStartRate] = useState(false);
   const [orderIdsForRating, setOrderIdsForRating] = useState();
   const [checkLocalReady,setCheckLocalReady] = useState(false); 
+  const [topRatingDish, setTopRatingDish] = useState([]);
+  const [topSellingDish, setTopSellingDish] = useState([]);
+
+  React.useEffect(() => {
+    fetchTopRatingDish();
+    fetchTopSellingDish();
+  }, []);
 
   React.useEffect(() => {
     readLocalTableId();
@@ -120,7 +128,82 @@ const CustomerHomePage = () => {
     setViewCompeleteOrder(false);
   };
 
-  // Fetch category
+  // Fetch
+  const fetchTopRatingDish = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/waitsys/manager/item/showTop5",
+      {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json",
+        },
+      }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        if (Array.isArray(data)) {
+          const processedData = data.map((item) => ({
+            itemId: item.itemId,
+            name: item.name,
+            picture: item.picture,
+            description: item.description,
+            ingredient: item.ingredient,
+            price: item.price,
+            categoryId: item.categoryId,
+            rating: item.rating,
+            isOnMenu: item.isOnMenu,
+            orderNum: item.orderNum,
+            category: item.category,
+          }));
+          setTopRatingDish(processedData);
+          console.log("Top Rating Dishes:", processedData);
+        }
+      } else {
+        console.error("Error fetching top rating dish:", response.status);
+      }
+    } catch (error) {
+      console.error("Error fetching top rating dish:", error);
+    }
+  };
+  
+  const fetchTopSellingDish = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8080/waitsys/manager/item/showTopSale5",
+        {
+          method: "GET",
+          headers: {
+            "Content-type": "application/json",
+          },
+        }
+        );
+      if (response.ok) {
+        const data = await response.json();
+        if (Array.isArray(data)) {
+          const processedData = data.map((item) => ({
+            itemId: item.itemId,
+            name: item.name,
+            picture: item.picture,
+            description: item.description,
+            ingredient: item.ingredient,
+            price: item.price,
+            categoryId: item.categoryId,
+            rating: item.rating,
+            isOnMenu: item.isOnMenu,
+            orderNum: item.orderNum,
+            category: item.category,
+          }));
+          setTopSellingDish(processedData);
+          console.log("Top Selling Dishes:", processedData);
+        } 
+      } else {
+        console.error("Error fetching top selling dish:", response.status);
+      }
+    } catch (error) {
+      console.error("Error fetching top selling dish:", error);
+    }
+  };
+
   const fetchCategory = async () => {
     try {
       const response = await fetch(
@@ -159,7 +242,6 @@ const CustomerHomePage = () => {
       .then(async (response) => {
         console.log(response);
         if (response.status === 200) {
-          // cant catch error due to no-cors
           const data = await response.json();
           console.log("Collect all previous order cost!");
           console.log(data);
@@ -545,6 +627,14 @@ React.useEffect(() => {
             </Modal>
           </Header>
           <Content style={{ margin: "12px 16px", overflow: "initial" }}>
+
+          <CarouselComponent
+            topRatingDish={topRatingDish}
+            topSellingDish={topSellingDish}
+            tableId={tableId} 
+            orderId={orderId} 
+          />
+
             <FloatButton
               icon={<ShoppingCartOutlined />}
               badge={{ dot: false }}
