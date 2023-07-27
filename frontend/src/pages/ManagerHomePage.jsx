@@ -1,35 +1,33 @@
-import { Layout, theme, Button, Modal, Popconfirm, Space, message } from "antd";
-import {
-  DeleteTwoTone,
-  LineChartOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
+import { Layout, Button, Modal, Popconfirm, Space, message } from "antd";
+import {DeleteTwoTone,LineChartOutlined,PlusOutlined,} from "@ant-design/icons";
+import { ReactSortable } from "react-sortablejs";
+import { Link, Element } from "react-scroll";
+import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
+
 import AddDishForm from "../components/manager/AddDishForm";
 import AddCatForm from "../components/manager/AddCatForm";
 import DishGrid from "../components/manager/DishGrid";
 import "../App.css";
-import { ReactSortable } from "react-sortablejs";
-import { Link, Element } from "react-scroll";
-import { useNavigate } from "react-router-dom";
 
 const { Header, Content, Sider } = Layout;
+
 const ManagerHomePage = () => {
   const dragCatColor = {
     fontSize: "25px",
     color: "#2131231",
   };
 
+  const navigate = useNavigate();
   const [addDishOpen, addDishSetOpen] = useState(false);
   const [addCatOpen, addCatSetOpen] = useState(false);
   const [Category, setCategory] = useState([]);
   const [Dishes, setDishes] = useState([]);
-  const navigate = useNavigate();
-  const [moveCat, SetMoveCat] = useState(false);
   const [delCat, delCatOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
+  // fetch data and render again after adding new categories and dishes.
   React.useEffect(() => {
     fetchCategory();
     console.log("fetching category");
@@ -40,26 +38,13 @@ const ManagerHomePage = () => {
     console.log(addDishOpen, "fetching dishes");
   }, [addDishOpen]);
 
-  const showMoveCatSeq = () => {
-    console.log("Move category sequence");
-    SetMoveCat(true);
-  };
-
-  const handleCancelMoveCatSeq = () => {
-    console.log("Cancel Move category sequence");
-    SetMoveCat(false);
-  };
-
+  // trigger func for delete alarm.
   const showDelCat = () => {
     console.log("Del Cat");
     delCatOpen(true);
   };
 
-  const handleCancelDelCat = () => {
-    console.log("Cancel Del Cat");
-    delCatOpen(false);
-  };
-
+  // Build cateogry moving structure.
   const buildMap = (keys, values) => {
     const map = new Map();
     for (let i = 0; i < keys.length; i++) {
@@ -68,6 +53,7 @@ const ManagerHomePage = () => {
     return map;
   };
 
+  // post changed order to backend.
   const fetchCatSeq = (data) => {
     //console.log(data)
     var catNameList = ([] = data.map((item) => {
@@ -76,8 +62,8 @@ const ManagerHomePage = () => {
     var catOrderList = ([] = data.map((item) => {
       return item.index;
     }));
-    console.log(catNameList);
-    console.log(catOrderList);
+    //console.log(catNameList);
+    //console.log(catOrderList);
     const newMap = buildMap(catNameList, catOrderList.sort());
     const obj = Object.fromEntries(newMap);
     const json = JSON.stringify(obj);
@@ -123,16 +109,17 @@ const ManagerHomePage = () => {
     }
   };
 
+  // click and nav to stat page.
   const goStatisticsPage = () => {
     const targetUrl = "/statistics";
     console.log("Go to statistics page");
     navigate(targetUrl);
   };
 
+  // get all dishes information
   const fetchAllDishes = async () => {
     try {
       const response = await fetch(
-        // 这里用的api不对，后面会改
         "http://localhost:8080/waitsys/manager/item/showAll?pageNo=1&pageSize=10",
         {
           method: "GET",
@@ -161,6 +148,7 @@ const ManagerHomePage = () => {
     }
   };
 
+  // delete category and synchronize to backend.
   const DeleteCategory = (categoryId) => {
     const formData = new FormData();
     formData.append("itemId", categoryId);
@@ -218,6 +206,7 @@ const ManagerHomePage = () => {
       });
   };
 
+  // triggers for states changing.
   const showAddDish = () => {
     console.log("Add Dish");
     addDishSetOpen(true);
@@ -253,6 +242,7 @@ const ManagerHomePage = () => {
   const handleCollapse = (collapsed, type) => {
     setIsCollapsed(collapsed);
   };
+  
   return (
     <Layout hasSider>
       <Sider

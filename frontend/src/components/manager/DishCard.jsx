@@ -1,10 +1,13 @@
 import { Card, Modal, Button,Rate,Divider,Tag } from "antd";
-import { EditOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
+import { EditOutlined,} from "@ant-design/icons";
 import ModifyDishForm from "./ModifyDishForm";
 import { useState } from "react";
 import * as React from "react";
 const { Meta } = Card;
 
+// Dish components. Used by dish grid.
+// Almost the same as the dish component in customer end.
+// Can modified dish information.move order. or delete from menu
 const DishCard = ({ itemRate,ItemId, title, price,picture }) => {
   const [updateDishOpen, updateDishSetOpen] = useState(false);
 
@@ -34,6 +37,7 @@ const DishCard = ({ itemRate,ItemId, title, price,picture }) => {
       actions={[
     
         <Button
+        
           ghost={false}
           icon={<EditOutlined />}
           onClick={showUpdateDish}

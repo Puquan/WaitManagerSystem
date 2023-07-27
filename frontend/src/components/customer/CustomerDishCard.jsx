@@ -4,6 +4,7 @@ import { useState } from "react";
 import * as React from "react";
 const { Meta } = Card;
 
+// the dish card components. will be called by dish grid.
 const CustomerDishCard = ({
   ItemId,
   title,
@@ -16,20 +17,23 @@ const CustomerDishCard = ({
   const [showDetail, updateShowDetail] = useState(false);
 
   const displayDetail = () => {
-    console.log("Show detail infor");
     updateShowDetail(true);
   };
 
+  // handle cancel Display detail dishcard.
   const handleCancelDisplayDetail = () => {
-    console.log("Cancel Show detail infor");
     setTimeout(() => {
       updateShowDetail(false);
     }, 0);
   };
 
+  // initial the item rate.
   const isItemRatedZero = itemRate === 0;
 
   return (
+    // display all information by card.
+    // click will trigger show detailed dish card.
+    // click the mask will close the detailed dish card.
     <Card
       cover={
         <img alt="image" src={picture} style={{ width: "100%", height: 200 }} />
@@ -55,6 +59,8 @@ const CustomerDishCard = ({
       <Meta title={title} description={"$" + price} />
       <Divider />
       <div>
+        {//find if there are any previous rate for this dish.
+        }
         {isItemRatedZero ? (
           <div style={{ display: "flex", alignItems: "center" }}>
             <Tag

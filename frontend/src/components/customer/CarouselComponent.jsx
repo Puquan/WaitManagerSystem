@@ -5,7 +5,10 @@ import { GiFire } from "react-icons/gi";
 import { useState } from "react";
 import CustomerDetailedDish from "./CustomerDetailedDish";
 
+// Displays carousels of top-rated and top-selling dishes.
+// It accepts topRatingDish, topSellingDish, tableId, orderId as props.
 const CarouselComponent = ({ topRatingDish, topSellingDish, tableId, orderId}) => {
+  //State intial and trigger
     const [showDetail, setShowDetail] = useState(false);
     const [selectedDish, setSelectedDish] = useState(null);
   

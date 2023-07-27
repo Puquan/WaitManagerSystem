@@ -1,12 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Select, Form, Col, Row } from "antd";
+
 import cover from "../assets/cover.webp";
 import "../App.css";
 import "../cooking.css";
 import FryingPan from "../components/customer/FryingPan";
 
 const SelectTable = () => {
+  // initial the states.
   const navigate = useNavigate();
   const [tableNumList, setTableNumList] = React.useState();
   const [selectedTable, setSelectedTable] = React.useState();
@@ -16,6 +18,7 @@ const SelectTable = () => {
     setSelectedTable(value);
   };
 
+  // send tableId data to backend. start a compeletely new order.
   const sendFormData = async () => {
     try {
       const response = await fetch(
@@ -30,7 +33,6 @@ const SelectTable = () => {
         }
       );
       const data = await response.json();
-      // 处理数据，将其设置到组件的状态中
       console.log(data);
       localStorage.setItem("orderId", JSON.stringify(data.orderId));
       localStorage.setItem("tableId", JSON.stringify(data.tableId));
@@ -39,6 +41,7 @@ const SelectTable = () => {
     }
   };
 
+  // if tableId transmit successfully, nav to order page.
   const onFinish = async (values) => {
     setSelectedTable(values.tableNum);
     await sendFormData();
@@ -46,6 +49,7 @@ const SelectTable = () => {
     navigate("/Order");
   };
 
+  // get the table number using on filling dropdown menu.
   const fetchData = async () => {
     try {
       const response = await fetch(
@@ -66,6 +70,7 @@ const SelectTable = () => {
     }
   };
 
+  // backend data structure formatting
   const createSelectMenu = (data) => {
     var map = [];
     for (var i = 0; i < data.length; i++) {

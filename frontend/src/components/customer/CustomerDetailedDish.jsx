@@ -1,16 +1,8 @@
 import * as React from "react";
 import { Button, Card, Divider, message } from "antd";
 
-const normFile = (e) => {
-  if (Array.isArray(e)) {
-    return e;
-  }
-  return e?.fileList;
-};
-
 const CustomerDetailedDish = ({ itemId, tableId, orderId }) => {
-  const [tableNuber, setTableNumber] = React.useState();
-  const [orderNumber, setOrderNumber] = React.useState();
+  // Define the state of detail dish using hooks.
   const [id, setId] = React.useState();
   const [title, setTitle] = React.useState();
   const [description, setDescription] = React.useState();
@@ -18,13 +10,13 @@ const CustomerDetailedDish = ({ itemId, tableId, orderId }) => {
   const [price, setPrice] = React.useState();
   const [picture, setPicture] = React.useState();
 
+  // fetch data when itemId changes
   React.useEffect(() => {
     fetchData(itemId);
-    console.log("upate!!!!");
   }, [itemId]);
 
+  // Add the dish to the current shopping cart
   const addDishMethod = () => {
-    console.log(itemId, tableId, orderId);
     const response = fetch(
       `http://localhost:8080/waitsys/customer/order/addItem?tableId=${parseInt(
         tableId
@@ -37,11 +29,8 @@ const CustomerDetailedDish = ({ itemId, tableId, orderId }) => {
       }
     )
       .then((response) => {
-        console.log(response);
         if (response.status === 200) {
-          // cant catch error due to no-cors
           message.success("Dish added successfully!");
-          console.log("Dish added successfully!");
           onClose();
         } else {
           throw new Error("Error adding dish");
@@ -52,9 +41,9 @@ const CustomerDetailedDish = ({ itemId, tableId, orderId }) => {
       });
   };
 
+  // Fetch data again when id changes. it can helps us to  re-render without close and open it again.
   const fetchData = async (itemId) => {
     try {
-      console.log(itemId);
       const response = await fetch(
         `http://localhost:8080/waitsys/manager/item/showById?itemId=${itemId}`,
         {
@@ -65,8 +54,8 @@ const CustomerDetailedDish = ({ itemId, tableId, orderId }) => {
         }
       );
       const data = await response.json();
-      // 处理数据，将其设置到组件的状态中
-      console.log(data);
+
+      // set the detail dish props.
       setId(data["itemId"]);
       setTitle(data["name"]);
       setDescription(data["description"]);
@@ -79,6 +68,7 @@ const CustomerDetailedDish = ({ itemId, tableId, orderId }) => {
   };
 
   return (
+    // Render detailed dish information by specifc format.
     <Card title={<strong style={{ fontSize: "24px" }}>{title}</strong>} bordered={false}>
       <img
         alt="image"

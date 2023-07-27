@@ -1,17 +1,22 @@
-import { Card, List,message,  Row, Col,} from "antd";
+import { Card, Row, Col,} from "antd";
 import * as React from "react";
 import DishCard from "./DishCard";
 import { ReactSortable } from "react-sortablejs";
 const { Meta } = Card;
 
+// Same as customer dish grid
+// feature: drag dish card and placed it in other position (within same category)
+// it will reorder automatically in backend.
 const GridList = ({ categoryId, AllDish }) => {
   const [dishes, setDishes] = React.useState([]);
 
+  // if things changed, fetch data and render again.
   React.useEffect(() => {
     fetchData(categoryId);
     console.log("upate!!!!");
   }, [categoryId, AllDish]);
 
+  // arrange new order of items after moving, and save it as state, trigger re-render.
   const handleChange = (event) => {
     const newDishes = [...dishes];
     const movedItem = newDishes.splice(event.oldIndex, 1)[0];
@@ -40,6 +45,7 @@ const GridList = ({ categoryId, AllDish }) => {
     setDishes(newDishes);
   };
   
+  // post moved menu into backend
   const fetchMoveDish = async (dishId, newIndex) => {
     try {
       const response = await fetch('http://localhost:8080/waitsys/manager/item/changeOrder', {
@@ -79,72 +85,6 @@ const GridList = ({ categoryId, AllDish }) => {
     } catch (error) {
       console.error("Error:", error);
     }
-  };
-
-  const MoveRight = (id) => {
-    setDishes((prevDishes) => {
-      const index = prevDishes.findIndex((dish) => dish.id === id);
-      if (index < prevDishes.length - 1) {
-        const newDishes = [...prevDishes];
-        const dishA = newDishes.splice(index, 1)[0];
-        console.log(dishA);
-        newDishes.splice(index + 1, 0, dishA);
-
-        const newnewDishes = [...newDishes];
-        const dishB = newnewDishes.splice(index, 1)[0];
-        console.log(dishB);
-        newnewDishes.splice(index+1, 0, dishB);
-        
-        const firstVar = dishA['id'];
-        const secondVar = dishB['id'];
-        const firstPara = dishA['index'];
-        const secondPara = dishB['index'];
-        const entries = new Map([
-          [firstVar, secondPara],
-          [secondVar, firstPara]
-        ]);
-        console.log(entries);
-        const obj = Object.fromEntries(entries);
-        const json = JSON.stringify(obj);
-        console.log(json);
-        fetchMoveCat(json);
-        return newDishes;
-      }
-      return prevDishes;
-    });
-  };
-
-  const MoveLeft = (id) => {
-    setDishes((prevDishes) => {
-      const index = prevDishes.findIndex((dish) => dish.id === id);
-      if (index > 0) {
-        const newDishes = [...prevDishes];
-        const dishA = newDishes.splice(index, 1)[0];
-        newDishes.splice(index - 1, 0, dishA);
-        console.log(newDishes);
-
-        const newnewDishes = [...newDishes];
-        const dishB = newnewDishes.splice(index, 1)[0];
-        console.log(dishB);
-        newnewDishes.splice(index-1, 0, dishB);
-        
-        const firstVar = dishA['id'];
-        const secondVar = dishB['id'];
-        const firstPara = dishA['index'];
-        const secondPara = dishB['index'];
-        const entries = new Map([
-          [firstVar, secondPara],
-          [secondVar, firstPara]
-        ]);
-
-        const obj = Object.fromEntries(entries);
-        const json = JSON.stringify(obj);
-
-        fetchMoveCat(json);
-        return newDishes;
-      }
-      return prevDishes;
-    });
   };
 
   return (

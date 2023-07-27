@@ -1,6 +1,7 @@
 import React from "react";
 import "../../cooking.css";
 
+// Animation component on select table page.
 const FryingPan = () => {
   return (
     <>

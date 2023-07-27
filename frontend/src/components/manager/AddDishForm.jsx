@@ -14,6 +14,7 @@ import {
 
 const { Option } = Select;
 
+
 const normFile = (e) => {
   if (Array.isArray(e)) {
     return e;
@@ -21,8 +22,10 @@ const normFile = (e) => {
   return e?.fileList;
 };
 
+// Add dish function.
+// manager can only add new dish when all infor are input.
 const AddDishForm = ({ onClose }) => {
-  const [file, setFile] = useState(null); // State variable to track the uploaded image file
+  const [file, setFile] = useState(null); 
   const [categories, setCategories] = useState([]);
   const [form] = Form.useForm();
 
@@ -30,6 +33,8 @@ const AddDishForm = ({ onClose }) => {
     fetchCategories();
   }, []);
 
+  // using on dropdown selection.
+  // help manager to choose which category new dish belongs to.
   const fetchCategories = () => {
     fetch("http://localhost:8080/waitsys/manager/list_all_categories")
       .then((response) => response.json())
@@ -41,6 +46,7 @@ const AddDishForm = ({ onClose }) => {
       });
   };
 
+  // formatting the input data and do the validation.
   const onFinish = async (values) => {
     const formData = new FormData();
     formData.append("name", values.dishName);
@@ -59,6 +65,7 @@ const AddDishForm = ({ onClose }) => {
     form.resetFields(["dishImage"]);
   };
 
+  // send data to backend. Expected create dish successfully.
   const sendFormData = async (data) => {
     fetch("http://localhost:8080/waitsys/manager/item/add", {
       method: "POST",
@@ -67,9 +74,7 @@ const AddDishForm = ({ onClose }) => {
       .then((response) => {
         console.log(response);
         if (response.status === 200) {
-          // cant catch error due to no-cors
           message.success("Dish added successfully!");
-          console.log("Dish added successfully!");
           onClose();
         } else {
           throw new Error("Error adding dish");
@@ -80,6 +85,7 @@ const AddDishForm = ({ onClose }) => {
       });
   };
 
+  // image validation.
   const beforeUpload = (file) => {
     const allowedTypes = ["image/jpeg", "image/png"];
     const isAllowed = allowedTypes.includes(file.type);
