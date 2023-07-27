@@ -4,9 +4,9 @@ import { Button, Select, Form, Col, Row } from "antd";
 import cover from "../assets/cover.webp";
 import "../App.css";
 import "../cooking.css";
-import FryingPan from "../components/customer/fryingPan";
+import FryingPan from "../components/customer/FryingPan";
 
-const About = () => {
+const SelectTable = () => {
   const navigate = useNavigate();
   const [tableNumList, setTableNumList] = React.useState();
   const [selectedTable, setSelectedTable] = React.useState();
@@ -158,4 +158,4 @@ const About = () => {
   );
 };
 
-export default About;
+export default SelectTable;

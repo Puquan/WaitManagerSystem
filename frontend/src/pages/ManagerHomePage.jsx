@@ -3,7 +3,6 @@ import {
   DeleteTwoTone,
   LineChartOutlined,
   PlusOutlined,
-  NumberOutlined,
 } from "@ant-design/icons";
 import React, { useState } from "react";
 import AddDishForm from "../components/manager/AddDishForm";
@@ -20,10 +19,6 @@ const ManagerHomePage = () => {
     fontSize: "25px",
     color: "#2131231",
   };
-
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
 
   const [addDishOpen, addDishSetOpen] = useState(false);
   const [addCatOpen, addCatSetOpen] = useState(false);
@@ -59,6 +54,7 @@ const ManagerHomePage = () => {
     console.log("Del Cat");
     delCatOpen(true);
   };
+
   const handleCancelDelCat = () => {
     console.log("Cancel Del Cat");
     delCatOpen(false);
@@ -188,7 +184,6 @@ const ManagerHomePage = () => {
       });
   };
 
-
   const addTableHandler = () => {
     // Make a POST request to add a table to the backend
     fetch("http://localhost:8080/waitsys/customer/table/addTable", {
@@ -207,7 +202,9 @@ const ManagerHomePage = () => {
               if (totalTables === "") {
                 throw new Error("Total tables is undefined.");
               }
-              message.success(`Table added successfully! Total tables: ${totalTables}`);
+              message.success(
+                `Table added successfully! Total tables: ${totalTables}`
+              );
             })
             .catch((error) => {
               console.error("Error while fetching table data:", error);
