@@ -6,6 +6,7 @@ import {
   CoffeeOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
+import "../../App.css";
 
 const WSCard = ({ table }) => {
   const { tableId, state, needHelp, orderItemList } = table;
@@ -22,15 +23,21 @@ const WSCard = ({ table }) => {
   };
 
   const markNeedHelp = (tableId) => {
-    fetch(`http://localhost:8080/waitsys/waitstaff/mark_need_help?tableId=${tableId}`, {
-      method: "POST",
-    })
+    fetch(
+      `http://localhost:8080/waitsys/waitstaff/mark_need_help?tableId=${tableId}`,
+      {
+        method: "POST",
+      }
+    )
       .then(() => {
         console.log(`Table ${tableId} request completed`);
         message.success("Request completed");
       })
       .catch((error) => {
-        console.error(`Error marking needHelp as 0 for table ${tableId}:`, error);
+        console.error(
+          `Error marking needHelp as 0 for table ${tableId}:`,
+          error
+        );
       });
   };
 
@@ -43,15 +50,21 @@ const WSCard = ({ table }) => {
   };
 
   const confirmRequestBill = (tableId) => {
-    fetch(`http://localhost:8080/waitsys/waitstaff/confirm_request_bill?tableId=${tableId}`, {
-      method: "POST",
-    })
+    fetch(
+      `http://localhost:8080/waitsys/waitstaff/confirm_request_bill?tableId=${tableId}`,
+      {
+        method: "POST",
+      }
+    )
       .then(() => {
         console.log(`Confirmed request bill for table ${tableId}`);
         message.success("Bill confirmed");
       })
       .catch((error) => {
-        console.error(`Error confirming request bill for table ${tableId}:`, error);
+        console.error(
+          `Error confirming request bill for table ${tableId}:`,
+          error
+        );
       });
   };
 
@@ -60,9 +73,12 @@ const WSCard = ({ table }) => {
   };
 
   const ItemServe = (orderItemId) => {
-    fetch(`http://localhost:8080/waitsys/waitstaff/modify_order_item_is_serve?orderItemId=${orderItemId}`, {
-      method: "POST",
-    })
+    fetch(
+      `http://localhost:8080/waitsys/waitstaff/modify_order_item_is_serve?orderItemId=${orderItemId}`,
+      {
+        method: "POST",
+      }
+    )
       .then(() => {
         console.log(`itemId ${orderItemId} is served`);
         message.success("Dish served");
@@ -77,7 +93,9 @@ const WSCard = ({ table }) => {
   );
 
   const handleShowPreviousItems = () => {
-    fetch(`http://localhost:8080/waitsys/customer/order/showAllPreviousItems?tableId=${tableId}`)
+    fetch(
+      `http://localhost:8080/waitsys/customer/order/showAllPreviousItems?tableId=${tableId}`
+    )
       .then((response) => response.json())
       .then((data) => {
         // Process the data and display the popup window
@@ -113,17 +131,21 @@ const WSCard = ({ table }) => {
   return (
     <Card title={`Table ${tableId}`} style={{ width: 300, height: 400 }}>
       <Row justify="space-between" align="middle">
-        <Button
-          icon={<BellOutlined />}
-          onClick={handleNotifyAssistance}
-          style={{ backgroundColor: needHelp === 1 ? "yellow" : "" }}
-        />
-        <Button
-          icon={<DollarCircleOutlined />}
-          onClick={handleRequestBill}
-          style={{ backgroundColor: state === 2 ? "yellow" : "" }}
-        />
-        <Button onClick={handleShowPreviousItems}>Show Dishes</Button>
+        <Space size={24}>
+          <Button
+            icon={<BellOutlined className={needHelp === 1 ? "shake" : ""} />}
+            onClick={handleNotifyAssistance}
+            style={{ backgroundColor: needHelp === 1 ? "yellow" : "" }}
+          />
+          <Button
+            icon={
+              <DollarCircleOutlined className={state === 2 ? "shake" : ""} />
+            }
+            onClick={handleRequestBill}
+            style={{ backgroundColor: state === 2 ? "yellow" : "" }}
+          />
+          <Button onClick={handleShowPreviousItems}>Show Dishes</Button>
+        </Space>
       </Row>
       <ul style={{ listStyle: "none", padding: 0 }}>
         {filteredOrderItemList.map((item) => (
