@@ -129,7 +129,11 @@ const WSCard = ({ table }) => {
   ];
 
   return (
-    <Card title={`Table ${tableId}`} style={{ width: 300, height: 400 }}>
+    <Card
+      title={`Table ${tableId}`}
+      style={{ width: 300, height: 400 }}
+      hoverable={true}
+    >
       <Row justify="space-between" align="middle">
         <Space size={24}>
           <Button

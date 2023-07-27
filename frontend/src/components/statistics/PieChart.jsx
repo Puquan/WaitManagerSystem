@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Card, Statistic } from "antd";
 import ReactDOM from "react-dom";
 import { Pie } from "@ant-design/plots";
 
@@ -50,7 +51,17 @@ const PieChart = () => {
     ],
   };
 
-  return <Pie {...config} />;
+  return (
+    <Card
+      title="Proportion of Sales by Category"
+      style={{ width: "100%" }}
+      itle="Card title"
+      bordered={true}
+      hoverable={true}
+    >
+      <Pie {...config} />
+    </Card>
+  );
 };
 
 export default PieChart;

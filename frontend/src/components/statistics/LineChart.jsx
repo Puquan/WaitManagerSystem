@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Card, Statistic } from "antd";
 import ReactDOM from "react-dom";
 import { Line } from "@ant-design/plots";
 
@@ -73,7 +74,11 @@ const LineChart = () => {
       },
     ],
   };
-  return <Line {...config} />;
+  return (
+    <Card title="Top 5 Dishes by Sales Volume" bordered={true} hoverable={true}>
+      <Line {...config} />
+    </Card>
+  );
 };
 
 export default LineChart;

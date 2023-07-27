@@ -8,7 +8,7 @@ const TotalSales = (sales) => {
   return (
     <Card bordered={false}>
       <Statistic
-        title="总销售额"
+        title="Total Sales Amount"
         value={temp}
         precision={2}
         valueStyle={{

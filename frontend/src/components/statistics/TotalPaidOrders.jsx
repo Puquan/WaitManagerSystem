@@ -6,9 +6,9 @@ const TotalPaidOrders = (orderNum) => {
   const temp = orderNum.orderNum;
 
   return (
-    <Card bordered={false}>
+    <Card bordered={true}>
       <Statistic
-        title="总订单数"
+        title="Total Number of Orders"
         value={temp}
         precision={0}
         valueStyle={{
