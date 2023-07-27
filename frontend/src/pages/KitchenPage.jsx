@@ -7,19 +7,15 @@ const KitchenPage = () => {
   const [kitchenOrders, setkitchenOrders] = useState([]);
 
   useEffect(() => {
-    fetchKitchenOrders(); // 初始化时执行一次
+    fetchKitchenOrders();
     const interval = setInterval(() => {
-      fetchKitchenOrders(); // 每隔一段时间执行一次
+      fetchKitchenOrders();
       console.log("fetching kitchen orders");
-    }, 2000); // 间隔时间为 2 秒
+    }, 2000);
     return () => {
-      clearInterval(interval); // 组件卸载时清除定时器
+      clearInterval(interval);
     };
   }, []);
-
-  useEffect(() => {
-    console.log("kitchenOrders changed");
-  }, [kitchenOrders]);
 
   const generateTableCards = () => {
     return kitchenOrders.map((order, index) => (
@@ -45,8 +41,6 @@ const KitchenPage = () => {
       }
     );
     const data = await response.json();
-    console.log(data);
-    //setkitchenOrders([...data]);
     setkitchenOrders(data);
   }
 
@@ -73,7 +67,7 @@ const KitchenPage = () => {
       ) : (
         <div>
           <Spin />
-          <p>Fetching kitchen orders...</p>
+          <p>Waiting for orders...</p>
         </div>
       )}
     </>
