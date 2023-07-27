@@ -357,7 +357,7 @@ const ManagerHomePage = () => {
           >
             <AddCatForm onClose={handleCancelAddCat} />
           </Modal>
-          {Category.map((item, index) => (
+          {Category.map((item) => (
             <div key={item.categoryId} id={`grid${item.name}`}>
               <Element name={item.name} className="lato-small">
                 <h2>{item.name}</h2>

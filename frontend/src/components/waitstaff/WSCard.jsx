@@ -9,11 +9,14 @@ import { useState } from "react";
 import "../../App.css";
 
 const WSCard = ({ table }) => {
+  // Destructure the table object
   const { tableId, state, needHelp, orderItemList } = table;
 
+  // State for the popup window
   const [openPopup, setOpenPopup] = useState(false);
   const [popupData, setPopupData] = useState([]);
 
+  // Function to handle "Notify Assistance" button click
   const handleNotifyAssistance = () => {
     if (needHelp === 0) {
       message.error("Help not required");
@@ -22,7 +25,9 @@ const WSCard = ({ table }) => {
     markNeedHelp(tableId);
   };
 
+  // Function to mark needHelp as 1 for the table
   const markNeedHelp = (tableId) => {
+    // Make a POST request to the server to mark needHelp as 1
     fetch(
       `http://localhost:8080/waitsys/waitstaff/mark_need_help?tableId=${tableId}`,
       {
@@ -41,6 +46,7 @@ const WSCard = ({ table }) => {
       });
   };
 
+  // Function to handle "Request Bill" button click
   const handleRequestBill = () => {
     if (state === 0 || state === 1) {
       message.error("Table not ready for bill");
@@ -49,7 +55,9 @@ const WSCard = ({ table }) => {
     confirmRequestBill(tableId);
   };
 
+  // Function to confirm request bill for the table
   const confirmRequestBill = (tableId) => {
+    // Make a POST request to the server to confirm request bill
     fetch(
       `http://localhost:8080/waitsys/waitstaff/confirm_request_bill?tableId=${tableId}`,
       {
@@ -68,11 +76,14 @@ const WSCard = ({ table }) => {
       });
   };
 
+  // Function to handle "Send" button click for a specific order item
   const handleSend = (orderItemId) => {
     ItemServe(orderItemId);
   };
 
+  // Function to mark an order item as served
   const ItemServe = (orderItemId) => {
+    // Make a POST request to the server to mark the order item as served
     fetch(
       `http://localhost:8080/waitsys/waitstaff/modify_order_item_is_serve?orderItemId=${orderItemId}`,
       {
@@ -88,10 +99,12 @@ const WSCard = ({ table }) => {
       });
   };
 
+  // Filter order items to display only those that are cooked but not served
   const filteredOrderItemList = orderItemList.filter(
     (item) => item.isCook === 1 && item.isServe === 0
   );
 
+  // Function to handle "Show Dishes" button click and fetch previous items
   const handleShowPreviousItems = () => {
     fetch(
       `http://localhost:8080/waitsys/customer/order/showAllPreviousItems?tableId=${tableId}`
@@ -110,6 +123,7 @@ const WSCard = ({ table }) => {
       });
   };
 
+  // Columns for the popup table
   const columns = [
     {
       title: "Dish",
@@ -134,6 +148,7 @@ const WSCard = ({ table }) => {
       style={{ width: 300, height: 400 }}
       hoverable={true}
     >
+      {/* Buttons for "Notify Assistance", "Request Bill", and "Show Dishes" */}
       <Row justify="space-between" align="middle">
         <Space size={24}>
           <Button
@@ -151,6 +166,8 @@ const WSCard = ({ table }) => {
           <Button onClick={handleShowPreviousItems}>Show Dishes</Button>
         </Space>
       </Row>
+
+      {/* List of order items */}
       <ul style={{ listStyle: "none", padding: 0 }}>
         {filteredOrderItemList.map((item) => (
           <li key={item.id} style={{ display: "flex", alignItems: "center" }}>
@@ -180,6 +197,8 @@ const WSCard = ({ table }) => {
           </li>
         ))}
       </ul>
+
+      {/* Popup modal for showing previous items */}
       <Modal
         open={openPopup}
         onCancel={() => setOpenPopup(false)}

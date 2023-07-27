@@ -1,17 +1,30 @@
 import { Card } from "antd";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { Space, Switch, Button, Popconfirm, Pagination, message } from "antd";
 const { Meta } = Card;
 
 const TableCard = ({ tableId, orderItems, orderId, startTime }) => {
-  const tableTitle = "Table" + tableId.toString();
+  // Generate the title for the table card
+  const tableTitle = "Table " + tableId.toString();
+
+  // State to track if the order is finished
   const [isOrderFinished, setIsOrderFinished] = useState(false);
+
+  // State to track the current page of displayed items
   const [currentPage, setCurrentPage] = useState(1);
+
+  // Number of items to display per page
   const pageSize = 8;
+
+  // Calculate the start and end index of displayed items on the current page
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = currentPage * pageSize;
+
+  // Get the items to display on the current page
   const displayedItems = orderItems.slice(startIndex, endIndex);
+
+  // Format the order start time as a string
   const timeString =
     "Order Time: " +
     new Date(startTime).toLocaleTimeString([], {
@@ -20,18 +33,13 @@ const TableCard = ({ tableId, orderItems, orderId, startTime }) => {
       second: "2-digit",
     });
 
-  useEffect(() => {
-    // 当传入的 props 发生变化时执行的逻辑
-    console.log("Props have changed");
-    // console.log(startTime);
-    // 可以在这里进行需要执行的副操作
-  }, [tableId, orderItems, orderId]); // 在这里添加需要监视的 props 变化
-
+  // Function to handle the switch change event and update the item status
   const onChange = (checked, id) => {
     console.log(`switch to ${checked}`);
     Switch_Cooked(id);
   };
 
+  // Function to update the status of the item as cooked
   async function Switch_Cooked(orderItemId) {
     const response = await fetch(
       `http://localhost:8080/waitsys/kitchen/modify_order_item_is_cook?orderItemId=${orderItemId}`,
@@ -42,6 +50,7 @@ const TableCard = ({ tableId, orderItems, orderId, startTime }) => {
     const data = await response.json();
   }
 
+  // Function to finish the order and update the order status
   async function Finish_Order(orderId) {
     const response = await fetch(
       `http://localhost:8080/waitsys/kitchen/modify_order_is_cook?orderId=${orderId}`,
@@ -52,11 +61,14 @@ const TableCard = ({ tableId, orderItems, orderId, startTime }) => {
     const data = await response.json();
   }
 
+  // Confirm function for finishing the order with a popconfirm
   const confirm = (id) => {
     Finish_Order(id);
     message.success("Finish Order");
     setIsOrderFinished(true);
   };
+
+  // Cancel function for the popconfirm
   const cancel = (e) => {
     console.log(e);
   };
@@ -99,6 +111,7 @@ const TableCard = ({ tableId, orderItems, orderId, startTime }) => {
           >
             {orderItems.length > pageSize && (
               <div style={{ textAlign: "center" }}>
+                {/* Pagination for displayed items */}
                 <Pagination
                   current={currentPage}
                   pageSize={pageSize}
@@ -110,6 +123,7 @@ const TableCard = ({ tableId, orderItems, orderId, startTime }) => {
               </div>
             )}
             <div style={{ textAlign: "center" }}>
+              {/* Popconfirm for finishing the order */}
               <Popconfirm
                 title="Finish Order?"
                 description="Are you sure to Finish this order?"
