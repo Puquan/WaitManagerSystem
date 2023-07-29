@@ -1,14 +1,58 @@
 import React from "react";
-import { Row, Col, Layout, Space, Menu, theme, Card, Button } from "antd";
+import { Row, Col, Layout, Space, Button } from "antd";
 import PieChart from "../components/statistics/PieChart";
-import LineChart from "../components/statistics/LineChart";
+import BarChart from "../components/statistics/BarChart";
 import TotalSales from "../components/statistics/TotalSales";
 import TotalPaidOrders from "../components/statistics/TotalPaidOrders";
 import "../App.css";
-const { Header, Footer, Sider, Content } = Layout;
+const { Header, Content } = Layout;
 
 const StatisticsPage = () => {
-  const data = { totalSales: 100, orderNum: 1000 };
+  const [totalSales, setTotalSales] = React.useState(0);
+  const [orderNum, setOrderNum] = React.useState(0);
+  const [categorySalePercent, setCategorySalePercent] = React.useState([]);
+  const [topItemSale, setTopItemSale] = React.useState([]);
+  const [state, setState] = React.useState(0);
+  const [orderAvgCost, setOrderAvgCost] = React.useState(0);
+  const [x, setX] = React.useState(5);
+
+  React.useEffect(() => {
+    fetchAnalysisData(state, x);
+  }, [state, x]);
+
+  const fetchAnalysisData = async (state, x) => {
+    const response = await fetch(
+      `http://localhost:8080/waitsys/manager/analysis?state=${state}&x=${x}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json",
+        },
+      }
+    );
+    const data = await response.json();
+    setTotalSales(data.totalSale);
+    setOrderNum(data.orderNum);
+    setCategorySalePercent(data.categorySalePercent);
+    setTopItemSale(data.topItemSale);
+    setOrderAvgCost(data.orderAvgCost);
+  };
+
+  const changeTimePeriod = (buttonType) => {
+    if (buttonType === "day") {
+      setState(0);
+    } else if (buttonType === "week") {
+      setState(1);
+    } else if (buttonType === "month") {
+      setState(2);
+    } else if (buttonType === "year") {
+      setState(3);
+    }
+  };
+
+  const handleChildValueChange = (newValue) => {
+    setX(newValue);
+  };
 
   return (
     <>
@@ -34,25 +78,49 @@ const StatisticsPage = () => {
             <Row gutter={[16, 16]}>
               <Col span={24}>
                 <Space>
-                  <Button type="primary">Today</Button>
-                  <Button type="primary">This Week</Button>
-                  <Button type="primary">This Month</Button>
-                  <Button type="primary">This Year</Button>
+                  <Button
+                    type="primary"
+                    onClick={() => changeTimePeriod("day")}
+                  >
+                    Today
+                  </Button>
+                  <Button
+                    type="primary"
+                    onClick={() => changeTimePeriod("week")}
+                  >
+                    This Week
+                  </Button>
+                  <Button
+                    type="primary"
+                    onClick={() => changeTimePeriod("month")}
+                  >
+                    This Month
+                  </Button>
+                  <Button
+                    type="primary"
+                    onClick={() => changeTimePeriod("year")}
+                  >
+                    This Year
+                  </Button>
                 </Space>
               </Col>
               <Col span={12}>
-                <TotalSales sales={data.totalSales} />
+                <TotalSales sales={totalSales} />
               </Col>
               <Col span={12}>
-                <TotalPaidOrders orderNum={data.orderNum} />
+                <TotalPaidOrders orderNum={orderNum} avgcost={orderAvgCost} />
               </Col>
               <Col span={12}></Col>
               <Col className="gutter-row" span={12}></Col>
               <Col className="gutter-row" span={12}>
-                <LineChart />
+                <BarChart
+                  data={topItemSale}
+                  x={x}
+                  onTopValueChange={handleChildValueChange}
+                />
               </Col>
               <Col span={12}>
-                <PieChart />
+                <PieChart data={categorySalePercent} />
               </Col>
             </Row>
           </Content>

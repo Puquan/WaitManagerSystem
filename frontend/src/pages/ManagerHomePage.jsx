@@ -1,5 +1,9 @@
 import { Layout, Button, Modal, Popconfirm, Space, message } from "antd";
-import {DeleteTwoTone,LineChartOutlined,PlusOutlined,} from "@ant-design/icons";
+import {
+  DeleteTwoTone,
+  LineChartOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 import { ReactSortable } from "react-sortablejs";
 import { Link, Element } from "react-scroll";
 import { useNavigate } from "react-router-dom";
@@ -242,7 +246,7 @@ const ManagerHomePage = () => {
   const handleCollapse = (collapsed, type) => {
     setIsCollapsed(collapsed);
   };
-  
+
   return (
     <Layout hasSider>
       <Sider
@@ -299,7 +303,7 @@ const ManagerHomePage = () => {
           ))}
         </ReactSortable>
       </Sider>
-      <Layout style={{ marginLeft: 200 }}>
+      <Layout style={{ marginLeft: isSmallScreen ? 0 : 200 }}>
         <Header
           style={{
             background: "#fff",
