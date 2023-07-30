@@ -35,7 +35,7 @@ const ManagerHomePage = () => {
   React.useEffect(() => {
     fetchCategory();
     console.log("fetching category");
-  }, [addCatOpen]);
+  }, [addCatOpen,delCat]);
 
   React.useEffect(() => {
     fetchAllDishes();
@@ -166,7 +166,7 @@ const ManagerHomePage = () => {
         if (response.status === 200) {
           console.log("Delete success:", response);
           message.success("Dish deleted successfully!");
-          onClose();
+          fetchCategory();
         } else {
           throw new Error("Failed to delete dish.");
         }
