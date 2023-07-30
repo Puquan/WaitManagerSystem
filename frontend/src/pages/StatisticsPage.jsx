@@ -5,6 +5,7 @@ import BarChart from "../components/statistics/BarChart";
 import TotalSales from "../components/statistics/TotalSales";
 import TotalPaidOrders from "../components/statistics/TotalPaidOrders";
 import "../App.css";
+import { useNavigate } from "react-router-dom";
 const { Header, Content } = Layout;
 
 const StatisticsPage = () => {
@@ -15,6 +16,7 @@ const StatisticsPage = () => {
   const [state, setState] = React.useState(0);
   const [orderAvgCost, setOrderAvgCost] = React.useState(0);
   const [x, setX] = React.useState(5);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     fetchAnalysisData(state, x);
@@ -54,6 +56,12 @@ const StatisticsPage = () => {
     setX(newValue);
   };
 
+  const goBackToHomePage = () => {
+    const targetUrl = "/manager";
+    console.log("Go to home page");
+    navigate(targetUrl);
+  };
+
   return (
     <>
       <Layout>
@@ -77,6 +85,7 @@ const StatisticsPage = () => {
           <Content>
             <Row gutter={[16, 16]}>
               <Col span={24}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <Space>
                   <Button
                     type="primary"
@@ -103,6 +112,11 @@ const StatisticsPage = () => {
                     This Year
                   </Button>
                 </Space>
+                <Button type="primary" onClick={() => goBackToHomePage()}>
+                    Back to home page
+                  </Button>
+                </div>
+
               </Col>
               <Col span={12}>
                 <TotalSales sales={totalSales} />
