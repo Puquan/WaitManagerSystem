@@ -156,7 +156,7 @@ const WSCard = ({ table }) => {
   return (
     <Card
       title={`Table ${tableId}`}
-      style={{ width: 310, height: 400 }}
+      style={{ width: 440, height: 400 }}
       hoverable={true}
     >
       {/* Buttons for "Notify Assistance", "Request Bill", and "Show Dishes" */}
@@ -224,11 +224,12 @@ const WSCard = ({ table }) => {
       </Modal>
       <div style={{ position: "absolute", bottom: 16, left: "50%", transform: "translateX(-50%)" }}>
         <Pagination
+          simple
           current={currentPage}
           pageSize={itemsPerPage}
           total={filteredOrderItemList.length}
           onChange={handlePageChange}
-          style={{ textAlign: "center" }}
+          style={{ textAlign: "center" }} 
         />
       </div>
     </Card>
