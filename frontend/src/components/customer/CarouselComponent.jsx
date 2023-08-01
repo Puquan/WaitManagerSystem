@@ -24,19 +24,19 @@ const CarouselComponent = ({ topRatingDish, topSellingDish, tableId, orderId}) =
     return (
       <div style={{ display: "flex", flexDirection: "row" }}>
         {/* Top Rated Dishes Carousel */}
-        <div style={{ flex: 1, marginRight: 20 }}>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", marginRight: 20 }}>
           <h2 style={{ fontFamily: "Lato", fontWeight: "bold" }}>
             <FaStar style={{ marginRight: 5 }} />
             Top Rated
           </h2>
           {topRatingDish && topRatingDish.length > 0 ? (
-            <Carousel style={{ width: "100%", maxWidth: "400px", height: "300px" }} autoplay dotPosition="bottom">
+            <Carousel style={{ width: "100%", maxWidth: "480px", height: "320px" }} autoplay dotPosition="bottom">
               {topRatingDish.map((dish) => (
                 <div key={`rating_${dish.itemId}`}>
                   <img
                     src={`data:image/jpeg;base64,${dish.picture}`}
                     alt={dish.name}
-                    style={{ width: "100%", height: "280px", cursor: "pointer" }}
+                    style={{ width: "100%", height: "310px", cursor: "pointer" }}
                     onClick={() => displayDetail(dish)}
                   />
                   <div style={{ textAlign: "center", fontFamily: "Lato", fontSize: "16px" }}>{dish.name}</div>
@@ -49,19 +49,19 @@ const CarouselComponent = ({ topRatingDish, topSellingDish, tableId, orderId}) =
         </div>
   
         {/* Top Selling Dishes Carousel */}
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
           <h2 style={{ fontFamily: "Lato", fontWeight: "bold" }}>
             <GiFire style={{ marginRight: 5 }} />
             Best Seller
           </h2>
           {topSellingDish && topSellingDish.length > 0 ? (
-            <Carousel style={{ width: "100%", maxWidth: "400px", height: "300px" }} autoplay dotPosition="bottom">
+            <Carousel style={{ width: "100%", maxWidth: "480px", height: "320px" }} autoplay dotPosition="bottom">
               {topSellingDish.map((dish) => (
                 <div key={`selling_${dish.itemId}`}>
                   <img
                     src={`data:image/jpeg;base64,${dish.picture}`}
                     alt={dish.name}
-                    style={{ width: "100%", height: "280px", cursor: "pointer" }}
+                    style={{ width: "100%", height: "310px", cursor: "pointer" }}
                     onClick={() => displayDetail(dish)}
                   />
                   <div style={{ textAlign: "center", fontFamily: "Lato", fontSize: "16px" }}>{dish.name}</div>

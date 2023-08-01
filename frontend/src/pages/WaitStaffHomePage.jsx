@@ -35,7 +35,7 @@ const WaitStaffHomePage = () => {
     <Layout>
       {/* Header section */}
       <Header style={{ background: "#ffffff" }}>
-        <Title level={3} style={{ color: "black", textAlign: "center" }}>
+        <Title level={3} style={{ color: "black", textAlign: "center", fontFamily: "Lato, sans-serif", fontWeight: "bold",}}>
           Wait Staff Home Page
         </Title>
       </Header>

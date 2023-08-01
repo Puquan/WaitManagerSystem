@@ -7,7 +7,7 @@ const WSGrid = ({ tables }) => {
     <Row gutter={[16, 16]}>
       {/* Map through the tables array to create a WSCard component for each table */}
       {tables.map((table) => (
-        <Col key={table.tableId} xs={24} sm={12} md={8} lg={6}>
+        <Col key={table.tableId} xs={24} sm={12} md={10} lg={8}>
           {/* Pass the table object as a prop to the WSCard component */}
           <WSCard table={table} />
         </Col>
