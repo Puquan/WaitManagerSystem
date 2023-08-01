@@ -33,6 +33,7 @@ const StatisticsPage = () => {
       }
     );
     const data = await response.json();
+    console.log(data);
     setTotalSales(data.totalSale);
     setOrderNum(data.orderNum);
     setCategorySalePercent(data.categorySalePercent);
@@ -85,38 +86,43 @@ const StatisticsPage = () => {
           <Content>
             <Row gutter={[16, 16]}>
               <Col span={24}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <Space>
-                  <Button
-                    type="primary"
-                    onClick={() => changeTimePeriod("day")}
-                  >
-                    Today
-                  </Button>
-                  <Button
-                    type="primary"
-                    onClick={() => changeTimePeriod("week")}
-                  >
-                    This Week
-                  </Button>
-                  <Button
-                    type="primary"
-                    onClick={() => changeTimePeriod("month")}
-                  >
-                    This Month
-                  </Button>
-                  <Button
-                    type="primary"
-                    onClick={() => changeTimePeriod("year")}
-                  >
-                    This Year
-                  </Button>
-                </Space>
-                <Button type="primary" onClick={() => goBackToHomePage()}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Space>
+                    <Button
+                      type="primary"
+                      onClick={() => changeTimePeriod("day")}
+                    >
+                      Today
+                    </Button>
+                    <Button
+                      type="primary"
+                      onClick={() => changeTimePeriod("week")}
+                    >
+                      7 days
+                    </Button>
+                    <Button
+                      type="primary"
+                      onClick={() => changeTimePeriod("month")}
+                    >
+                      This Month
+                    </Button>
+                    <Button
+                      type="primary"
+                      onClick={() => changeTimePeriod("year")}
+                    >
+                      This Year
+                    </Button>
+                  </Space>
+                  <Button type="primary" onClick={() => goBackToHomePage()}>
                     Back to home page
                   </Button>
                 </div>
-
               </Col>
               <Col span={12}>
                 <TotalSales sales={totalSales} />

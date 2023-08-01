@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Card, Statistic } from "antd";
-import ReactDOM from "react-dom";
+import React from "react";
+import { Card, Empty } from "antd";
 import { Pie } from "@ant-design/plots";
 
 const PieChart = ({ data }) => {
@@ -33,7 +32,11 @@ const PieChart = ({ data }) => {
       bordered={true}
       hoverable={true}
     >
-      <Pie {...config} />
+      {data.length > 0 ? (
+        <Pie {...config} />
+      ) : (
+        <Empty description="No order data available in this time period" />
+      )}
     </Card>
   );
 };

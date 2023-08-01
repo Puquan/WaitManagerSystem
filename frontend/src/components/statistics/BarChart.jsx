@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Card, Slider } from "antd";
+import React, { useState } from "react";
+import { Card, Slider, Empty } from "antd";
 import { Column } from "@ant-design/plots";
 
 const BarChart = ({ data, x, onTopValueChange }) => {
@@ -18,10 +18,7 @@ const BarChart = ({ data, x, onTopValueChange }) => {
     xField: "itemName",
     yField: "itemSaleCount",
     label: {
-      // 可手动配置 label 数据标签位置
       position: "middle",
-      // 'top', 'bottom', 'middle',
-      // 配置样式
       style: {
         fill: "#FFFFFF",
         opacity: 0.6,
@@ -59,7 +56,11 @@ const BarChart = ({ data, x, onTopValueChange }) => {
         />
       }
     >
-      <Column {...config} />
+      {data.length > 0 ? (
+        <Column {...config} />
+      ) : (
+        <Empty description="No order data available in this time period" />
+      )}
     </Card>
   );
 };
