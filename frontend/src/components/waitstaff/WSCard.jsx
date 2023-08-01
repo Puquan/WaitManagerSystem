@@ -1,4 +1,4 @@
-import { Card, Button, Row, Space, message, Modal, Table } from "antd";
+import { Card, Button, Row, Space, message, Modal, Table, Pagination } from "antd";
 import {
   BellOutlined,
   DollarCircleOutlined,
@@ -15,6 +15,18 @@ const WSCard = ({ table }) => {
   // State for the popup window
   const [openPopup, setOpenPopup] = useState(false);
   const [popupData, setPopupData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const itemsPerPage = 9;
+
+  // Filter order items to display only those that are cooked but not served
+  const filteredOrderItemList = orderItemList.filter(
+    (item) => item.isCook === 1 && item.isServe === 0
+  );
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredOrderItemList.slice(indexOfFirstItem, indexOfLastItem);
 
   // Function to handle "Notify Assistance" button click
   const handleNotifyAssistance = () => {
@@ -23,6 +35,10 @@ const WSCard = ({ table }) => {
       return;
     }
     markNeedHelp(tableId);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   // Function to mark needHelp as 1 for the table
@@ -99,11 +115,6 @@ const WSCard = ({ table }) => {
       });
   };
 
-  // Filter order items to display only those that are cooked but not served
-  const filteredOrderItemList = orderItemList.filter(
-    (item) => item.isCook === 1 && item.isServe === 0
-  );
-
   // Function to handle "Show Dishes" button click and fetch previous items
   const handleShowPreviousItems = () => {
     fetch(
@@ -145,7 +156,7 @@ const WSCard = ({ table }) => {
   return (
     <Card
       title={`Table ${tableId}`}
-      style={{ width: 300, height: 400 }}
+      style={{ width: 440, height: 400 }}
       hoverable={true}
     >
       {/* Buttons for "Notify Assistance", "Request Bill", and "Show Dishes" */}
@@ -169,7 +180,7 @@ const WSCard = ({ table }) => {
 
       {/* List of order items */}
       <ul style={{ listStyle: "none", padding: 0 }}>
-        {filteredOrderItemList.map((item) => (
+        {currentItems.map((item) => (
           <li key={item.id} style={{ display: "flex", alignItems: "center" }}>
             <span>{item.itemName}</span>
             <Space align="end" style={{ marginLeft: "auto" }}>
@@ -211,6 +222,16 @@ const WSCard = ({ table }) => {
           rowKey="itemId"
         />
       </Modal>
+      <div style={{ position: "absolute", bottom: 16, left: "50%", transform: "translateX(-50%)" }}>
+        <Pagination
+          simple
+          current={currentPage}
+          pageSize={itemsPerPage}
+          total={filteredOrderItemList.length}
+          onChange={handlePageChange}
+          style={{ textAlign: "center" }} 
+        />
+      </div>
     </Card>
   );
 };
