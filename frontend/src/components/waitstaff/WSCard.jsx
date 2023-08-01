@@ -161,7 +161,7 @@ const WSCard = ({ table }) => {
     >
       {/* Buttons for "Notify Assistance", "Request Bill", and "Show Dishes" */}
       <Row justify="space-between" align="middle">
-        <Space size={24}>
+        <Space size={110}>
           <Button
             icon={<BellOutlined className={needHelp === 1 ? "shake" : ""} />}
             onClick={handleNotifyAssistance}
