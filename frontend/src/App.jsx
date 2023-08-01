@@ -9,7 +9,11 @@ import StatisticsPage from "./pages/StatisticsPage";
 function App() {
   return (
     <>
+      {/* Define routes using React Router's Routes component */}
       <Routes>
+        {/* Define individual routes with the Route component */}
+        {/* Each route maps a specific URL path to a corresponding page component */}
+        {/* For example, when the URL path is "/Manager", the ManagerHomePage component will be rendered */}
         <Route path="/Manager" element={<ManagerHomePage />} />
         <Route path="/Kitchen" element={<KitchenPage />} />
         <Route path="/Order" element={<CustomerHomePage />} />

@@ -4,25 +4,26 @@ import TableCard from "../components/kitchen/TableCard";
 import { Spin } from "antd";
 
 const KitchenPage = () => {
-  const [kitchenOrders, setkitchenOrders] = useState([]);
+  // State to store kitchen orders
+  const [kitchenOrders, setKitchenOrders] = useState([]);
 
   useEffect(() => {
-    fetchKitchenOrders(); // 初始化时执行一次
+    // Fetch kitchen orders when the component mounts
+    fetchKitchenOrders();
+    // Set up an interval to fetch kitchen orders every 2 seconds
     const interval = setInterval(() => {
-      fetchKitchenOrders(); // 每隔一段时间执行一次
+      fetchKitchenOrders();
       console.log("fetching kitchen orders");
-    }, 2000); // 间隔时间为 2 秒
+    }, 2000);
+    // Clean up the interval when the component unmounts to prevent memory leaks
     return () => {
-      clearInterval(interval); // 组件卸载时清除定时器
+      clearInterval(interval);
     };
   }, []);
 
-  useEffect(() => {
-    console.log("kitchenOrders changed");
-  }, [kitchenOrders]);
-
+  // Function to generate TableCard components for each kitchen order
   const generateTableCards = () => {
-    return kitchenOrders.map((order, index) => (
+    return kitchenOrders.map((order) => (
       <Col span={32} md={10} key={order.orderId}>
         <TableCard
           tableId={order.tableId}
@@ -34,6 +35,7 @@ const KitchenPage = () => {
     ));
   };
 
+  // Function to fetch kitchen orders from the server
   async function fetchKitchenOrders() {
     const response = await fetch(
       `http://localhost:8080/waitsys/kitchen/list_all_orders_kitchen`,
@@ -45,13 +47,12 @@ const KitchenPage = () => {
       }
     );
     const data = await response.json();
-    console.log(data);
-    //setkitchenOrders([...data]);
-    setkitchenOrders(data);
+    setKitchenOrders(data);
   }
 
   return (
     <>
+      {/* Header */}
       <div
         style={{
           display: "flex",
@@ -62,18 +63,18 @@ const KitchenPage = () => {
       >
         <h2>Kitchen Page</h2>
       </div>
+      {/* Display kitchen orders if available */}
       {kitchenOrders.length > 0 ? (
-        <>
-          <div>
-            <Row gutter={{ xs: 12, sm: 16, md: 24, lg: 32 }}>
-              {generateTableCards()}
-            </Row>
-          </div>
-        </>
+        <div>
+          <Row gutter={{ xs: 12, sm: 16, md: 24, lg: 32 }}>
+            {generateTableCards()}
+          </Row>
+        </div>
       ) : (
+        // Display a loading spinner while waiting for orders
         <div>
           <Spin />
-          <p>Fetching kitchen orders...</p>
+          <p>Waiting for orders...</p>
         </div>
       )}
     </>

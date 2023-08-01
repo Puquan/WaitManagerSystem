@@ -1,21 +1,24 @@
 import { Layout, theme, Button, FloatButton, Modal, message } from "antd";
-import React, { useState, useRef } from "react";
-import "../App.css";
-const { Header, Content, Sider } = Layout;
-import CustomerDishGrid from "../components/customer/CustomerDishGrid";
+import {ShoppingCartOutlined,PayCircleOutlined,BellOutlined,} from "@ant-design/icons";
 import { Link, Element } from "react-scroll";
-import {
-  ShoppingCartOutlined,
-  PayCircleOutlined,
-  BellOutlined,
-} from "@ant-design/icons";
-import CustomerViewCart from "../components/customer/CustomerViewCart";
+
+import React, { useState } from "react";
 import { useNavigate} from "react-router-dom";
+
+import CustomerDishGrid from "../components/customer/CustomerDishGrid";
+import CustomerViewCart from "../components/customer/CustomerViewCart";
 import CustomerViewCompeleterOrder from "../components/customer/CustomerViewAllCompeleteOrder";
 import CustomerRate from "../components/customer/CustomerRate";
 import CarouselComponent from "../components/customer/CarouselComponent";
+import "../App.css";
 
+const { Header, Content, Sider } = Layout;
 
+// The main page customer will facing.
+// Features:view menu by category; view detailed information of dishes;
+//          add dishes to current order; call for help;
+//          confirm current order and place it; keep ordering until select finish meal;
+//          finish the meal(billing);rate dishes
 const CustomerHomePage = () => {
   const {
     token: { colorBgContainer },
@@ -23,6 +26,7 @@ const CustomerHomePage = () => {
 
   const navigate = useNavigate();
 
+  // state the props.
   const [orderId, setOrderId] = useState();
   const [tableId, setTableId] = useState();
   const [Category, setCategory] = useState([]);
@@ -44,6 +48,7 @@ const CustomerHomePage = () => {
   const [topRatingDish, setTopRatingDish] = useState([]);
   const [topSellingDish, setTopSellingDish] = useState([]);
 
+  // do these things when customer open this page.
   React.useEffect(() => {
     fetchTopRatingDish();
     fetchTopSellingDish();
@@ -56,6 +61,7 @@ const CustomerHomePage = () => {
     fetchAllDishes();
   }, []);
 
+  // keep fetching if customer finish payment
   React.useEffect(() => {
     const timer = setInterval(() => {
       // console.log(tableId);
@@ -65,12 +71,27 @@ const CustomerHomePage = () => {
     return () => clearInterval(timer);
   }, [paymentStatus]);
 
+  React.useEffect(() => {
+    checkTableAndOrder();
+  }, []);
+  
+  // check if it`s accidently nav to mainpage (without select table first)
+  const checkTableAndOrder = () => {
+    const tableId = localStorage.getItem("tableId");
+    const orderId = localStorage.getItem("orderId");
+    if (!tableId || !orderId) {
+      navigate("/"); 
+    }
+  };
+
+  // only nav to select table page when customer select billing and finish the payment.
   const handleFinishPayment = () => {
     if (paymentStatus == "0" && readyToGo) {
       navigate("/");
     }
   };
 
+  // check if customer finish the payment.
   const fetchFinishPayment = async () => {
     try {
       const response = await fetch(
@@ -92,6 +113,7 @@ const CustomerHomePage = () => {
     }
   };
 
+  // Read browser local storage
   const readLocalOrderId = () => {
     const orderId = localStorage.getItem("orderId");
     const localOrderId = JSON.parse(orderId);
@@ -104,8 +126,9 @@ const CustomerHomePage = () => {
     setTableId(localTableId);
   };
 
+  // trigger and untrigger function of modals.
   const triggerRenderCart = () => {
-    console.log("trigger render cart");
+    //console.log("trigger render cart");
     fetchCart();
     getCurrentOrderCost();
     setViewCart(true);
@@ -128,7 +151,7 @@ const CustomerHomePage = () => {
     setViewCompeleteOrder(false);
   };
 
-  // Fetch
+  // Receive the top rate dish information
   const fetchTopRatingDish = async () => {
     try {
       const response = await fetch("http://localhost:8080/waitsys/manager/item/showTop5",
@@ -165,7 +188,8 @@ const CustomerHomePage = () => {
       console.error("Error fetching top rating dish:", error);
     }
   };
-  
+
+  // Receive the top selling dish information
   const fetchTopSellingDish = async () => {
     try {
       const response = await fetch(
@@ -204,6 +228,7 @@ const CustomerHomePage = () => {
     }
   };
 
+  // Receive the current exist categorys.
   const fetchCategory = async () => {
     try {
       const response = await fetch(
@@ -227,6 +252,7 @@ const CustomerHomePage = () => {
     }
   };
 
+  // Receive the all placed order total cost.
   const getAllPreviousOrderCost = () => {
     const response = fetch(
       `http://localhost:8080/waitsys/customer/order/showTotalCost?tableId=${parseInt(
@@ -255,6 +281,7 @@ const CustomerHomePage = () => {
       });
   };
 
+  // Receive the unplaced order total cost.
   const getCurrentOrderCost = () => {
     const response = fetch(
       `http://localhost:8080/waitsys/customer/order/showCurrentCost?orderId=${parseInt(
@@ -284,6 +311,7 @@ const CustomerHomePage = () => {
       });
   };
 
+  // send help information to the backend and synchronize to waiter end.
   const askForHelp = () => {
     console.log(helpStatus);
     const response = fetch(
@@ -315,6 +343,7 @@ const CustomerHomePage = () => {
       });
   };
 
+  // receive the current order information.
   const fetchCart = () => {
     try {
       const response = fetch(
@@ -348,10 +377,10 @@ const CustomerHomePage = () => {
     }
   };
 
+  // Receive all dishes information.
   const fetchAllDishes = async () => {
     try {
       const response = await fetch(
-        // 这里用的api不对，后面会改
         "http://localhost:8080/waitsys/manager/item/showAll?pageNo=1&pageSize=10",
         {
           method: "GET",
@@ -380,6 +409,7 @@ const CustomerHomePage = () => {
     }
   };
 
+  // place current order.
   const checkOut = () => {
     console.log(tableId, orderId);
     const response = fetch(
@@ -398,9 +428,7 @@ const CustomerHomePage = () => {
         if (response.status === 200) {
           // cant catch error due to no-cors
           message.success("Finish Current Order");
-          console.log("Finish Current Order!");
           const data = await response.json();
-          console.log(data);
           localStorage.setItem("orderId", JSON.stringify(data.orderId));
           setOrderId(data.orderId);
           localStorage.setItem("tableId", JSON.stringify(data.tableId));
@@ -415,6 +443,7 @@ const CustomerHomePage = () => {
       });
   };
 
+  // receive all placed order information
   const fetchAllCompeleteOrder = () => {
     const response = fetch(
       `http://localhost:8080/waitsys/customer/order/showAllPreviousItems?tableId=${parseInt(
@@ -452,6 +481,7 @@ const CustomerHomePage = () => {
       });
   };
 
+  // request bill and start for rating
   const finishMeal = () => {
     console.log(tableId, orderId);
     const response2 = fetch(
@@ -494,23 +524,6 @@ const CustomerHomePage = () => {
     setIsCollapsed(collapsed);
   };
 
-  const checkTableAndOrder = () => {
-    const tableId = localStorage.getItem("tableId");
-    const orderId = localStorage.getItem("orderId");
-    if (!tableId || !orderId) {
-      navigate("/"); 
-    }
-  };
-
-React.useEffect(() => {
-  // 在组件挂载时执行检查
-  checkTableAndOrder();
-}, []);
-
-React.useEffect(() => {
-  // 在组件挂载时执行检查
-  checkTableAndOrder();
-}, []);
 
 
   return (
@@ -603,7 +616,6 @@ React.useEffect(() => {
             >
               <CustomerViewCompeleterOrder
                 tableId={tableId}
-                orderId={orderId}
                 onClose={untriggerRenderAllPreviousOrder}
                 compeleteOrderCost={compeleteOrderCost}
                 compeleteOrderData={compeleteOrder}

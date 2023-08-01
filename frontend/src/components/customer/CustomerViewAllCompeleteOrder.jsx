@@ -1,18 +1,16 @@
 import React, { useState, useRef } from "react";
-import { List, Divider, Statistic, Button } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import { List, Statistic } from "antd";
 
+// View all order ( not including current order which still in cart).
 const CustomerViewCompeleterOrder = ({
   onClose,
   compeleteOrderCost,
   compeleteOrderData,
   tableId,
-  orderId,
 }) => {
   const [position, setPosition] = useState("bottom");
   const [align, setAlign] = useState("center");
   const [newTableId, setNewTableId] = useState(parseInt(tableId));
-  const [newOrderId, setNewOrderId] = useState(parseInt(orderId));
   const [newCompeleteOrderCost, setNewCompeleteOrderCost] = useState(
     parseFloat(compeleteOrderCost)
   );
@@ -21,6 +19,8 @@ const CustomerViewCompeleterOrder = ({
 
   const isInitialMount1 = useRef(true);
 
+  // fetch all information again if there are anything changed.
+  // This can help us re-render the component without close and open it again.
   React.useEffect(() => {
     if (isInitialMount1.current) {
       isInitialMount1.current = false;
@@ -30,6 +30,7 @@ const CustomerViewCompeleterOrder = ({
     }
   }, [newCompeleteOrderCost, newComeleteOrderData]);
 
+  // get total cost for compelete order.
   const getAllPreviousOrderCost = () => {
     const response = fetch(
       `http://localhost:8080/waitsys/customer/order/showTotalCost?tableId=${parseInt(
@@ -57,6 +58,7 @@ const CustomerViewCompeleterOrder = ({
       });
   };
 
+  // get the order information and classified by items.
   const fetchAllCompeleteOrder = () => {
     const response = fetch(
       `http://localhost:8080/waitsys/customer/order/showAllPreviousItems?tableId=${parseInt(

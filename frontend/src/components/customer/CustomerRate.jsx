@@ -1,11 +1,13 @@
-import React, { useState, useRef } from "react";
-import { List, Divider, Modal, Button, Rate, message } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import React, { useState } from "react";
+import { List, Divider, Button, Rate, message } from "antd";
 import "./CustomerRate.css";
 
+// Rate function. Using when customer fisnish the meal.
 const CustomerRate = ({ data, tableId, orderIds }) => {
   const [showThanks, setShowThanks] = useState(false); 
   
+  // Need to post rate to backend with specific formatting.
+  // Initalizate the data structure here. 
   const [rateList, setRateList] = useState(
     data.map((item) => ({
       itemId: item.id,
@@ -13,6 +15,8 @@ const CustomerRate = ({ data, tableId, orderIds }) => {
     }))
   );
 
+  // Trigger when user finish rating.
+  // Compare user given rating to the props and change it if there exist a new user rating. 
   const handleRateChange = (itemId, value) => {
     setRateList(
       rateList.map((rateItem) =>
@@ -21,21 +25,18 @@ const CustomerRate = ({ data, tableId, orderIds }) => {
     );
   };
 
+  // post rating information to the backend.
   const handleSubmit = async () => {
     try {
-      console.log(tableId);
-      console.log(orderIds);
       const itemRatings = rateList.reduce((accumulator, { itemId, rate }) => {
         accumulator[itemId] = rate;
         return accumulator;
       }, {});
-      console.log(itemRatings);
       const bodyMessage = JSON.stringify({
         tableId,
         orderIds,
         itemRatings,
       });
-      console.log(bodyMessage);
       const response = await fetch(
         `http://localhost:8080/waitsys/customer/order/rating`,
         {
@@ -49,7 +50,6 @@ const CustomerRate = ({ data, tableId, orderIds }) => {
       if (response.status === 200) {
         setShowThanks(true);
         message.success("Rate Succefffully!");
-        console.log("Rate Succefffully!");
       } else {
         throw new Error("Error Finish Current Order");
       }
@@ -95,6 +95,8 @@ const CustomerRate = ({ data, tableId, orderIds }) => {
         onClick={handleSubmit}
         className={showThanks ? "hide-button" : ""}
       >
+        {//After user submit rating, show thanks information.
+        }
         Submit Rating
       </Button>
     </>

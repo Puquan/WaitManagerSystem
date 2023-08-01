@@ -1,8 +1,6 @@
 .ant-anchor-link-title {
     color: white !important;
-    /* 修改文字颜色为白色 */
     font-size: 18px !important;
-    /* 修改文字大小为18px */
 }
 
 .playfair-display {
@@ -53,6 +51,32 @@
     color: #ff4d00;
     font-weight: bold;
     cursor: move;
+}
+
+@keyframes shake {
+    0% {
+            transform: rotate(0deg);
+        }
+    
+        25% {
+            transform: rotate(10deg);
+        }
+    
+        50% {
+            transform: rotate(0eg);
+        }
+    
+        75% {
+            transform: rotate(-10deg);
+        }
+    
+        100% {
+            transform: rotate(0deg);
+        }
+}
+
+.shake {
+    animation: shake 0.5s infinite;
 }
 
 

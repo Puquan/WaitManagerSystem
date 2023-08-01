@@ -1,13 +1,15 @@
-import { Row, Col, List } from "antd";
+import { Row, Col } from "antd";
 import CustomerDishCard from "./CustomerDishCard";
 import React, { useEffect, useState } from "react";
 
+// The main component of customer page.
+// Each category of products will call the GridList once.
 const GridList = ({ categoryId, AllDish, tableId, orderId }) => {
   const [dishes, setDishes] = useState([]);
 
+  // fetch all information again when anything changed.
   useEffect(() => {
     fetchData(categoryId);
-    console.log("update!!!!");
   }, [categoryId, AllDish]);
 
   const fetchData = async (categoryId) => {
@@ -22,7 +24,6 @@ const GridList = ({ categoryId, AllDish, tableId, orderId }) => {
         }
       );
       const data = await response.json();
-      console.log(data);
       // Process data and set it to the component state
       const processedData = data.records.map((item) => ({
         title: item.name,
@@ -39,6 +40,7 @@ const GridList = ({ categoryId, AllDish, tableId, orderId }) => {
   };
 
   return (
+    // Filling dish grid by clickable dishcard.
     <Row gutter={[16, 16]}>
       {dishes.map((dish) => (
         <Col key={dish.id} xs={24} sm={12} md={8} lg={6}>

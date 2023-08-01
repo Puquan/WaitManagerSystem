@@ -112,6 +112,7 @@ const ModifyDishForm = ({ onClose, itemId }) => {
       });
   };
 
+  // post delete command to the backend.
   const handleDelete = () => {
     const formData = new FormData();
     formData.append("itemId", itemId);
@@ -144,6 +145,7 @@ const ModifyDishForm = ({ onClose, itemId }) => {
     return false; // Returning false prevents immediate upload
   };
 
+  // image validation
   const uploadProps = {
     beforeUpload,
     maxCount: 1,
@@ -160,6 +162,10 @@ const ModifyDishForm = ({ onClose, itemId }) => {
   }
 
   return (
+    // Use form to collect information.
+    // And pre existed information will be filling in to blank first.
+    // Manager can change as there wishes.
+    // Only MODIFY or DELETE button will trigger the changes.
     <Card title="Modify Dish" name="modifyDishForm" bordered={false}>
       <Form
         name="basic"

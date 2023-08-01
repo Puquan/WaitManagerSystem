@@ -1,7 +1,8 @@
 import React, { useState, useRef } from "react";
-import { List, Divider, Statistic, Button } from "antd";
+import { List, Divider, Statistic} from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 
+// View current cart.
 const CustomerViewCart = ({ onClose, data, cost, tableId, orderId }) => {
   const [position, setPosition] = useState("bottom");
   const [align, setAlign] = useState("center");
@@ -12,16 +13,18 @@ const CustomerViewCart = ({ onClose, data, cost, tableId, orderId }) => {
 
   const isInitialMount1 = useRef(true);
 
+  // fetch all information again if there are anything changed.
+  // This can help us re-render the component without close and open it again.
   React.useEffect(() => {
     if (isInitialMount1.current) {
       isInitialMount1.current = false;
     } else {
-      console.log("1");
       fetchCart();
       getCurrentOrderCost();
     }
   }, [newData, newCost]);
 
+  // get information of current order and classified by items.
   const fetchCart = () => {
     try {
       const response = fetch(
@@ -55,6 +58,7 @@ const CustomerViewCart = ({ onClose, data, cost, tableId, orderId }) => {
     }
   };
 
+  // get total cost for current order( not placed, still in cart)
   const getCurrentOrderCost = () => {
     const response = fetch(
       `http://localhost:8080/waitsys/customer/order/showCurrentCost?orderId=${parseInt(
@@ -83,6 +87,8 @@ const CustomerViewCart = ({ onClose, data, cost, tableId, orderId }) => {
       });
   };
 
+  // user can choose delete item if they think order too much.
+  // auto re-render the cost and item information. no need to close and open again.
   const deleteItem = (itemIdTemp) => {
     const response = fetch(
       `http://localhost:8080/waitsys/customer/order/removeItem?tableId=${parseInt(

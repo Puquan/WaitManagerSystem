@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Button, Form, Input, Card } from "antd";
 
+// Add new category to the menu. It can be null when created.
 const AddCatForm = ({ onClose }) => {
   const sendFormData = (data) => {
     fetch("http://localhost:8080/waitsys/manager/add_category", {
@@ -9,7 +10,6 @@ const AddCatForm = ({ onClose }) => {
     })
       .then((response) => {
         if (response.status == 200) {
-          // cant catch error due to no-cors
           message.success("Category added successfully!");
         } else {
           throw new Error("Error adding Category");
