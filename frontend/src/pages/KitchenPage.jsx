@@ -24,7 +24,7 @@ const KitchenPage = () => {
   // Function to generate TableCard components for each kitchen order
   const generateTableCards = () => {
     return kitchenOrders.map((order) => (
-      <Col span={32} md={10} key={order.orderId}>
+      <Col span={8} key={order.orderId}>
         <TableCard
           tableId={order.tableId}
           orderId={order.orderId}

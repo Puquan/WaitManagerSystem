@@ -78,7 +78,7 @@ const TableCard = ({ tableId, orderItems, orderId, startTime }) => {
       {!isOrderFinished && (
         <Card
           title={tableTitle}
-          style={{ height: "55vh", position: "relative" }}
+          style={{ height: "65vh", position: "relative", overflow: "auto" }}
           hoverable={true}
         >
           <Meta description={timeString} />
