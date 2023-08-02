@@ -7,10 +7,12 @@ Write the propsal. Finish Jira. And I was assigned to do the frontend job using 
 week4:
 Learn JS and React. Write several pages.
 week5:
-Write move order functionalities and base pages.
+Write move order functionalities and base pages of manager end.
 week6:
 flexablie week.
 week7:
 Develope customer front end.
 week8:
 Fix the customer end bug.
+week9:
+Write front end rating system, whichi is the part of the recomdation novel function.
