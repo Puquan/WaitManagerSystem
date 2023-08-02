@@ -2,8 +2,10 @@ package com.comp9900.waitsys.manager.controller;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.comp9900.waitsys.manager.entity.ItemVO;
+import com.comp9900.waitsys.manager.entity.VO.AnalysisVO;
+import com.comp9900.waitsys.manager.entity.VO.ItemVO;
 import com.comp9900.waitsys.manager.entity.VO.CategoryVO;
+import com.comp9900.waitsys.manager.service.AnalysisService;
 import com.comp9900.waitsys.manager.service.CategoryService;
 import com.comp9900.waitsys.manager.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class ManagerController {
     private ItemService itemService;
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private AnalysisService analysisService;
 
     @PostMapping("/item/add")
     public boolean addItem(@RequestParam(value = "name") String name,
@@ -116,5 +121,11 @@ public class ManagerController {
     @GetMapping("/list_all_categories")
     public List<CategoryVO> listAllCategories(){
         return categoryService.listAllCategories();
+    }
+
+    @GetMapping("/analysis")
+    public AnalysisVO analyse(@RequestParam (value = "state")Integer state,
+                              @RequestParam (value = "x")Integer x){
+        return analysisService.Analyse(state,x);
     }
 }

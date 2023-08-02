@@ -1,4 +1,6 @@
-package com.comp9900.waitsys.manager.entity;
+package com.comp9900.waitsys.manager.entity.VO;
+
+import com.comp9900.waitsys.manager.entity.Item;
 
 import java.util.Objects;
 
@@ -7,7 +9,7 @@ import java.util.Objects;
  * Date:2023-06-25 23:00
  * Description: the entity of dish item and category
  */
-public class ItemVO extends Item{
+public class ItemVO extends Item {
     private String category;
 
     public String getCategory() {

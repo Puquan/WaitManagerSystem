@@ -3,7 +3,7 @@ package com.comp9900.waitsys.manager.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.comp9900.waitsys.manager.entity.Item;
-import com.comp9900.waitsys.manager.entity.ItemVO;
+import com.comp9900.waitsys.manager.entity.VO.ItemVO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

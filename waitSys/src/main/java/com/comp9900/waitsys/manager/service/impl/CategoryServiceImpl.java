@@ -1,5 +1,6 @@
 package com.comp9900.waitsys.manager.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.comp9900.waitsys.constant.Constant;
 import com.comp9900.waitsys.manager.entity.Category;
 import com.comp9900.waitsys.manager.entity.VO.CategoryVO;
@@ -30,6 +31,7 @@ public class CategoryServiceImpl extends MPJBaseServiceImpl<CategoryMapper, Cate
 
     @Override
     public List<CategoryVO> listAllCategories() {
+
         MPJLambdaWrapper<Category> myWrapper = new MPJLambdaWrapper<>();
         myWrapper
                 .eq(Category::getIsOnMenu, TRUE_VALUE)

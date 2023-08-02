@@ -7,7 +7,7 @@ import com.comp9900.waitsys.constant.Constant;
 import com.comp9900.waitsys.customer.entity.OrderItem;
 import com.comp9900.waitsys.manager.entity.Category;
 import com.comp9900.waitsys.manager.entity.Item;
-import com.comp9900.waitsys.manager.entity.ItemVO;
+import com.comp9900.waitsys.manager.entity.VO.ItemVO;
 import com.comp9900.waitsys.manager.mapper.ItemMapper;
 import com.comp9900.waitsys.manager.service.ItemService;
 import com.github.yulichang.toolkit.JoinWrappers;
