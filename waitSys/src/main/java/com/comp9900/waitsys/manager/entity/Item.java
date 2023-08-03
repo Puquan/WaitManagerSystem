@@ -12,7 +12,7 @@ import java.util.Arrays;
  * Date:2023-06-24 19:59
  * Description: the entity of dish item
  */
-@TableName("Item")
+@TableName("item")
 public class Item implements Serializable{
     @TableId(type = IdType.AUTO)
     public Integer itemId;

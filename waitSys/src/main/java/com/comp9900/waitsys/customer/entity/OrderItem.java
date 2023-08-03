@@ -12,7 +12,7 @@ import java.io.Serializable;
  * Description: the entity of orderItem
  */
 
-@TableName("Order_item")
+@TableName("order_item")
 public class OrderItem implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;

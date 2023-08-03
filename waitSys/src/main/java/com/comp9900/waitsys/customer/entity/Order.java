@@ -13,7 +13,7 @@ import java.sql.Timestamp;
  * Date:2023-07-08 20:22
  * Description: the entity of Orders
  */
-@TableName("Orders")
+@TableName("orders")
 public class Order implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer orderId;

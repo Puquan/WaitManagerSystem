@@ -12,7 +12,7 @@ import java.io.Serializable;
  * Date:2023-07-08 20:22
  * Description: the entity of Tables
  */
-@TableName("Tables")
+@TableName("tables")
 public class Table implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer tableId;
