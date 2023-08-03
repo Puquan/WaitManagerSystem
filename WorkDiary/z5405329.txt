@@ -13,3 +13,20 @@ Break down the ManagerSystem into small tasks. I was assigned to write the UI co
 
 Week 5
 Fix the bugs in the code. Integrate the function of front end and back end.
+
+Week 6
+Write code for kitchen staff page
+
+Week 7 
+Fix bug for kitchen, waitstaff and customer page
+
+Week 8
+Prepare for demo2. Make page more user friendly.
+
+Week 9 
+Write code for statistics page. Make page more user friendly, fix bugs
+
+Week 10
+Write report. Prepare final demo. Fix bugs.
+
+
