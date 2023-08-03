@@ -15,7 +15,7 @@ const GridList = ({ categoryId, AllDish, tableId, orderId }) => {
   const fetchData = async (categoryId) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/waitsys/manager/item/showByCategory?categoryId=${categoryId}&pageNo=1&pageSize=10`,
+        `http://localhost:8080/waitsys/manager/item/showByCategory?categoryId=${categoryId}&pageNo=1&pageSize=99`,
         {
           method: "GET",
           headers: {
@@ -31,7 +31,7 @@ const GridList = ({ categoryId, AllDish, tableId, orderId }) => {
         index: item.orderNum,
         id: item.itemId,
         picture: `data:image/jpeg;base64, ${item.picture}`,
-        rating:item.rating,
+        rating: item.rating,
       }));
       setDishes(processedData);
     } catch (error) {

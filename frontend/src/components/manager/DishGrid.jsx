@@ -1,4 +1,4 @@
-import { Card, Row, Col,} from "antd";
+import { Card, Row, Col } from "antd";
 import * as React from "react";
 import DishCard from "./DishCard";
 import { ReactSortable } from "react-sortablejs";
@@ -31,12 +31,12 @@ const GridList = ({ categoryId, AllDish }) => {
       try {
         const response = await fetchMoveDish(update.id, update.orderNum);
         if (response.ok) {
-          const dish = newDishes.find(d => d.id === update.id);
+          const dish = newDishes.find((d) => d.id === update.id);
           if (dish) {
             dish.orderNum = update.orderNum;
           }
         } else {
-          throw new Error('Failed to update orderNum');
+          throw new Error("Failed to update orderNum");
         }
       } catch (error) {
         console.error(error);
@@ -44,18 +44,21 @@ const GridList = ({ categoryId, AllDish }) => {
     });
     setDishes(newDishes);
   };
-  
+
   // post moved menu into backend
   const fetchMoveDish = async (dishId, newIndex) => {
     try {
-      const response = await fetch('http://localhost:8080/waitsys/manager/item/changeOrder', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ [dishId]: newIndex }),
-      });
-      return response
+      const response = await fetch(
+        "http://localhost:8080/waitsys/manager/item/changeOrder",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ [dishId]: newIndex }),
+        }
+      );
+      return response;
     } catch (error) {
       console.error(`Error: ${error}`);
     }
@@ -64,7 +67,7 @@ const GridList = ({ categoryId, AllDish }) => {
   const fetchData = async (categoryId) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/waitsys/manager/item/showByCategory?categoryId=${categoryId}&pageNo=1&pageSize=10`,
+        `http://localhost:8080/waitsys/manager/item/showByCategory?categoryId=${categoryId}&pageNo=1&pageSize=99`,
         {
           method: "GET",
           headers: {
@@ -79,7 +82,7 @@ const GridList = ({ categoryId, AllDish }) => {
         index: item.orderNum,
         id: item.itemId,
         picture: `data:image/jpeg;base64, ${item.picture}`,
-        rating:item.rating
+        rating: item.rating,
       }));
       setDishes(processedData);
     } catch (error) {
@@ -96,7 +99,7 @@ const GridList = ({ categoryId, AllDish }) => {
     >
       {dishes.map((dish) => (
         <Col key={dish.id} xs={24} sm={12} md={8} lg={6}>
-          <div style={{margin:'24px'}}>
+          <div style={{ margin: "24px" }}>
             <DishCard
               title={dish.title}
               price={dish.price}
@@ -105,13 +108,10 @@ const GridList = ({ categoryId, AllDish }) => {
               picture={dish.picture}
               itemRate={dish.rating}
             />
-         </div>
-
+          </div>
         </Col>
       ))}
-      
     </ReactSortable>
-
   );
 };
 
