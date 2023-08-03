@@ -5,10 +5,25 @@ Week 2
 Decide to use React and javascript for front end development. Use Java and Springboot for back end development. Choose MySQL for database. Begin to write the proposal. Responsible for the "Background" part of the proposal and the final review.  
 
 Week 3
-Complete the proposal. Decide to finish the Manager system first because it is the most important part of the project. I was assigned to write the back end code. Create database.
+Complete the proposal. Decide to finish Manager system first because it is the most important part of the project. I was assigned to write the frontend code.
 
 Week 4
-Break down the ManagerSystem into Item and Category parts. I am responsible for the backend development related to the add, modify and delete functions for Items. 
+Break down the ManagerSystem into Item and Category parts. I am responsible for the frontend development related to the add, modify and delete functions for Dishes. 
 
 Week 5
-Fix the bugs in the code. Integrate the function of the front end and back end.
+Fix the bugs in the code. Integrate the function of the frontend and backend.
+
+Week 6
+Write code for waitstaff page
+
+Week 7
+Fix bug for kitchen, waitstaff and customer page
+
+Week 8
+Prepare for demo2. Make page more user friendly.
+
+Week 9
+Write code for recommendation section on customer page. Make page more user friendly, fix bugs
+
+Week 10
+Write report. Prepare final demo. Fix bugs.
